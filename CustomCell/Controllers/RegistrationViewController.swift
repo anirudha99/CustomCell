@@ -10,101 +10,99 @@ import UIKit
 class RegistrationViewController: UIViewController {
 
     
-    
     let photoButton: UIImageView = {
         let imageView = UIImageView()
         imageView.tintColor = .white
         imageView.clipsToBounds = true
         imageView.image = UIImage(systemName: "person.fill")
         imageView.layer.cornerRadius = 60
-//        button.setImage(UIImage(systemName: "person.fill"), for: .normal)
-//        button.addTarget(self, action: #selector(handleProfilePic), for: .touchUpInside)
         imageView.translatesAutoresizingMaskIntoConstraints = false
-        imageView.backgroundColor = .blue
+        imageView.backgroundColor = .systemRed
         return imageView
     }()
     
-    let firstNameTextField: UITextField = {
-        let tF = UITextField()
-        tF.placeholder = "Enter First Name"
-        tF.textColor = .black
-        tF.backgroundColor = .red
-        tF.font = UIFont.systemFont(ofSize: 20)
-        tF.heightAnchor.constraint(equalToConstant: 50).isActive = true
-        tF.translatesAutoresizingMaskIntoConstraints = false
-        return tF
+    var firstNameTextField = CustomTextField(placeholder: "Enter First Name")
+    var lastNameTextField = CustomTextField(placeholder: "Enter Last Name")
+    var emailTextField = CustomTextField(placeholder: "Enter Email")
+    var passwordTextField = CustomTextField(placeholder: "Enter Password")
+    
+    lazy var firstNameContainer: InputContainerView = {
+        return InputContainerView(image: UIImage(systemName: "person.fill")!, textField: firstNameTextField)
     }()
     
-    let lastNameTextField: UITextField = {
-        let tF = UITextField()
-        tF.placeholder = "Enter Last Name"
-        tF.textColor = .black
-        tF.backgroundColor = .red
-        tF.font = UIFont.systemFont(ofSize: 20)
-        tF.heightAnchor.constraint(equalToConstant: 50).isActive = true
-        tF.translatesAutoresizingMaskIntoConstraints = false
-        return tF
+    lazy var lastNameContainer: InputContainerView = {
+        return InputContainerView(image: UIImage(systemName: "person.fill")!, textField: lastNameTextField)
     }()
     
-    let emailTextField: UITextField = {
-        let tF = UITextField()
-        tF.placeholder = "Enter Email"
-        tF.textColor = .black
-        tF.backgroundColor = .red
-        tF.font = UIFont.systemFont(ofSize: 20)
-        tF.heightAnchor.constraint(equalToConstant: 50).isActive = true
-        tF.translatesAutoresizingMaskIntoConstraints = false
-        return tF
+    lazy var emailContainer: InputContainerView = {
+        return InputContainerView(image: UIImage(systemName: "person.fill")!, textField: emailTextField)
     }()
     
-    let passwordTextField: UITextField = {
-        let tF = UITextField()
-        tF.placeholder = "Enter Password"
-        tF.textColor = .black
-        tF.backgroundColor = .red
-        tF.font = UIFont.systemFont(ofSize: 20)
-        tF.isSecureTextEntry = true
-        tF.heightAnchor.constraint(equalToConstant: 50).isActive = true
-        tF.translatesAutoresizingMaskIntoConstraints = false
-        return tF
+    lazy var passwordContainer: InputContainerView = {
+        passwordTextField.isSecureTextEntry = true
+        return InputContainerView(image: UIImage(systemName: "person.fill")!, textField: passwordTextField)
     }()
     
+//
+//  
+//    
+//    let passwordTextField: UITextField = {
+//        let tF = UITextField()
+//        tF.placeholder = "Enter Password"
+//        tF.textColor = .black
+//        tF.backgroundColor = .red
+//        tF.font = UIFont.systemFont(ofSize: 20)
+//        tF.isSecureTextEntry = true
+//        tF.heightAnchor.constraint(equalToConstant: 50).isActive = true
+//        tF.translatesAutoresizingMaskIntoConstraints = false
+//        return tF
+//    }()
+//    
     let signUpButton: UIButton = {
         let button = UIButton()
         button.setTitle("Sign Up", for: .normal)
         button.tintColor = .white
         button.addTarget(self, action: #selector(handleLogin), for: .touchUpInside)
         button.translatesAutoresizingMaskIntoConstraints = false
-        button.backgroundColor = .blue
+        button.backgroundColor = .red
         button.heightAnchor.constraint(equalToConstant: 50).isActive = true
         return button
     }()
     
+    let stackView: UIStackView = {
+        let stack = UIStackView()
+        stack.translatesAutoresizingMaskIntoConstraints = false
+        stack.spacing = 10
+        stack.axis = .vertical
+        stack.distribution = .fill
+        return stack
+    }()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .white
+        
         configureUI()
         // Do any additional setup after loading the view.
     }
     
     func configureUI(){
-        
+        view.backgroundColor = .darkGray
         view.addSubview(photoButton)
-        
         photoButton.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
         photoButton.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 40).isActive = true
         photoButton.heightAnchor.constraint(equalToConstant: 120).isActive = true
         photoButton.widthAnchor.constraint(equalToConstant: 120).isActive = true
 //
-        let stack = UIStackView(arrangedSubviews: [firstNameTextField, lastNameTextField, emailTextField, passwordTextField, signUpButton])
-        stack.translatesAutoresizingMaskIntoConstraints = false
-        stack.spacing = 10
-        stack.axis = .vertical
-        view.addSubview(stack)
+        stackView.addArrangedSubview(firstNameContainer)
+        stackView.addArrangedSubview(lastNameContainer)
+        stackView.addArrangedSubview(emailContainer)
+        stackView.addArrangedSubview(passwordContainer)
+        stackView.addArrangedSubview(signUpButton)
         
-        stack.topAnchor.constraint(equalTo: photoButton.bottomAnchor , constant: 40).isActive = true
-        stack.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 20).isActive = true
-        stack.rightAnchor.constraint(equalTo: view.rightAnchor, constant: -20).isActive = true
+        view.addSubview(stackView)
+        stackView.topAnchor.constraint(equalTo: photoButton.bottomAnchor , constant: 40).isActive = true
+        stackView.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 20).isActive = true
+        stackView.rightAnchor.constraint(equalTo: view.rightAnchor, constant: -20).isActive = true
         
     }
     
