@@ -17,7 +17,7 @@ class InputContainerView : UIView {
         heightAnchor.constraint(equalToConstant: 50).isActive = true
         layer.borderColor = UIColor.red.cgColor
         layer.borderWidth = 1
-        layer.cornerRadius = 5
+        layer.cornerRadius = 10
         
         let iv = UIImageView()
         iv.image = image
@@ -31,6 +31,7 @@ class InputContainerView : UIView {
         
         addSubview(textField)
         textField.backgroundColor = .white
+        textField.layer.cornerRadius = 10
         textField.translatesAutoresizingMaskIntoConstraints = false
         textField.centerYAnchor.constraint(equalTo: centerYAnchor).isActive = true
         textField.leftAnchor.constraint(equalTo: iv.rightAnchor, constant: 10).isActive = true

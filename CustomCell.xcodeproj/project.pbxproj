@@ -12,6 +12,8 @@
 		1C0C750E273BCF41005E50E7 /* RegistrationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C0C750D273BCF41005E50E7 /* RegistrationViewController.swift */; };
 		1C282532273CD91A001EE811 /* InputContainerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C282531273CD91A001EE811 /* InputContainerView.swift */; };
 		1C282534273CD930001EE811 /* CustomTextfield.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C282533273CD930001EE811 /* CustomTextfield.swift */; };
+		1C282537273D387B001EE811 /* CustomLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C282536273D387B001EE811 /* CustomLabel.swift */; };
+		1CDAA1002742183000394D19 /* ButtonExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CDAA0FF2742183000394D19 /* ButtonExtension.swift */; };
 		1CF46FD0273A781300945374 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CF46FCF273A781300945374 /* AppDelegate.swift */; };
 		1CF46FD2273A781300945374 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CF46FD1273A781300945374 /* SceneDelegate.swift */; };
 		1CF46FD4273A781300945374 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CF46FD3273A781300945374 /* ViewController.swift */; };
@@ -28,6 +30,8 @@
 		1C0C750D273BCF41005E50E7 /* RegistrationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegistrationViewController.swift; sourceTree = "<group>"; };
 		1C282531273CD91A001EE811 /* InputContainerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InputContainerView.swift; sourceTree = "<group>"; };
 		1C282533273CD930001EE811 /* CustomTextfield.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomTextfield.swift; sourceTree = "<group>"; };
+		1C282536273D387B001EE811 /* CustomLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomLabel.swift; sourceTree = "<group>"; };
+		1CDAA0FF2742183000394D19 /* ButtonExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ButtonExtension.swift; sourceTree = "<group>"; };
 		1CF46FCC273A781300945374 /* CustomCell.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CustomCell.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1CF46FCF273A781300945374 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		1CF46FD1273A781300945374 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -67,6 +71,8 @@
 			children = (
 				1C282531273CD91A001EE811 /* InputContainerView.swift */,
 				1C282533273CD930001EE811 /* CustomTextfield.swift */,
+				1C282536273D387B001EE811 /* CustomLabel.swift */,
+				1CDAA0FF2742183000394D19 /* ButtonExtension.swift */,
 			);
 			path = Custom;
 			sourceTree = "<group>";
@@ -90,9 +96,9 @@
 		1CF46FCE273A781300945374 /* CustomCell */ = {
 			isa = PBXGroup;
 			children = (
-				1C282535273CFAC9001EE811 /* Custom */,
 				1CF46FCF273A781300945374 /* AppDelegate.swift */,
 				1CF46FD1273A781300945374 /* SceneDelegate.swift */,
+				1C282535273CFAC9001EE811 /* Custom */,
 				1CF46FE7273A815400945374 /* cell */,
 				1C0C74E7273B6FAD005E50E7 /* ConversationOption.swift */,
 				1C0C750F273BD49F005E50E7 /* Controllers */,
@@ -185,12 +191,14 @@
 			files = (
 				1C282534273CD930001EE811 /* CustomTextfield.swift in Sources */,
 				1C0C750C273BC9E1005E50E7 /* LoginViewController.swift in Sources */,
+				1C282537273D387B001EE811 /* CustomLabel.swift in Sources */,
 				1CF46FE4273A785600945374 /* CollectionViewController.swift in Sources */,
 				1C0C750E273BCF41005E50E7 /* RegistrationViewController.swift in Sources */,
 				1C0C74E8273B6FAD005E50E7 /* ConversationOption.swift in Sources */,
 				1C282532273CD91A001EE811 /* InputContainerView.swift in Sources */,
 				1CF46FD4273A781300945374 /* ViewController.swift in Sources */,
 				1CF46FD0273A781300945374 /* AppDelegate.swift in Sources */,
+				1CDAA1002742183000394D19 /* ButtonExtension.swift in Sources */,
 				1CF46FD2273A781300945374 /* SceneDelegate.swift in Sources */,
 				1CF46FE6273A815100945374 /* ConversationCell.swift in Sources */,
 			);
