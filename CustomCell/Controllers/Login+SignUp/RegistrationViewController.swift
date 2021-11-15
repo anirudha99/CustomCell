@@ -9,14 +9,14 @@ import UIKit
 import FirebaseAuth
 
 class RegistrationViewController: UIViewController {
-
+    
     //MARK: -Properties
     
     let profilePicImage: UIImageView = {
         let imageView = UIImageView()
         imageView.tintColor = .white
         imageView.clipsToBounds = true
-        imageView.image = UIImage(systemName: "person.fill")
+        imageView.image = UIImage(systemName: "person.circle")
         imageView.layer.cornerRadius = 60
         imageView.translatesAutoresizingMaskIntoConstraints = false
         imageView.backgroundColor = .systemRed
@@ -25,7 +25,7 @@ class RegistrationViewController: UIViewController {
         imageView.isUserInteractionEnabled = true
         return imageView
     }()
-//
+    //
     
     var firstNameTextField = CustomTextField(placeholder: "Enter First Name")
     var lastNameTextField = CustomTextField(placeholder: "Enter Last Name")
@@ -73,18 +73,18 @@ class RegistrationViewController: UIViewController {
         return view
     }()
     
-//    let passwordTextField: UITextField = {
-//        let tF = UITextField()
-//        tF.placeholder = "Enter Password"
-//        tF.textColor = .black
-//        tF.backgroundColor = .red
-//        tF.font = UIFont.systemFont(ofSize: 20)
-//        tF.isSecureTextEntry = true
-//        tF.heightAnchor.constraint(equalToConstant: 50).isActive = true
-//        tF.translatesAutoresizingMaskIntoConstraints = false
-//        return tF
-//    }()
-//    
+    //    let passwordTextField: UITextField = {
+    //        let tF = UITextField()
+    //        tF.placeholder = "Enter Password"
+    //        tF.textColor = .black
+    //        tF.backgroundColor = .red
+    //        tF.font = UIFont.systemFont(ofSize: 20)
+    //        tF.isSecureTextEntry = true
+    //        tF.heightAnchor.constraint(equalToConstant: 50).isActive = true
+    //        tF.translatesAutoresizingMaskIntoConstraints = false
+    //        return tF
+    //    }()
+    //
     let signUpButton: UIButton = {
         let button = UIButton()
         button.setTitle("Sign Up", for: .normal)
@@ -100,7 +100,7 @@ class RegistrationViewController: UIViewController {
         let button = UIButton()
         button.setTitle("Login", for: .normal)
         button.setTitleColor(.red, for: .normal)
-//        button.tintColor = .white
+        //        button.tintColor = .white
         button.addTarget(self, action: #selector(transistionToLogin), for: .touchUpInside)
         button.translatesAutoresizingMaskIntoConstraints = false
         button.heightAnchor.constraint(equalToConstant: 50).isActive = true
@@ -135,7 +135,7 @@ class RegistrationViewController: UIViewController {
         profilePicImage.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 40).isActive = true
         profilePicImage.heightAnchor.constraint(equalToConstant: 120).isActive = true
         profilePicImage.widthAnchor.constraint(equalToConstant: 120).isActive = true
-//
+        //
         stackView.addArrangedSubview(firstNameContainer)
         stackView.addArrangedSubview(lastNameContainer)
         stackView.addArrangedSubview(emailContainer)
@@ -193,17 +193,29 @@ class RegistrationViewController: UIViewController {
             showAlert(title: "Login error", message: "Please enter all information properly to Log in")
             return
         }
-        //Firebase
-        print("Sign up button tapped")
-        FirebaseAuth.Auth.auth().createUser(withEmail: email, password: password) { authResult, error in
-            guard let result = authResult, error == nil else {
-                self.showAlert(title: "Error", message: "Error creating user")
+        
+        //Firebase Log in
+        
+        DatabaseManager.shared.validateIfUserExists(with: email) { [weak self] exists in
+            guard let strongSelf = self else {
                 return
             }
-            let user = result.user
-            print("User created\(user)")
+            guard !exists else{
+                //user already exists
+                strongSelf.showAlert(title: "Error", message: "User with same email address already exists!")
+                return
+            }
+            print("Sign up button tapped")
+            FirebaseAuth.Auth.auth().createUser(withEmail: email, password: password) { authResult, error in
+                guard authResult != nil, error == nil else {
+                    strongSelf.showAlert(title: "Error", message: "Error creating user")
+                    return
+                }
+                
+                DatabaseManager.shared.insertUser(with: ChatAppUser(firstName: firstName, lastName: lastName, emailAddress: email))
+                strongSelf.navigationController?.dismiss(animated: true, completion: nil)
+            }
         }
-        
     }
     
     @objc func transistionToLogin(){
@@ -213,7 +225,7 @@ class RegistrationViewController: UIViewController {
         presentVc.modalPresentationStyle = .fullScreen
         present(presentVc, animated: true, completion: nil)
     }
-
+    
 }
 
 extension RegistrationViewController: UIImagePickerControllerDelegate, UINavigationControllerDelegate{
@@ -247,7 +259,7 @@ extension RegistrationViewController: UIImagePickerControllerDelegate, UINavigat
     }
     
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
-         
+        
         picker.dismiss(animated: true, completion: nil)
         print(info)
         

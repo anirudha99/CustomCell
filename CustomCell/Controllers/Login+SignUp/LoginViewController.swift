@@ -227,13 +227,20 @@ class LoginViewController: UIViewController {
         }
         //Firebase
         print("Login button tapped")
-        FirebaseAuth.Auth.auth().signIn(withEmail: email, password: password) { authResult, error in
-            guard let result = authResult, error == nil else {
-                self.showAlert(title: "Error", message: " Login Error")
+        FirebaseAuth.Auth.auth().signIn(withEmail: email, password: password) { [weak self] authResult, error in
+            guard let strongSelf = self else {
                 return
             }
-            let user = result.user
-            print("Logged in user: \(user)")
+            guard let result = authResult, error == nil else {
+                self?.showAlert(title: "Error", message: " Login Error")
+                return
+            }
+            
+            strongSelf.navigationController?.dismiss(animated: true, completion: nil)
+            let controller = ConversationsViewController()
+            let presentVc = UINavigationController(rootViewController: controller)
+            presentVc.modalPresentationStyle = .fullScreen
+            self?.present(presentVc, animated: true, completion: nil)
         }
     }
     

@@ -6,10 +6,11 @@
 //
 
 import UIKit
+import FirebaseAuth
 
 private let reuseIdentifier = "ConversationCell"
 
-class CollectionViewController: UIViewController {
+class ConversationsViewController: UIViewController {
     
     var collectionView: UICollectionView!
 
@@ -24,14 +25,7 @@ class CollectionViewController: UIViewController {
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         
-        let isLoggedIn = UserDefaults.standard.bool(forKey: "logged_in")
-        
-        if !isLoggedIn {
-            let vc = LoginViewController()
-            let navigation = UINavigationController(rootViewController: vc)
-            navigation.modalPresentationStyle = .fullScreen
-            present(navigation,animated: true)
-        }
+        validateAuth()
     }
     
     func configureNavigationBar() {
@@ -56,9 +50,19 @@ class CollectionViewController: UIViewController {
         collectionView.delegate = self
         collectionView.register(ConversationCell.self, forCellWithReuseIdentifier: reuseIdentifier)
     }
+    
+    func validateAuth(){
+        
+        if FirebaseAuth.Auth.auth().currentUser == nil {
+            let vc = LoginViewController()
+            let navigation = UINavigationController(rootViewController: vc)
+            navigation.modalPresentationStyle = .fullScreen
+            present(navigation,animated: true)
+        }
+    }
 }
 
-extension CollectionViewController: UICollectionViewDataSource, UICollectionViewDelegate{
+extension ConversationsViewController: UICollectionViewDataSource, UICollectionViewDelegate{
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return 2
     }
@@ -70,7 +74,7 @@ extension CollectionViewController: UICollectionViewDataSource, UICollectionView
     }
 }
 
-extension CollectionViewController: UICollectionViewDelegateFlowLayout {
+extension ConversationsViewController: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         return CGSize(width: view.frame.width, height: 100)
     }
