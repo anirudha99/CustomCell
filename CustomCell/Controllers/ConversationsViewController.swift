@@ -21,6 +21,19 @@ class CollectionViewController: UIViewController {
 
     }
     
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        
+        let isLoggedIn = UserDefaults.standard.bool(forKey: "logged_in")
+        
+        if !isLoggedIn {
+            let vc = LoginViewController()
+            let navigation = UINavigationController(rootViewController: vc)
+            navigation.modalPresentationStyle = .fullScreen
+            present(navigation,animated: true)
+        }
+    }
+    
     func configureNavigationBar() {
         view.backgroundColor = .red
         

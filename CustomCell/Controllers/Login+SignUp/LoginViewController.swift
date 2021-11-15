@@ -7,10 +7,34 @@
 
 import Foundation
 import UIKit
+import FirebaseAuth
 
-class LoginViewController: UIViewController{
+class LoginViewController: UIViewController {
     
     //MARK: -Properties
+    
+    let appLogo : UIImageView = {
+        let iv = UIImageView()
+        iv.image = UIImage(named: ImageConstants.appIcon)
+        iv.translatesAutoresizingMaskIntoConstraints = false
+        iv.backgroundColor = .white
+        return iv
+    }()
+    
+    lazy var logoContainer: UIView = {
+        let container = UIView()
+        container.backgroundColor = .white
+        container.translatesAutoresizingMaskIntoConstraints = false
+        container.heightAnchor.constraint(equalToConstant: 100).isActive = true
+        container.widthAnchor.constraint(equalToConstant: 100).isActive = true
+        
+        container.addSubview(appLogo)
+        appLogo.topAnchor.constraint(equalTo: container.topAnchor, constant: 0).isActive = true
+        appLogo.leftAnchor.constraint(equalTo: container.leftAnchor, constant: 0).isActive = true
+        appLogo.heightAnchor.constraint(equalToConstant: 100).isActive = true
+        appLogo.widthAnchor.constraint(equalToConstant: 100).isActive = true
+        return container
+    }()
     
     var emailTextField = CustomTextField(placeholder: "Enter Email")
     var passwordTextField = CustomTextField(placeholder: "Enter Password")
@@ -28,7 +52,7 @@ class LoginViewController: UIViewController{
         let button = UIButton()
         button.setTitle("Login", for: .normal)
         button.tintColor = .white
-        button.addTarget(self, action: #selector(handleLogin), for: .touchUpInside)
+        button.addTarget(self, action: #selector(handleLoginButtonTapped), for: .touchUpInside)
         button.translatesAutoresizingMaskIntoConstraints = false
         button.backgroundColor = .red
         button.layer.cornerRadius = 10
@@ -38,10 +62,10 @@ class LoginViewController: UIViewController{
     
     var signUpLabel = CustomLabel(text: "Don't have an account?")
     var dividerORLabel = CustomLabel(text: "------------------- OR -------------------")
-    var otherOptionLabel = CustomLabel(text: "Login using ")
+    var otherOptionLabel = CustomLabel(text: "Login with")
     
     let signupPageButton: UIButton = {
-       let button = UIButton()
+        let button = UIButton()
         button.setTitle("Sign Up", for: .normal)
         button.setTitleColor(.red, for: .normal)
         button.tintColor = .systemGray
@@ -50,11 +74,11 @@ class LoginViewController: UIViewController{
         return button
     }()
     
-    let signUpPageButton: UIButton = {
-        let button = UIButton()
-        button.attributedTitle(firstPart: "Don't have an account?", secondPart: "SignUp")
-        return button
-    }()
+    //    let signUpPageButton: UIButton = {
+    //        let button = UIButton()
+    //        button.attributedTitle(firstPart: "Don't have an account?", secondPart: "SignUp")
+    //        return button
+    //    }()
     
     lazy var signUpPageTransistionContainer: UIView = {
         let view = UIView()
@@ -62,27 +86,27 @@ class LoginViewController: UIViewController{
         view.heightAnchor.constraint(equalToConstant: 50).isActive = true
         view.translatesAutoresizingMaskIntoConstraints = false
         
-//        view.addSubview(signUpPageButton)
-//        signUpPageButton.topAnchor.constraint(equalTo: view.topAnchor, constant: 0).isActive = true
-//        signUpPageButton.rightAnchor.constraint(equalTo: view.rightAnchor, constant: -10).isActive = true
-//        signUpPageButton.heightAnchor.constraint(equalToConstant: 50).isActive = true
+        //        view.addSubview(signUpPageButton)
+        //        signUpPageButton.topAnchor.constraint(equalTo: view.topAnchor, constant: 0).isActive = true
+        //        signUpPageButton.rightAnchor.constraint(equalTo: view.rightAnchor, constant: -10).isActive = true
+        //        signUpPageButton.heightAnchor.constraint(equalToConstant: 50).isActive = true
         
         view.addSubview(signUpLabel)
         signUpLabel.translatesAutoresizingMaskIntoConstraints = false
         signUpLabel.widthAnchor.constraint(equalToConstant: 200).isActive = true
         signUpLabel.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 30).isActive = true
         signUpLabel.centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive = true
-
+        
         view.addSubview(signupPageButton)
         signupPageButton.centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive = true
         signupPageButton.leftAnchor.constraint(equalTo: signUpLabel.rightAnchor, constant: 10).isActive = true
         signupPageButton.heightAnchor.constraint(equalToConstant: 50).isActive = true
-
+        
         return view
     }()
     
     let googleLoginButton: UIButton = {
-       let button = UIButton()
+        let button = UIButton()
         button.setTitle("Sign in with Google", for: .normal)
         button.setTitleColor(.red, for: .normal)
         button.backgroundColor = .white
@@ -118,7 +142,7 @@ class LoginViewController: UIViewController{
         
         return view
     }()
-   
+    
     let stackView: UIStackView = {
         let stack = UIStackView()
         stack.translatesAutoresizingMaskIntoConstraints = false
@@ -128,32 +152,6 @@ class LoginViewController: UIViewController{
         return stack
     }()
     
-//    lazy var emailContainerView: UIView = {
-//        let Cview = UIView()
-//        Cview.backgroundColor = .darkGray
-//        Cview.clipsToBounds = true
-//        Cview.heightAnchor.constraint(equalToConstant: 50).isActive = true
-//        Cview.translatesAutoresizingMaskIntoConstraints = false
-//
-//        let iv = UIImageView()
-//        iv.image = UIImage(systemName: "person.fill")
-//        Cview.addSubview(iv)
-//        iv.translatesAutoresizingMaskIntoConstraints = false
-//        iv.heightAnchor.constraint(equalToConstant: 30).isActive = true
-//        iv.widthAnchor.constraint(equalToConstant: 30).isActive = true
-//        iv.leftAnchor.constraint(equalTo: Cview.leftAnchor, constant: 10).isActive = true
-//        iv.centerYAnchor.constraint(equalTo: Cview.centerYAnchor).isActive = true
-//
-//        Cview.addSubview(emailTextField)
-//        emailTextField.translatesAutoresizingMaskIntoConstraints = false
-//        emailTextField.centerYAnchor.constraint(equalTo: Cview.centerYAnchor).isActive = true
-//        emailTextField.leftAnchor.constraint(equalTo: iv.rightAnchor, constant: 10).isActive = true
-//        emailTextField.rightAnchor.constraint(equalTo: Cview.rightAnchor ).isActive = true
-//        emailTextField.heightAnchor.constraint(equalToConstant: 50).isActive = true
-//
-//        return Cview
-//    }()
-
     //MARK: -Init
     
     override func viewDidLoad() {
@@ -161,11 +159,21 @@ class LoginViewController: UIViewController{
         configureUI()
         createDismissKeyboardTapGesture()
         configureNotificationObserver()
+        
+        emailTextField.delegate = self
+        passwordTextField.delegate = self
     }
     
     func configureUI(){
         
         view.backgroundColor = .darkGray
+        
+        view.addSubview(logoContainer)
+        logoContainer.translatesAutoresizingMaskIntoConstraints = false
+        logoContainer.heightAnchor.constraint(equalToConstant: 100).isActive = true
+        logoContainer.widthAnchor.constraint(equalToConstant: 100).isActive = true
+        logoContainer.topAnchor.constraint(equalTo: view.topAnchor, constant: 100).isActive = true
+        logoContainer.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 140).isActive = true
         
         stackView.addArrangedSubview(emailContainer)
         stackView.addArrangedSubview(passwordContainer)
@@ -209,12 +217,24 @@ class LoginViewController: UIViewController{
         }
     }
     
-    @objc func handleLogin(){
+    @objc func handleLoginButtonTapped(){
+        guard let email = emailTextField.text,
+              let password = passwordTextField.text,
+              !email.isEmpty,!password.isEmpty, password.count >= 6
+        else {
+            showAlert(title: "Login error", message: "Please enter all information properly to Log in")
+            return
+        }
+        //Firebase
         print("Login button tapped")
-//        let controller = CollectionViewController()
-//        let presentVc = UINavigationController(rootViewController: controller)
-//        presentVc.modalPresentationStyle = .fullScreen
-//        present(presentVc, animated: true, completion: nil)
+        FirebaseAuth.Auth.auth().signIn(withEmail: email, password: password) { authResult, error in
+            guard let result = authResult, error == nil else {
+                self.showAlert(title: "Error", message: " Login Error")
+                return
+            }
+            let user = result.user
+            print("Logged in user: \(user)")
+        }
     }
     
     @objc func transistionToSignUp(){
@@ -232,5 +252,19 @@ class LoginViewController: UIViewController{
     
     @objc func facebookLogin(){
         print("Login button tapped")
+    }
+}
+
+
+extension LoginViewController: UITextFieldDelegate {
+    
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        if textField == emailTextField{
+            passwordTextField.becomeFirstResponder()
+        }
+        else if textField == passwordTextField{
+        handleLoginButtonTapped()
+        }
+        return true
     }
 }
