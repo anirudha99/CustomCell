@@ -47,6 +47,16 @@ class ConversationCell: UICollectionViewCell {
         return imageV
     }()
     
+    let noConversationsLabel: UILabel = {
+        let label = UILabel()
+        label.text = "No Conversations!"
+        label.textAlignment = .center
+        label.font = UIFont.boldSystemFont(ofSize: 14)
+        label.textColor = .systemGray
+        label.backgroundColor = .clear
+        label.isHidden = true
+        return label
+    }()
     
     
     //MARK: - Init
@@ -72,6 +82,9 @@ class ConversationCell: UICollectionViewCell {
         addSubview(iconImageView)
 //        iconImageView.layer.cornerRadius = 15
         iconImageView.translatesAutoresizingMaskIntoConstraints = false
+        
+        addSubview(noConversationsLabel)
+        noConversationsLabel.translatesAutoresizingMaskIntoConstraints = false
         
         
         let stack = UIStackView(arrangedSubviews: [titleLabel,messageLabel])

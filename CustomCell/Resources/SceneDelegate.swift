@@ -10,16 +10,44 @@ import UIKit
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
     var window: UIWindow?
-
-
+    
+    
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
 
         guard let windowScene = (scene as? UIWindowScene) else { return }
         
-        window = UIWindow(windowScene: windowScene)
-        let navigation = UINavigationController(rootViewController: ConversationsViewController())
-        window?.rootViewController = navigation
+//        window = UIWindow(frame: windowScene.coordinateSpace.bounds)
+        window = UIWindow(frame: UIScreen.main.bounds)
+        window?.windowScene = windowScene
+        window?.rootViewController = createTabbar()
         window?.makeKeyAndVisible()
+
+    }
+    
+    func createConversationNC() -> UINavigationController{
+        let chatsVC = ConversationsViewController()
+        chatsVC.title = "Chats"
+//        chatsVC.tabBarItem = UITabBarItem(tabBarSystemItem: .bookmarks , tag: 0)
+        chatsVC.tabBarItem.title = "Chats"
+        
+        return UINavigationController(rootViewController: chatsVC)
+    }
+    
+    func createProfileNC() ->  UINavigationController{
+        let profileVC = ProfileViewController()
+        profileVC.title = "Profile"
+//        profileVC.tabBarItem = UITabBarItem(tabBarSystemItem: .bookmarks , tag: 1)
+        profileVC.tabBarItem.title = "Profile"
+        
+        return UINavigationController(rootViewController: profileVC)
+    }
+    
+    
+    func createTabbar() -> UITabBarController{
+        let tabbar = UITabBarController()
+        UITabBar.appearance().tintColor = .systemRed
+        tabbar.viewControllers = [createConversationNC(),createProfileNC()]
+        return tabbar
     }
 
     func sceneDidDisconnect(_ scene: UIScene) {

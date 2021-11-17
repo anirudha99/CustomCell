@@ -23,6 +23,23 @@ extension UIButton {
 
 extension UIViewController {
     
+//    func configureSpinner(){
+//        
+//        spinnerT.translatesAutoresizingMaskIntoConstraints = false
+//        view.addSubview(spinnerT)
+//        spinnerT.color = .white
+//        spinnerT.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
+//        spinnerT.centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive = true
+//    }
+//    
+//    func startSpinning(){
+//        spinnerT.startAnimating()
+//    }
+//    
+//    func stopSpinning(){
+//        spinnerT.stopAnimating()
+//    }
+    
     func showAlert(title: String, message: String) {
         let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
         

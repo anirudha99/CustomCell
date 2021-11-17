@@ -8,22 +8,35 @@
 import Foundation
 import UIKit
 import FirebaseAuth
+//import JGProgressHUD
 
 class LoginViewController: UIViewController {
     
     //MARK: -Properties
+    
+    var isUserEntered : Bool {
+        return !emailTextField.text!.isEmpty && !passwordTextField.text!.isEmpty
+//        password.count >= 6
+    }
+    
+//    private let spinner  = JGProgressHUD(style: .dark)
+    
+    var spinnerT = UIActivityIndicatorView(style: .large)
+    
     
     let appLogo : UIImageView = {
         let iv = UIImageView()
         iv.image = UIImage(named: ImageConstants.appIcon)
         iv.translatesAutoresizingMaskIntoConstraints = false
         iv.backgroundColor = .white
+        iv.clipsToBounds = true
+        iv.layer.cornerRadius = 50
         return iv
     }()
     
     lazy var logoContainer: UIView = {
         let container = UIView()
-        container.backgroundColor = .white
+        container.layer.cornerRadius = 50
         container.translatesAutoresizingMaskIntoConstraints = false
         container.heightAnchor.constraint(equalToConstant: 100).isActive = true
         container.widthAnchor.constraint(equalToConstant: 100).isActive = true
@@ -61,8 +74,6 @@ class LoginViewController: UIViewController {
     }()
     
     var signUpLabel = CustomLabel(text: "Don't have an account?")
-    var dividerORLabel = CustomLabel(text: "------------------- OR -------------------")
-    var otherOptionLabel = CustomLabel(text: "Login with")
     
     let signupPageButton: UIButton = {
         let button = UIButton()
@@ -74,22 +85,11 @@ class LoginViewController: UIViewController {
         return button
     }()
     
-    //    let signUpPageButton: UIButton = {
-    //        let button = UIButton()
-    //        button.attributedTitle(firstPart: "Don't have an account?", secondPart: "SignUp")
-    //        return button
-    //    }()
-    
     lazy var signUpPageTransistionContainer: UIView = {
         let view = UIView()
         view.backgroundColor = .darkGray
         view.heightAnchor.constraint(equalToConstant: 50).isActive = true
         view.translatesAutoresizingMaskIntoConstraints = false
-        
-        //        view.addSubview(signUpPageButton)
-        //        signUpPageButton.topAnchor.constraint(equalTo: view.topAnchor, constant: 0).isActive = true
-        //        signUpPageButton.rightAnchor.constraint(equalTo: view.rightAnchor, constant: -10).isActive = true
-        //        signUpPageButton.heightAnchor.constraint(equalToConstant: 50).isActive = true
         
         view.addSubview(signUpLabel)
         signUpLabel.translatesAutoresizingMaskIntoConstraints = false
@@ -101,44 +101,6 @@ class LoginViewController: UIViewController {
         signupPageButton.centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive = true
         signupPageButton.leftAnchor.constraint(equalTo: signUpLabel.rightAnchor, constant: 10).isActive = true
         signupPageButton.heightAnchor.constraint(equalToConstant: 50).isActive = true
-        
-        return view
-    }()
-    
-    let googleLoginButton: UIButton = {
-        let button = UIButton()
-        button.setTitle("Sign in with Google", for: .normal)
-        button.setTitleColor(.red, for: .normal)
-        button.backgroundColor = .white
-        button.translatesAutoresizingMaskIntoConstraints = false
-        button.addTarget(self, action: #selector(googleLogin), for: .touchUpInside)
-        return button
-    }()
-    
-    lazy var googleLoginContainer: UIView = {
-        let view = UIView()
-        view.backgroundColor = .white
-        view.heightAnchor.constraint(equalToConstant: 40).isActive = true
-        view.layer.borderWidth = 1
-        view.layer.borderColor = UIColor.red.cgColor
-        view.layer.cornerRadius = 10
-        view.translatesAutoresizingMaskIntoConstraints = false
-        view.clipsToBounds = true
-        
-        let googleImage = UIImageView()
-        googleImage.image = UIImage(named: "google")
-        view.addSubview(googleImage)
-        googleImage.translatesAutoresizingMaskIntoConstraints = false
-        googleImage.heightAnchor.constraint(equalToConstant: 30).isActive = true
-        googleImage.widthAnchor.constraint(equalToConstant: 30).isActive = true
-        googleImage.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 15).isActive = true
-        googleImage.centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive = true
-        
-        view.addSubview(googleLoginButton)
-        googleLoginButton.centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive = true
-        googleLoginButton.leftAnchor.constraint(equalTo: googleImage.rightAnchor).isActive = true
-        googleLoginButton.rightAnchor.constraint(equalTo: view.rightAnchor).isActive = true
-        googleLoginButton.heightAnchor.constraint(equalToConstant: 40).isActive = true
         
         return view
     }()
@@ -159,6 +121,7 @@ class LoginViewController: UIViewController {
         configureUI()
         createDismissKeyboardTapGesture()
         configureNotificationObserver()
+        configureSpinner()
         
         emailTextField.delegate = self
         passwordTextField.delegate = self
@@ -179,9 +142,6 @@ class LoginViewController: UIViewController {
         stackView.addArrangedSubview(passwordContainer)
         stackView.addArrangedSubview(loginButton)
         stackView.addArrangedSubview(signUpPageTransistionContainer)
-        stackView.addArrangedSubview(dividerORLabel)
-        stackView.addArrangedSubview(otherOptionLabel)
-        stackView.addArrangedSubview(googleLoginContainer)
         
         view.addSubview(stackView)
         stackView.translatesAutoresizingMaskIntoConstraints = false
@@ -189,6 +149,22 @@ class LoginViewController: UIViewController {
         stackView.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 20).isActive = true
         stackView.rightAnchor.constraint(equalTo: view.rightAnchor, constant: -20).isActive = true
         
+    }
+    
+    func configureSpinner(){
+        spinnerT.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(spinnerT)
+        spinnerT.color = .white
+        spinnerT.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
+        spinnerT.centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive = true
+    }
+
+    func startSpinning(){
+        spinnerT.startAnimating()
+    }
+
+    func stopSpinning(){
+        spinnerT.stopAnimating()
     }
     
     func createDismissKeyboardTapGesture(){
@@ -204,14 +180,14 @@ class LoginViewController: UIViewController {
     //MARK: -Handlers
     
     @objc func keyboardWillShow(){
-        print("Keybaord will show")
+        print("Keyboard will show")
         if view.frame.origin.y == 0 {
             self.view.frame.origin.y -= 80
         }
     }
     
     @objc func keyboardWillHide(){
-        print("Keybaord will hide")
+        print("Keyboard will hide")
         if view.frame.origin.y == -80 {
             self.view.frame.origin.y = 0
         }
@@ -220,16 +196,22 @@ class LoginViewController: UIViewController {
     @objc func handleLoginButtonTapped(){
         guard let email = emailTextField.text,
               let password = passwordTextField.text,
-              !email.isEmpty,!password.isEmpty, password.count >= 6
+              isUserEntered
         else {
             showAlert(title: "Login error", message: "Please enter all information properly to Log in")
             return
         }
+//        spinner.show(in: view)
+        startSpinning()
         //Firebase
         print("Login button tapped")
         FirebaseAuth.Auth.auth().signIn(withEmail: email, password: password) { [weak self] authResult, error in
             guard let strongSelf = self else {
                 return
+            }
+            DispatchQueue.main.async {
+//                strongSelf.spinner.dismiss()
+                strongSelf.stopSpinning()
             }
             guard let result = authResult, error == nil else {
                 self?.showAlert(title: "Error", message: " Login Error")
@@ -237,28 +219,18 @@ class LoginViewController: UIViewController {
             }
             
             strongSelf.navigationController?.dismiss(animated: true, completion: nil)
-            let controller = ConversationsViewController()
-            let presentVc = UINavigationController(rootViewController: controller)
-            presentVc.modalPresentationStyle = .fullScreen
-            self?.present(presentVc, animated: true, completion: nil)
+//            let controller = ConversationsViewController()
+//            let presentVc = UINavigationController(rootViewController: controller)
+//            presentVc.modalPresentationStyle = .fullScreen
+//            self?.present(presentVc, animated: true, completion: nil)
         }
     }
     
     @objc func transistionToSignUp(){
         print("Transistion to sign up page")
         let controller = RegistrationViewController()
-        let presentVc = UINavigationController(rootViewController: controller)
-        presentVc.modalPresentationStyle = .fullScreen
-        present(presentVc, animated: true, completion: nil)
-        
-    }
-    
-    @objc func googleLogin(){
-        print("Login button tapped")
-    }
-    
-    @objc func facebookLogin(){
-        print("Login button tapped")
+        controller.modalPresentationStyle = .fullScreen
+        navigationController?.pushViewController(controller, animated: true)
     }
 }
 

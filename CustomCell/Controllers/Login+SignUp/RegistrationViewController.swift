@@ -12,6 +12,9 @@ class RegistrationViewController: UIViewController {
     
     //MARK: -Properties
     
+//    private let spinner  = JGProgressHUD(style: .dark)
+    var spinnerT = UIActivityIndicatorView(style: .large )
+    
     let profilePicImage: UIImageView = {
         let imageView = UIImageView()
         imageView.tintColor = .white
@@ -25,7 +28,6 @@ class RegistrationViewController: UIViewController {
         imageView.isUserInteractionEnabled = true
         return imageView
     }()
-    //
     
     var firstNameTextField = CustomTextField(placeholder: "Enter First Name")
     var lastNameTextField = CustomTextField(placeholder: "Enter Last Name")
@@ -72,19 +74,7 @@ class RegistrationViewController: UIViewController {
         
         return view
     }()
-    
-    //    let passwordTextField: UITextField = {
-    //        let tF = UITextField()
-    //        tF.placeholder = "Enter Password"
-    //        tF.textColor = .black
-    //        tF.backgroundColor = .red
-    //        tF.font = UIFont.systemFont(ofSize: 20)
-    //        tF.isSecureTextEntry = true
-    //        tF.heightAnchor.constraint(equalToConstant: 50).isActive = true
-    //        tF.translatesAutoresizingMaskIntoConstraints = false
-    //        return tF
-    //    }()
-    //
+  
     let signUpButton: UIButton = {
         let button = UIButton()
         button.setTitle("Sign Up", for: .normal)
@@ -124,9 +114,11 @@ class RegistrationViewController: UIViewController {
         configureUI()
         configureNotificationObserver()
         createDismissKeyboardTapGesture()
+        configureSpinner()
     }
     
     func configureUI(){
+        navigationController?.isNavigationBarHidden = true
         view.backgroundColor = .darkGray
         view.addSubview(profilePicImage)
         let gesture = UITapGestureRecognizer(target: self, action: #selector(didTapChangeProfilePic))
@@ -160,6 +152,22 @@ class RegistrationViewController: UIViewController {
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide), name: UIResponder.keyboardDidHideNotification, object: nil)
     }
     
+    func configureSpinner(){
+        spinnerT.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(spinnerT)
+        spinnerT.color = .white
+        spinnerT.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
+        spinnerT.centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive = true
+    }
+    
+    func startSpinning(){
+        spinnerT.startAnimating()
+    }
+    
+    func stopSpinning(){
+        spinnerT.stopAnimating()
+    }
+    
     //MARK: -Handlers
     
     @objc func keyboardWillShow(){
@@ -186,19 +194,25 @@ class RegistrationViewController: UIViewController {
               let lastName = lastNameTextField.text,
               let email = emailTextField.text,
               let password = passwordTextField.text,
-              !firstName.isEmpty, !lastName.isEmpty,
-              !email.isEmpty,!password.isEmpty,
+              !firstName.isEmpty, !lastName.isEmpty,!email.isEmpty,!password.isEmpty,
               password.count >= 6
         else {
             showAlert(title: "Login error", message: "Please enter all information properly to Log in")
             return
         }
-        
+//        spinner.show(in: view)
+        startSpinning()
+
         //Firebase Log in
-        
+
         DatabaseManager.shared.validateIfUserExists(with: email) { [weak self] exists in
             guard let strongSelf = self else {
                 return
+            }
+            
+            DispatchQueue.main.async {
+//                strongSelf.spinner.dismiss()
+                strongSelf.stopSpinning()
             }
             guard !exists else{
                 //user already exists
@@ -212,7 +226,27 @@ class RegistrationViewController: UIViewController {
                     return
                 }
                 
-                DatabaseManager.shared.insertUser(with: ChatAppUser(firstName: firstName, lastName: lastName, emailAddress: email))
+                let chatUser = ChatAppUser(firstName: firstName, lastName: lastName, emailAddress: email)
+                
+                DatabaseManager.shared.insertUser(with: chatUser) { success in
+                    if success {
+                        //upload image
+                        guard let image =  strongSelf.profilePicImage.image,
+                              let data = image.pngData() else {
+                            return
+                        }
+                        let fileName = chatUser.profilePictureFileName
+                        StorageManager.shared.uploadProfilePicture(with: data, fileName: fileName) { result in
+                            switch (result){
+                            case .success(let downloadUrl):
+                                UserDefaults.standard.set(downloadUrl, forKey: "profile_picture_url")
+//                                print(downloadUrl)
+                            case .failure(let error):
+                                print("Storage manager error: \(error)")
+                            }
+                        }
+                    }
+                }
                 strongSelf.navigationController?.dismiss(animated: true, completion: nil)
             }
         }
@@ -221,11 +255,9 @@ class RegistrationViewController: UIViewController {
     @objc func transistionToLogin(){
         print("Transistion to login page")
         let controller = LoginViewController()
-        let presentVc = UINavigationController(rootViewController: controller)
-        presentVc.modalPresentationStyle = .fullScreen
-        present(presentVc, animated: true, completion: nil)
+        controller.modalPresentationStyle = .fullScreen
+        navigationController?.pushViewController(controller, animated: true)
     }
-    
 }
 
 extension RegistrationViewController: UIImagePickerControllerDelegate, UINavigationControllerDelegate{

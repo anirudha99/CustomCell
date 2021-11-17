@@ -12,44 +12,59 @@ private let reuseIdentifier = "ConversationCell"
 
 class ConversationsViewController: UIViewController {
     
+    //MARK: -Properties
     var collectionView: UICollectionView!
+    
+//    private let spinner = JGProgressHUD(style: .dark)
+    
+    var spinnerT = UIActivityIndicatorView(style: .large)
+    
+    //MARK: -Init
 
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .lightGray
         configureNavigationBar()
         configureUICollectionView()
+        validateAuth()
 
     }
-    
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-        
-        validateAuth()
-    }
+
     
     func configureNavigationBar() {
-        view.backgroundColor = .red
+        view.backgroundColor = .white
         
         let appearance = UINavigationBarAppearance()
         appearance.configureWithOpaqueBackground()
         appearance.largeTitleTextAttributes = [.foregroundColor: UIColor.white]
         appearance.backgroundColor = .darkGray
         
+        navigationController?.navigationBar.prefersLargeTitles = true
         navigationController?.navigationBar.standardAppearance = appearance
         navigationController?.navigationBar.compactAppearance = appearance
         navigationController?.navigationBar.scrollEdgeAppearance = appearance
-        navigationItem.title = "CustomCell"
+//        navigationItem.title = "CustomCell"
     }
     
     func configureUICollectionView(){
         collectionView = UICollectionView(frame: view.bounds, collectionViewLayout: UICollectionViewFlowLayout())
         view.addSubview(collectionView)
+//        collectionView.isHidden = true
         collectionView.backgroundColor = .lightGray
         collectionView.dataSource = self
         collectionView.delegate = self
         collectionView.register(ConversationCell.self, forCellWithReuseIdentifier: reuseIdentifier)
     }
+    
+//    func startSpinning(){
+//        spinnerT.startAnimating()
+//    }
+//    
+//    func stopSpinning(){
+//        spinnerT.stopAnimating()
+//    }
+    
+    //MARK: -Handlers
     
     func validateAuth(){
         
@@ -59,6 +74,10 @@ class ConversationsViewController: UIViewController {
             navigation.modalPresentationStyle = .fullScreen
             present(navigation,animated: true)
         }
+    }
+    
+    func fetchConversations(){
+        
     }
 }
 
@@ -72,6 +91,16 @@ extension ConversationsViewController: UICollectionViewDataSource, UICollectionV
 //        cell.backgroundColor = .red
         return cell
     }
+    
+//    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+//        collectionView.deselectItem(at: indexPath, animated: true)
+//
+//        let vc = ChatViewController()
+//        vc.title = "Name"
+//        vc.navigationItem.largeTitleDisplayMode = .never
+//        navigationController?.pushViewController(vc, animated: true)
+//
+//    }
 }
 
 extension ConversationsViewController: UICollectionViewDelegateFlowLayout {
