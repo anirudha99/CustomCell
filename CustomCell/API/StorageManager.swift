@@ -16,6 +16,7 @@ final class StorageManager{
     
     public typealias UploadPictureCompletion = (Result<String,Error>) -> Void
     
+    //function uploads profile picture data as png data and gets the url to download
     public func uploadProfilePicture(with data: Data, fileName: String, completion: @escaping UploadPictureCompletion){
         storage.child("images/\(fileName)").putData(data, metadata: nil) { metadata, error in
             guard error == nil else {
@@ -37,8 +38,22 @@ final class StorageManager{
         }
     }
     
+    //custom errors for the uploading and downloading
     public enum StorageErrors: Error{
         case failedToUpload
         case failedToGetDownloadUrl
+    }
+    
+    //function gets the url of the profile picture
+    public func downloadURL(for path: String,  completion: @escaping (Result<URL,Error>)->Void){
+        let reference = storage.child(path)
+        
+        reference.downloadURL { url, error in
+            guard let url  = url, error == nil else {
+                completion(.failure(StorageErrors.failedToGetDownloadUrl ))
+                return
+            }
+            completion(.success(url))
+        }
     }
 }

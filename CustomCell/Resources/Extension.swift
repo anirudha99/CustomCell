@@ -23,22 +23,21 @@ extension UIButton {
 
 extension UIViewController {
     
-//    func configureSpinner(){
-//        
-//        spinnerT.translatesAutoresizingMaskIntoConstraints = false
-//        view.addSubview(spinnerT)
-//        spinnerT.color = .white
-//        spinnerT.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
-//        spinnerT.centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive = true
-//    }
-//    
-//    func startSpinning(){
-//        spinnerT.startAnimating()
-//    }
-//    
-//    func stopSpinning(){
-//        spinnerT.stopAnimating()
-//    }
+    func configureNavigationBar() {
+        
+        let appearance = UINavigationBarAppearance()
+        appearance.configureWithOpaqueBackground()
+        appearance.largeTitleTextAttributes = [.foregroundColor: UIColor.white]
+        appearance.backgroundColor = .darkGray
+        
+//        navigationController?.navigationBar.prefersLargeTitles = true
+        navigationController?.navigationBar.standardAppearance = appearance
+        navigationController?.navigationBar.compactAppearance = appearance
+        navigationController?.navigationBar.scrollEdgeAppearance = appearance
+        
+        navigationController?.navigationBar.tintColor = .systemRed
+
+    }
     
     func showAlert(title: String, message: String) {
         let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)

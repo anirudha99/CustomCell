@@ -205,7 +205,7 @@ class LoginViewController: UIViewController {
         startSpinning()
         //Firebase
         print("Login button tapped")
-        FirebaseAuth.Auth.auth().signIn(withEmail: email, password: password) { [weak self] authResult, error in
+        NetworkManager.shared.logInUsingFirebase(withEmail: email, password: password) { [weak self] authResult, error in
             guard let strongSelf = self else {
                 return
             }
@@ -218,11 +218,11 @@ class LoginViewController: UIViewController {
                 return
             }
             
+            let user = result.user
+            
+            UserDefaults.standard.set(email,forKey: "email")
+            
             strongSelf.navigationController?.dismiss(animated: true, completion: nil)
-//            let controller = ConversationsViewController()
-//            let presentVc = UINavigationController(rootViewController: controller)
-//            presentVc.modalPresentationStyle = .fullScreen
-//            self?.present(presentVc, animated: true, completion: nil)
         }
     }
     
