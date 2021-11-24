@@ -8,7 +8,7 @@
 import Foundation
 import UIKit
 import FirebaseAuth
-//import JGProgressHUD
+
 
 class LoginViewController: UIViewController {
     
@@ -16,13 +16,11 @@ class LoginViewController: UIViewController {
     
     var isUserEntered : Bool {
         return !emailTextField.text!.isEmpty && !passwordTextField.text!.isEmpty
-//        password.count >= 6
+        //        password.count >= 6
     }
     
-//    private let spinner  = JGProgressHUD(style: .dark)
-    
+    var delegate: UserAuthenticatedDelegate?
     var spinnerT = UIActivityIndicatorView(style: .large)
-    
     
     let appLogo : UIImageView = {
         let iv = UIImageView()
@@ -158,11 +156,11 @@ class LoginViewController: UIViewController {
         spinnerT.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
         spinnerT.centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive = true
     }
-
+    
     func startSpinning(){
         spinnerT.startAnimating()
     }
-
+    
     func stopSpinning(){
         spinnerT.stopAnimating()
     }
@@ -201,7 +199,7 @@ class LoginViewController: UIViewController {
             showAlert(title: "Login error", message: "Please enter all information properly to Log in")
             return
         }
-//        spinner.show(in: view)
+        //        spinner.show(in: view)
         startSpinning()
         //Firebase
         print("Login button tapped")
@@ -210,19 +208,18 @@ class LoginViewController: UIViewController {
                 return
             }
             DispatchQueue.main.async {
-//                strongSelf.spinner.dismiss()
+                //                strongSelf.spinner.dismiss()
                 strongSelf.stopSpinning()
             }
-            guard let result = authResult, error == nil else {
+            if error != nil {
                 self?.showAlert(title: "Error", message: " Login Error")
                 return
             }
-            
-            let user = result.user
-            
+            else{
+                self?.delegate?.userAuthenticated()
+                strongSelf.navigationController?.dismiss(animated: true, completion: nil)
+            }
             UserDefaults.standard.set(email,forKey: "email")
-            
-            strongSelf.navigationController?.dismiss(animated: true, completion: nil)
         }
     }
     
@@ -242,7 +239,7 @@ extension LoginViewController: UITextFieldDelegate {
             passwordTextField.becomeFirstResponder()
         }
         else if textField == passwordTextField{
-        handleLoginButtonTapped()
+            handleLoginButtonTapped()
         }
         return true
     }

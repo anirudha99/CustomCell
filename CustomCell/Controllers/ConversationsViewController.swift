@@ -9,16 +9,22 @@ import UIKit
 import FirebaseAuth
 
 
-private let reuseIdentifier = "ConversationCell"
+let reuseIdentifier = "ConversationCell"
 
 class ConversationsViewController: UIViewController {
     
     //MARK: -Properties
     var collectionView: UICollectionView!
     
-//    private let spinner = JGProgressHUD(style: .dark)
+    //    private let spinner = JGProgressHUD(style: .dark)
     
     var spinnerT = UIActivityIndicatorView(style: .large)
+    
+    var  isEdit = false
+    var initialFetch: Bool = false
+    
+    var chats: [Chats] = []
+    var currentUser: ChatAppUser?
     
     let noConversationsLabel: UILabel = {
         let label = UILabel()
@@ -33,17 +39,25 @@ class ConversationsViewController: UIViewController {
     }()
     
     //MARK: -Init
-
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .lightGray
+        
         configureNavigationBarT()
         configureUICollectionView()
         view.addSubview(noConversationsLabel)
         
         validateAuth()
         fetchConversations()
+        fetchUserConvo()
 
+        
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        tabBarController?.tabBar.isHidden = false
     }
     
     func configureNavigationBarT() {
@@ -60,8 +74,9 @@ class ConversationsViewController: UIViewController {
         navigationController?.navigationBar.scrollEdgeAppearance = appearance
         navigationController?.navigationBar.tintColor = .systemRed
         
+        
         navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .compose, target: self, action: #selector(didTapNewMessageButton))
-//        navigationItem.title = "CustomCell"
+        navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .edit, target: self, action: #selector(didTapEditButton))
     }
     
     func configureUICollectionView(){
@@ -74,13 +89,13 @@ class ConversationsViewController: UIViewController {
         collectionView.register(ConversationCell.self, forCellWithReuseIdentifier: reuseIdentifier)
     }
     
-//    func startSpinning(){
-//        spinnerT.startAnimating()
-//    }
-//    
-//    func stopSpinning(){
-//        spinnerT.stopAnimating()
-//    }
+    //    func startSpinning(){
+    //        spinnerT.startAnimating()
+    //    }
+    //
+    //    func stopSpinning(){
+    //        spinnerT.stopAnimating()
+    //    }
     
     //MARK: -Handlers
     
@@ -96,8 +111,33 @@ class ConversationsViewController: UIViewController {
     
     @objc func didTapNewMessageButton(){
         let vc = NewConversationViewController()
+        vc.currentUser = currentUser
+        vc.chats = chats
         let navVc = UINavigationController(rootViewController: vc)
         present(navVc,animated: true)
+    }
+    
+    func fetchUserConvo(){
+        chats = []
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "hh:mm:a"
+        NetworkManager.shared.fetchCurrentUser(completion: { currentUser in
+            self.currentUser = currentUser
+        })
+        NetworkManager.shared.fetchChats(completion: { chats in
+            self.chats = chats
+            DispatchQueue.main.async {
+                self.collectionView.reloadData()
+            }
+        })
+    }
+
+    
+    @objc func didTapEditButton(){
+        print("edit button tapped")
+        isEdit = !isEdit
+        initialFetch  = true
+        collectionView.reloadData()
     }
     
     func fetchConversations(){
@@ -108,25 +148,31 @@ class ConversationsViewController: UIViewController {
 
 extension ConversationsViewController: UICollectionViewDataSource, UICollectionViewDelegate{
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 2
+        return chats.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "ConversationCell", for: indexPath) as! ConversationCell
-//        cell.backgroundColor = .red
-//        cell.accessoryType = .disclosureIndicator
+        
+        let chat = chats[indexPath.row]
+       
+        cell.chat = chat
+        
+        //            cell.checkBox.isHidden = !isEdit
+        cell.hideCheckBoxButton(isHide: isEdit)
+
         return cell
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         collectionView.deselectItem(at: indexPath, animated: true)
-
+        
         let vc = MessageViewController()
-        vc.title = "Name"
+        vc.chat = chats[indexPath.row]
+
         vc.navigationItem.largeTitleDisplayMode = .never
         navigationController?.modalPresentationStyle = .fullScreen
         navigationController?.pushViewController(vc, animated: true)
-
     }
 }
 
@@ -137,5 +183,20 @@ extension ConversationsViewController: UICollectionViewDelegateFlowLayout {
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
         return 1
+    }
+}
+
+extension ConversationsViewController: UserAuthenticatedDelegate {
+    func userAuthenticated() {
+        configureNavigationBarT()
+        configureUICollectionView()
+        validateAuth()
+        fetchConversations()
+    }
+}
+
+extension ConversationsViewController: ChatSelectedDelegate {
+    func chatSelected(isSelected: Bool) {
+        print("Selected\(isSelected)")
     }
 }

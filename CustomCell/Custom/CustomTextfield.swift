@@ -16,6 +16,10 @@ class CustomTextField: UITextField {
         font = UIFont.systemFont(ofSize: 18)
         textColor = .black
         self.placeholder = placeholder
+        layer.shadowColor = UIColor.darkGray.cgColor
+        layer.shadowRadius = 5
+        layer.shadowOpacity = 0.7
+        layer.shadowOffset.height = -3
     }
     
     required init?(coder: NSCoder) {

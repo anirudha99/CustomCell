@@ -8,26 +8,33 @@
 import UIKit
 
 class NewConversationViewController: UIViewController {
-
-    private var users = [[String:String]]()
-    private var results = [[String:String]]()
+    
+    //MARK: - Properties
+    
+    var currentUser: ChatAppUser?
+    var chats: [Chats] = []
+    var users: [ChatAppUser] = []
+    var resultArr: [ChatAppUser] = []
+    
+    
+    let cellSpacingHeight: CGFloat = 20
     
     var spinnerT = UIActivityIndicatorView(style: .large)
     
-    private var hasFetched = false
+    let searchController = UISearchController(searchResultsController: nil)
     
-    private let searchBar : UISearchBar = {
-        let searchBar = UISearchBar()
-        searchBar.placeholder = "Search for Users"
-        return searchBar
-    }()
+    var collectionView: UICollectionView!
     
-    private let tableView: UITableView = {
-        let table = UITableView()
-        table.isHidden = true
-        table.register(UITableViewCell.self, forCellReuseIdentifier: "cell")
-        return table
-    }()
+    private var inSearchMode: Bool {
+        return !searchController.searchBar.text!.isEmpty
+    }
+    
+//    private let tableView: UITableView = {
+//        let table = UITableView()
+//        table.isHidden = true
+//        table.register(UserCell.self, forCellReuseIdentifier: "cell")
+//        return table
+//    }()
     
     private let noResultsLabel: UILabel = {
         let label = UILabel()
@@ -39,22 +46,24 @@ class NewConversationViewController: UIViewController {
         return label
     }()
     
-    
+    //MARK: -Init
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .gray
-        searchBar.delegate = self
-        searchBar.becomeFirstResponder()
         configureNavBar()
-        configureTableView()
+//        configureTableView()
         configureSpinner()
+        fetchAllUser()
     }
     
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
-        tableView.frame = view.bounds
+        collectionView.frame = view.bounds
+//        tableView.frame = view.bounds
         noResultsLabel.frame = CGRect(x: view.frame.width / 4, y: (view.frame.height-200) / 2, width: view.frame.width / 2, height: 200)
     }
+    
+    //MARK: -Handlers
     
     func configureNavBar(){
         let appearance = UINavigationBarAppearance()
@@ -62,21 +71,34 @@ class NewConversationViewController: UIViewController {
         appearance.largeTitleTextAttributes = [.foregroundColor: UIColor.white]
         appearance.backgroundColor = .darkGray
         
-//        navigationController?.navigationBar.prefersLargeTitles = true
+        //        navigationController?.navigationBar.prefersLargeTitles = true
         navigationController?.navigationBar.standardAppearance = appearance
         navigationController?.navigationBar.compactAppearance = appearance
         navigationController?.navigationBar.scrollEdgeAppearance = appearance
+        navigationController?.navigationBar.tintColor = .systemRed
         
-        navigationController?.navigationBar.topItem?.titleView = searchBar
-        navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Cancel", style: .done, target: self, action: #selector(dissmissScreen))
+        //        navigationController?.navigationBar.topItem?.titleView = searchBar
+        navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Close", style: .done, target: self, action: #selector(dissmissScreen))
+        navigationItem.searchController = searchController
+        searchController.searchResultsUpdater = self
     }
     
-    func configureTableView(){
-        view.addSubview(tableView)
+    func configureCollectionView() {
+        collectionView = UICollectionView(frame: view.bounds, collectionViewLayout: UICollectionViewFlowLayout())
+        
+        view.addSubview(collectionView)
         view.addSubview(noResultsLabel)
-        tableView.delegate = self
-        tableView.dataSource = self
+        collectionView.dataSource = self
+        collectionView.delegate = self
+        collectionView.register(ConversationCell.self, forCellWithReuseIdentifier: reuseIdentifier)
     }
+    
+//    func configureTableView(){
+//        view.addSubview(tableView)
+//        view.addSubview(noResultsLabel)
+//        tableView.delegate = self
+//        tableView.dataSource = self
+//    }
     
     func configureSpinner(){
         spinnerT.translatesAutoresizingMaskIntoConstraints = false
@@ -85,11 +107,11 @@ class NewConversationViewController: UIViewController {
         spinnerT.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
         spinnerT.centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive = true
     }
-
+    
     func startSpinning(){
         spinnerT.startAnimating()
     }
-
+    
     func stopSpinning(){
         spinnerT.stopAnimating()
     }
@@ -97,89 +119,91 @@ class NewConversationViewController: UIViewController {
     @objc func dissmissScreen(){
         dismiss(animated: true, completion: nil)
     }
+    
+    func fetchAllUser(){
+        NetworkManager.shared.fetchAllUsers { users in
+            self.users = users
+            print(users)
+            DispatchQueue.main.async {
+                self.collectionView.reloadData()
+            }
+        }
+    }
 }
 
-extension NewConversationViewController: UITableViewDelegate,UITableViewDataSource{
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return results.count
+//MARK: - Extensions
+
+extension NewConversationViewController: UICollectionViewDelegate, UICollectionViewDataSource{
+    
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        return inSearchMode ?  resultArr.count : users.count
     }
     
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
-        cell.textLabel?.text = results[indexPath.row]["name"]
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: reuseIdentifier, for: indexPath) as! ConversationCell
+        
+        cell.backgroundColor = .white
+        collectionView.isHidden = false
+        noResultsLabel.isHidden = true
+        
+        let user = inSearchMode ? resultArr[indexPath.row] : users[indexPath.row]
+        
+        cell.titleLabel.text = "\(user.firstName) \(user.lastName)"
+        cell.messageLabel.text = user.emailAddress
+        cell.timeLabel.isHidden = true
+        cell.checkBox.isHidden = true
+        let uid = user.userId
+        
+        NetworkManager.shared.downloadImageWithPath(path: "Profile/\(uid)") { image in
+            cell.iconImageView.image = image
+        }
         return cell
+        
     }
     
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        tableView.deselectRow(at: indexPath, animated: true)
-        //start conversation
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        let selectedUser = users[indexPath.row]
+        let users: [ChatAppUser] = [currentUser!, selectedUser]
+        let id = "\(currentUser!.userId)_\(selectedUser.userId)"
+        let messageVC = MessageViewController()
+        
+        for chat in chats{
+            var currentChat = chat
+            let uidF = chat.users[0].userId
+            let uidS = chat.users[1].userId
+            if uidF == currentUser!.userId && uidS == selectedUser.userId || uidF == selectedUser.userId && uidS == currentUser!.userId {
+                print("Chat already there")
+                currentChat.otherUser =  uidF == currentUser!.userId ? 1 : 0
+                messageVC.chat = currentChat
+                
+                navigationController?.pushViewController(messageVC, animated: true)
+            }
+        }
     }
-    
 }
 
-extension NewConversationViewController: UISearchBarDelegate {
+
+extension NewConversationViewController: UISearchResultsUpdating {
     
-    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
-        guard let text = searchBar.text, !text.replacingOccurrences(of: " ", with: "").isEmpty else {
+    func updateSearchResults(for searchController: UISearchController){
+        guard let searchText = searchController.searchBar.text else {
             return
         }
+        if inSearchMode {
+                   resultArr.removeAll()
+            for user in users {
+                if user.firstName.lowercased().contains(searchText.lowercased()) |
         
-        searchBar.resignFirstResponder()
-        
-        results.removeAll()
-        //add spinner here
-        startSpinning()
-        self.searchUsers(query: text)
-    }
-    
-    func searchUsers(query: String){
-            //check if array has firebase results
-        if hasFetched{
-            //if does then filter
-            filterUsers(with: query)
+        if !searchText.isEmpty {
+            searching = true
+            resultArr.removeAll()
+            resultArr = users.filter({$0.firstName.prefix(count!).lowercased() == searchText.lowercased()})
         }
         else{
-            DatabaseManager.shared.getAllUsers { [weak self] result in
-                switch result{
-                case .success(let usersCollection):
-                    self?.hasFetched = true
-                    self?.users = usersCollection
-                    self?.filterUsers(with: query)
-                case .failure(let error):
-                    print("Failed to get users \(error)")
-                }
-           
-            }
+            searching = false
+            resultArr.removeAll()
+//            resultArr = users
         }
-    }
-    
-    func filterUsers(with term : String){
-        guard hasFetched else{
-            return
-        }
-        //dismiss spinner here
-        stopSpinning()
-        
-        let results : [[String:String]] = self.users.filter({
-            guard let name = $0["name"]?.lowercased() else {
-                return false
-            }
-            return name.hasPrefix(term.lowercased())
-        })
-        
-        self.results = results
-        updateUI()
-    }
-    
-    func updateUI(){
-        if results.isEmpty{
-            self.noResultsLabel.isHidden = false
-            self.tableView.isHidden = true
-        }
-        else{
-            self.noResultsLabel.isHidden = true
-            self.tableView.isHidden = false
-            self.tableView.reloadData()
-        }
+        tableView.reloadData()
     }
 }

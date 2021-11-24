@@ -27,18 +27,14 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     func createConversationNC() -> UINavigationController{
         let chatsVC = ConversationsViewController()
         chatsVC.title = "Chats"
-//        chatsVC.tabBarItem = UITabBarItem(tabBarSystemItem: .bookmarks , tag: 0)
-        chatsVC.tabBarItem.title = "Chats"
-        
+        chatsVC.tabBarItem = UITabBarItem(title: "Chats", image: UIImage(systemName: "message.fill"), tag: 0)
         return UINavigationController(rootViewController: chatsVC)
     }
     
     func createProfileNC() ->  UINavigationController{
         let profileVC = ProfileViewController()
         profileVC.title = "Profile"
-//        profileVC.tabBarItem = UITabBarItem(tabBarSystemItem: .bookmarks , tag: 1)
-        profileVC.tabBarItem.title = "Profile"
-        
+        profileVC.tabBarItem = UITabBarItem(title: "Profile", image: UIImage(systemName: "person.fill"), tag: 1)
         return UINavigationController(rootViewController: profileVC)
     }
     

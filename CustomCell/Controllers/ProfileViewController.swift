@@ -15,17 +15,26 @@ class ProfileViewController: UIViewController {
     
     
     //MARK: -Properties
-    var profileTableView: UITableView!
     
-    let data = ["Log Out"]
+
+    let username = CustomLabel(text: "")
+    let emailLabel = CustomLabel(text: "")
+    let imageView = UIImageView()
+    
+    var currentUser: ChatAppUser?
     
     //MARK: -Init
     override func viewDidLoad() {
         super.viewDidLoad()
         configureNavigationBarT()
-        configureTableView()
+        configureProfileUI()
         
         view.backgroundColor = .systemGray4
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        fetchUserData()
     }
     
     func configureNavigationBarT() {
@@ -46,64 +55,76 @@ class ProfileViewController: UIViewController {
         //        navigationItem.title = "CustomCell"
     }
     
-    func configureTableView(){
-        profileTableView = UITableView(frame: CGRect(x: 0, y: 50, width: view.frame.width, height: view.frame.height))
-        profileTableView.delegate = self
-        profileTableView.dataSource = self
-        profileTableView.register(UITableViewCell.self, forCellReuseIdentifier: cellIdentifier)
-        view.addSubview(profileTableView)
-        profileTableView.tableHeaderView = createTableHeader()
-        
-    }
-    
     //MARK: -Handlers
-    
-    func createTableHeader() -> UIView? {
-        //uses email from login
-        guard let email = UserDefaults.standard.value(forKey: "email") as? String else {
-            return nil
-        }
-        
-        let safeEmail = DatabaseManager.safeEmail(emailAddress: email)
-        let fileName = safeEmail + "_profile_picture.png"
-        let path = "images/"+fileName
-        
-        let headerView = UIView(frame: CGRect(x: 0, y: 0, width: self.view.frame.width, height: 300))
-        headerView.backgroundColor = .systemGray
-        
-        let imageView = UIImageView(frame: CGRect(x: (headerView.frame.width-150) / 2, y: 75, width: 150, height: 150))
-        
-        imageView.contentMode = .scaleToFill
+    func configureProfileUI(){
+        //        imageView.contentMode = .scaleToFill
         imageView.backgroundColor = .white
         imageView.layer.borderColor = UIColor.systemRed.cgColor
         imageView.layer.borderWidth = 3
         imageView.layer.masksToBounds = true
-        imageView.layer.cornerRadius = imageView.frame.width / 2
-        headerView.addSubview(imageView)
+        imageView.isUserInteractionEnabled = true
+        imageView.heightAnchor.constraint(equalToConstant: 170).isActive = true
+        imageView.widthAnchor.constraint(equalToConstant: 170).isActive = true
+        //        imageView.layer.cornerRadius = imageView.frame.width / 2
+        imageView.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(imageView)
         
-        StorageManager.shared.downloadURL(for: path) { result in
-            switch result {
-            case .success(let url):
-                self.downloadImage(imageView: imageView, url: url)
-            case.failure(let error):
-                print("Failed to download url \(error) ")
-            }
-        }
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(presentImagePicker))
         
-        return headerView
+        imageView.addGestureRecognizer(tapGesture)
+        
+        username.backgroundColor = .darkGray
+        username.layer.masksToBounds = true
+        username.layer.cornerRadius = 10
+        username.layer.borderColor = UIColor.black.cgColor
+        username.layer.borderWidth = 2
+        username.font = UIFont.boldSystemFont(ofSize: 18)
+        username.textColor = .white
+        emailLabel.backgroundColor = .darkGray
+        emailLabel.layer.masksToBounds = true
+        emailLabel.layer.cornerRadius = 10
+        emailLabel.layer.borderColor = UIColor.black.cgColor
+        emailLabel.font = UIFont.boldSystemFont(ofSize: 18)
+        emailLabel.layer.borderWidth = 2
+        emailLabel.textColor = .white
+        
+        view.addSubview(username)
+        view.addSubview(emailLabel)
+        
+        imageView.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
+        imageView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 20).isActive = true
+        
+        username.topAnchor.constraint(equalTo: imageView.bottomAnchor,constant: 10).isActive = true
+        username.leftAnchor.constraint(equalTo: view.leftAnchor,constant: 80).isActive = true
+        username.rightAnchor.constraint(equalTo: view.rightAnchor,constant: -80).isActive = true
+        
+        emailLabel.topAnchor.constraint(equalTo: username.bottomAnchor,constant: 10).isActive = true
+        emailLabel.leftAnchor.constraint(equalTo: view.leftAnchor,constant: 80).isActive = true
+        emailLabel.rightAnchor.constraint(equalTo: view.rightAnchor,constant: -80).isActive = true
+        
     }
     
-    //downloads the image using url and sets the image in profile
-    func downloadImage(imageView: UIImageView, url: URL){
-        URLSession.shared.dataTask(with: url) { data, _, error in
-            guard let data = data, error == nil else{
-                return
+    @objc func presentImagePicker() {
+        let picker = UIImagePickerController()
+        picker.allowsEditing = true
+        picker.delegate = self
+        present(picker, animated: true, completion: nil)
+    }
+    
+    func fetchUserData() {
+        print("Fetching")
+        NetworkManager.shared.fetchCurrentUser() { user in
+            self.username.text = "Username - \(user.firstName)" + " "+"\(user.lastName)"
+            self.emailLabel.text = "Email - \(user.emailAddress)"
+
+            self.currentUser = user
+
+            NetworkManager.shared.downloadImage(url: user.profileURL) { image in
+                DispatchQueue.main.async {
+                    self.imageView.image = image
+                }
             }
-            DispatchQueue.main.async {
-                let image = UIImage(data: data)
-                imageView.image = image
-            }
-        }.resume()
+        }
     }
     
     @objc func logoutButtonTapped(){
@@ -122,26 +143,24 @@ class ProfileViewController: UIViewController {
         navigation.modalPresentationStyle = .fullScreen
         self.present(navigation,animated: true)
     }
+    
+    func uploadNewProfile(image: UIImage) {
+        ImageUploader.uploadImage(image: image) { url in
+            self.currentUser?.profileURL = url
+
+            NetworkManager.shared.addUser(user: self.currentUser!)
+            print("New URL\(url)")
+
+        }
+    }
 }
 
-extension ProfileViewController: UITableViewDelegate, UITableViewDataSource{
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return data.count
+extension ProfileViewController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+        if let imageSelected = info[UIImagePickerController.InfoKey.editedImage] as? UIImage {
+            imageView.image = imageSelected
+            uploadNewProfile(image: imageSelected)
+        }
+        dismiss(animated: true, completion: nil)
     }
-    
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = profileTableView.dequeueReusableCell(withIdentifier: cellIdentifier, for: indexPath)
-        cell.textLabel?.text = data[indexPath.row]
-        cell.textLabel?.textAlignment = .center
-        cell.textLabel?.textColor = .red
-        //        cell.backgroundColor = .red
-        
-        return cell
-    }
-    
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        profileTableView.deselectRow(at: indexPath, animated: true)
-        
-    }
-    
 }

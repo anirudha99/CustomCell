@@ -7,6 +7,7 @@
 
 import Foundation
 import FirebaseStorage
+import Firebase
 
 final class StorageManager{
     
@@ -54,6 +55,32 @@ final class StorageManager{
                 return
             }
             completion(.success(url))
+        }
+    }
+}
+
+struct ImageUploader {
+    static func uploadImage(image: UIImage, completion: @escaping(String) -> Void) {
+        
+        let storage = Storage.storage().reference()
+        guard let uid = Auth.auth().currentUser?.uid else { return }
+        
+        guard let imageData = image.jpegData(compressionQuality: 0.4) else { return }
+        
+        storage.child("Profile").child(uid).putData(imageData, metadata: nil) { _, error in
+            guard error == nil else { return }
+            
+            storage.child("Profile").child(uid).downloadURL { url, error in
+                guard let url = url, error == nil else {
+                    return
+                }
+                
+                let urlString = url.absoluteString
+                
+                print("Download URL: \(urlString)")
+                completion(urlString)
+//                UserDefaults.standard.set(urlString, forKey: "url")
+            }
         }
     }
 }
