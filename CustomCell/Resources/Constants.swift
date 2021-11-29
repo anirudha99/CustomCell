@@ -12,6 +12,8 @@ struct ImageConstants {
     static let person = UIImage(systemName: "person.circle")
     static let roundFill = UIImage(systemName: "circle.fill")
     static let round = UIImage(systemName: "circle")
+    static let sendButton =  UIImage(systemName: "paperplane.fill")
+    static let square = UIImage(systemName: "square")
 
 }
 

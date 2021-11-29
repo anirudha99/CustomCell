@@ -143,7 +143,6 @@ class ConversationsViewController: UIViewController {
     func fetchConversations(){
         collectionView.isHidden = false
     }
-    
 }
 
 extension ConversationsViewController: UICollectionViewDataSource, UICollectionViewDelegate{
@@ -157,8 +156,6 @@ extension ConversationsViewController: UICollectionViewDataSource, UICollectionV
         let chat = chats[indexPath.row]
        
         cell.chat = chat
-        
-        //            cell.checkBox.isHidden = !isEdit
         cell.hideCheckBoxButton(isHide: isEdit)
 
         return cell

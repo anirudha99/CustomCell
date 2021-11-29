@@ -159,12 +159,12 @@ struct NetworkManager {
         }
     }
     
-    func addMessages(messages:[Message], lastMessage: Message, id: String){
+    func addMessages(messages: [Message], lastMessage: Message, id: String){
         var lastMessageObj = lastMessage
         let dateString = databaseDateFormatter.string(from: lastMessage.time)
         lastMessageObj.dateString = dateString
         
-        let lastMessageDictionary = lastMessage.dictionary
+        let lastMessageDictionary = lastMessageObj.dictionary
         var messageDictionary: [[String:Any]] = []
         
         for var message in messages {
@@ -173,6 +173,7 @@ struct NetworkManager {
             messageDictionary.append(message.dictionary)
         }
         let finalDictionary = ["lastMessage": lastMessageDictionary]
+        
         database.child("Chats").child(id).updateChildValues(finalDictionary)
         database.child("Chats").child(id).child("messages").childByAutoId().setValue(lastMessageDictionary)
         
@@ -237,5 +238,4 @@ struct NetworkManager {
         }
         return false
     }
-    
 }

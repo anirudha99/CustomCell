@@ -16,7 +16,6 @@ class NewConversationViewController: UIViewController {
     var users: [ChatAppUser] = []
     var resultArr: [ChatAppUser] = []
     
-    
     let cellSpacingHeight: CGFloat = 20
     
     var spinnerT = UIActivityIndicatorView(style: .large)
@@ -28,13 +27,6 @@ class NewConversationViewController: UIViewController {
     private var inSearchMode: Bool {
         return !searchController.searchBar.text!.isEmpty
     }
-    
-//    private let tableView: UITableView = {
-//        let table = UITableView()
-//        table.isHidden = true
-//        table.register(UserCell.self, forCellReuseIdentifier: "cell")
-//        return table
-//    }()
     
     private let noResultsLabel: UILabel = {
         let label = UILabel()
@@ -51,16 +43,9 @@ class NewConversationViewController: UIViewController {
         super.viewDidLoad()
         view.backgroundColor = .gray
         configureNavBar()
-//        configureTableView()
+        configureCollectionView()
         configureSpinner()
         fetchAllUser()
-    }
-    
-    override func viewDidLayoutSubviews() {
-        super.viewDidLayoutSubviews()
-        collectionView.frame = view.bounds
-//        tableView.frame = view.bounds
-        noResultsLabel.frame = CGRect(x: view.frame.width / 4, y: (view.frame.height-200) / 2, width: view.frame.width / 2, height: 200)
     }
     
     //MARK: -Handlers
@@ -77,7 +62,7 @@ class NewConversationViewController: UIViewController {
         navigationController?.navigationBar.scrollEdgeAppearance = appearance
         navigationController?.navigationBar.tintColor = .systemRed
         
-        //        navigationController?.navigationBar.topItem?.titleView = searchBar
+        
         navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Close", style: .done, target: self, action: #selector(dissmissScreen))
         navigationItem.searchController = searchController
         searchController.searchResultsUpdater = self
@@ -93,12 +78,19 @@ class NewConversationViewController: UIViewController {
         collectionView.register(ConversationCell.self, forCellWithReuseIdentifier: reuseIdentifier)
     }
     
-//    func configureTableView(){
-//        view.addSubview(tableView)
-//        view.addSubview(noResultsLabel)
-//        tableView.delegate = self
-//        tableView.dataSource = self
-//    }
+    func configureSearch() {
+        searchController.loadViewIfNeeded()
+        searchController.searchResultsUpdater = self
+        searchController.searchBar.delegate = self
+        searchController.obscuresBackgroundDuringPresentation = false
+        searchController.searchBar.enablesReturnKeyAutomatically = false
+        searchController.searchBar.returnKeyType = UIReturnKeyType.done
+        searchController.searchBar.tintColor = .white
+        self.navigationItem.searchController = searchController
+        self.navigationItem.hidesSearchBarWhenScrolling = false
+        definesPresentationContext = true
+        searchController.searchBar.placeholder = "Search Users"
+    }
     
     func configureSpinner(){
         spinnerT.translatesAutoresizingMaskIntoConstraints = false
@@ -158,15 +150,16 @@ extension NewConversationViewController: UICollectionViewDelegate, UICollectionV
             cell.iconImageView.image = image
         }
         return cell
-        
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        
         let selectedUser = users[indexPath.row]
         let users: [ChatAppUser] = [currentUser!, selectedUser]
         let id = "\(currentUser!.userId)_\(selectedUser.userId)"
         let messageVC = MessageViewController()
-        
+        var viewControlArray = navigationController?.viewControllers
+        viewControlArray?.removeLast()
         for chat in chats{
             var currentChat = chat
             let uidF = chat.users[0].userId
@@ -175,35 +168,59 @@ extension NewConversationViewController: UICollectionViewDelegate, UICollectionV
                 print("Chat already there")
                 currentChat.otherUser =  uidF == currentUser!.userId ? 1 : 0
                 messageVC.chat = currentChat
-                
-                navigationController?.pushViewController(messageVC, animated: true)
+                viewControlArray?.append(messageVC)
+                navigationController?.modalPresentationStyle = .fullScreen
+                navigationController?.setViewControllers(viewControlArray!, animated: true)
+//                navigationController?.pushViewController(messageVC, animated: true)
+                return
             }
         }
+        print("New Chat")
+        NetworkManager.shared.addChat(user1: currentUser!, user2: selectedUser, id: id)
+        messageVC.chat = Chats(chatId: id, users: users, lastMessage: nil, messages: [], otherUser: 1)
+        viewControlArray?.append(messageVC)
+        navigationController?.modalPresentationStyle = .fullScreen
+        navigationController?.setViewControllers(viewControlArray!, animated: true)
+//        navigationController?.pushViewController(messageVC, animated: true)
     }
 }
 
+extension NewConversationViewController:  UICollectionViewDelegateFlowLayout {
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        return CGSize(width: view.frame.width, height: 90)
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
+        return 2
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
+        return 0
+    }
+    
+}
 
-extension NewConversationViewController: UISearchResultsUpdating {
+
+extension NewConversationViewController: UISearchResultsUpdating, UISearchBarDelegate {
     
     func updateSearchResults(for searchController: UISearchController){
         guard let searchText = searchController.searchBar.text else {
             return
         }
         if inSearchMode {
-                   resultArr.removeAll()
+            resultArr.removeAll()
+            
             for user in users {
-                if user.firstName.lowercased().contains(searchText.lowercased()) |
-        
-        if !searchText.isEmpty {
-            searching = true
-            resultArr.removeAll()
-            resultArr = users.filter({$0.firstName.prefix(count!).lowercased() == searchText.lowercased()})
+                if user.firstName.lowercased().contains(searchText.lowercased()) || user.lastName.lowercased().contains(searchText.lowercased()) || user.emailAddress.lowercased().contains(searchText.lowercased()) {
+                    resultArr.append(user)
+                }
+            }
         }
-        else{
-            searching = false
-            resultArr.removeAll()
-//            resultArr = users
-        }
-        tableView.reloadData()
+        collectionView.reloadData()
+    }
+    
+    func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
+        collectionView.reloadData()
     }
 }

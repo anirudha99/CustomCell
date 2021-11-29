@@ -19,7 +19,7 @@ struct Message {
         return [
             "sender": sender,
             "content": content,
-            "time": dateString!,
+            "time": dateString ?? Date(),
             "seen": seen
         ]
     }

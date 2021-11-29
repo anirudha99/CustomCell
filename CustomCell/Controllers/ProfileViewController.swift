@@ -65,7 +65,6 @@ class ProfileViewController: UIViewController {
         imageView.isUserInteractionEnabled = true
         imageView.heightAnchor.constraint(equalToConstant: 170).isActive = true
         imageView.widthAnchor.constraint(equalToConstant: 170).isActive = true
-        //        imageView.layer.cornerRadius = imageView.frame.width / 2
         imageView.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(imageView)
         

@@ -17,16 +17,6 @@ struct ChatMessage {
 
 class MessageViewController: UIViewController {
     
-    let messagesFromServer = [
-        ChatMessage(text: "first message", isIncoming: true, date: Date.dateFromCustomString(customString: "18/11/2021")),
-        ChatMessage(text: "Providing some text so that it repeats Providing some text so that it repeats", isIncoming: true, date: Date.dateFromCustomString(customString: "18/11/2021")),
-        ChatMessage(text: "Providing some text so that it repeats Providing some text so that it repeats Providing some text so that it repeats Providing some text so that it repeats", isIncoming: false, date: Date.dateFromCustomString(customString: "19/11/2021")),
-        ChatMessage(text: "hey", isIncoming: false, date: Date.dateFromCustomString(customString: "19/11/2021")),
-        ChatMessage(text: "first message", isIncoming: true, date: Date.dateFromCustomString(customString: "19/11/2021")),
-        ChatMessage(text: "hello", isIncoming: false, date: Date.dateFromCustomString(customString: "20/11/2021")),
-    ]
-    
-    var chatMessages = [[ChatMessage]]()
     
     var chat: Chats!
     var messages: [Message] = []
@@ -66,24 +56,8 @@ class MessageViewController: UIViewController {
         createDismissKeyboardTapGesture()
         configureNotificationObserver()
         fetchChats()
-//        attemptToAssembleGroupMessages()
-        
     }
     
-//    fileprivate func attemptToAssembleGroupMessages(){
-//        print("Attempt to group messsages")
-//
-//        let groupedMessages = Dictionary(grouping: messagesFromServer) { element in
-//            return element.date
-//        }
-//
-//        //provide sorting for keys
-//        let sortedKeys = groupedMessages.keys.sorted()
-//        sortedKeys.forEach { (key) in
-//            let values = groupedMessages[key]
-//            chatMessages.append(values ?? [])
-//        }
-//    }
     
     func configureTableView(){
         MessageTableView = UITableView(frame: CGRect(x: 0, y: 50, width: view.frame.width, height: view.frame.height-120))
@@ -96,6 +70,9 @@ class MessageViewController: UIViewController {
     }
     
     func configureUI(){
+        
+        
+        
         messageTextField.layer.cornerRadius = 12
         messageTextField.layer.borderColor = UIColor.systemGray.cgColor
         messageTextField.layer.borderWidth = 1
@@ -112,16 +89,23 @@ class MessageViewController: UIViewController {
             currentUser = chat.users[0]
         }
         
-        let stack = UIStackView(arrangedSubviews: [messageTextField,sendButton])
-        stack.axis = .horizontal
-        stack.spacing = 3
-        view.addSubview(stack)
-        stack.translatesAutoresizingMaskIntoConstraints = false
+        navigationItem.title = "\(otherUser.firstName) \(otherUser.lastName)"
+        navigationItem.backButtonTitle = ""
         
-        stack.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -20).isActive = true
-        stack.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
-        stack.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
-        stack.heightAnchor.constraint(equalToConstant: 50).isActive = true
+        NSLayoutConstraint.activate([
+            
+            messageTextField.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 5),
+            messageTextField.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: 0),
+            messageTextField.heightAnchor.constraint(equalToConstant: 50),
+//            messageTextField.widthAnchor.constraint(equalTo: view.widthAnchor, constant: -70),
+            
+            sendButton.rightAnchor.constraint(equalTo: view.rightAnchor, constant: -5),
+            sendButton.heightAnchor.constraint(equalToConstant: 50),
+            sendButton.widthAnchor.constraint(equalToConstant: 50),
+            sendButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: 0),
+            messageTextField.rightAnchor.constraint(equalTo: sendButton.leftAnchor, constant: -5),
+            
+        ])
         
     }
     
@@ -171,62 +155,12 @@ class MessageViewController: UIViewController {
             }
         }
     }
-    
-//    class DateHeaderLabel: UILabel {
-//
-//        override init(frame: CGRect) {
-//            super.init(frame: frame)
-//            backgroundColor = .black
-//            textColor = .white
-//            textAlignment = .center
-//            font = UIFont.boldSystemFont(ofSize: 14)
-//            translatesAutoresizingMaskIntoConstraints = false
-//        }
-//
-//        required init?(coder: NSCoder) {
-//            fatalError("init(coder:) has not been implemented")
-//        }
-//
-//        override var intrinsicContentSize: CGSize{
-//            let originalContentSize = super.intrinsicContentSize
-//            let height = originalContentSize.height + 10
-//            let width = originalContentSize.width + 16
-//            layer.cornerRadius = height / 2
-//            layer.masksToBounds = true
-//            return CGSize(width: width, height: height )
-//        }
-//    }
 }
 extension MessageViewController: UITableViewDelegate, UITableViewDataSource{
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-//        return chatMessages[section].count
         return messages.count
     }
-    
-//    func numberOfSections(in tableView: UITableView) -> Int {
-//        return chatMessages.count
-//    }
-    
-//    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-//
-//        if let firstMessageInSection = chatMessages[section].first {
-//            let dateFormatter = DateFormatter()
-//            dateFormatter.dateFormat = "dd/MM/yyyy"
-//            let dateString = dateFormatter.string(from: firstMessageInSection.date)
-//
-//            let label = DateHeaderLabel()
-//            label.text = dateString
-//
-//            let containerView = UIView()
-//            containerView.addSubview(label)
-//            label.centerXAnchor.constraint(equalTo: containerView.centerXAnchor).isActive = true
-//            label.centerYAnchor.constraint(equalTo: containerView.centerYAnchor).isActive = true
-//
-//            return containerView
-//        }
-//        return nil
-//    }
     
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         return 50
@@ -234,9 +168,7 @@ extension MessageViewController: UITableViewDelegate, UITableViewDataSource{
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = MessageTableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath) as! MessageTableViewCell
-        //        cell.backgroundColor = .red
-//        let chatMessage = chatMessages[indexPath.section][indexPath.row]
-//        cell.chatMessage = chatMessage
+        
         cell.messageItem = messages[indexPath.row]
         return cell
     }
