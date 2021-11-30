@@ -58,13 +58,13 @@ class MessageViewController: UIViewController {
         containerView.addSubview(self.messageTextField)
         containerView.addSubview(sendButton)
         
-        sendButton.rightAnchor.constraint(equalTo: containerView.rightAnchor,constant: -2).isActive = true
+        sendButton.rightAnchor.constraint(equalTo: containerView.rightAnchor,constant: -5).isActive = true
         sendButton.heightAnchor.constraint(equalToConstant: 50).isActive = true
         sendButton.widthAnchor.constraint(equalToConstant: 50).isActive = true
         sendButton.bottomAnchor.constraint(equalTo: containerView.bottomAnchor, constant: -15).isActive = true
         
         self.messageTextField.rightAnchor.constraint(equalTo: sendButton.leftAnchor, constant: -5).isActive = true
-        self.messageTextField.leftAnchor.constraint(equalTo: containerView.leftAnchor,constant: 2).isActive = true
+        self.messageTextField.leftAnchor.constraint(equalTo: containerView.leftAnchor,constant: 5).isActive = true
         self.messageTextField.bottomAnchor.constraint(equalTo: containerView.bottomAnchor, constant: -15).isActive = true
         self.messageTextField.heightAnchor.constraint(equalToConstant: 50).isActive = true
         
@@ -78,7 +78,6 @@ class MessageViewController: UIViewController {
         configureNavigationBar()
         configureTableView()
         configureUI()
-        configureNotificationObserver()
         fetchChats()
     }
     
@@ -127,28 +126,6 @@ class MessageViewController: UIViewController {
     private func createDismissKeyboardTapGesture(){
         let tap = UITapGestureRecognizer(target: self.view, action: #selector(UIView.endEditing))
         view.addGestureRecognizer(tap)
-    }
-    
-    private func configureNotificationObserver(){
-        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow), name: UIResponder.keyboardWillShowNotification, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide), name: UIResponder.keyboardDidHideNotification, object: nil)
-    }
-    
-    @objc func keyboardWillShow(notification: NSNotification){
-        let keyboardFrame = (notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as! NSValue).cgRectValue
-        let keyboardDuration = (notification.userInfo?[UIResponder.keyboardAnimationDurationUserInfoKey]) as! Double
-        containerViewBottomAnchor?.constant = -keyboardFrame.height
-        UIView.animate(withDuration: keyboardDuration) {
-            self.view.layoutIfNeeded()
-        }
-    }
-    
-    @objc func keyboardWillHide(notification: NSNotification){
-        let keyboardDuration = (notification.userInfo?[UIResponder.keyboardAnimationDurationUserInfoKey]) as! Double
-        containerViewBottomAnchor?.constant = 0
-        UIView.animate(withDuration: keyboardDuration) {
-            self.view.layoutIfNeeded()
-        }
     }
     
     @objc func dismissAndGoHome(){
