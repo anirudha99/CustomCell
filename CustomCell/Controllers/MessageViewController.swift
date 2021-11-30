@@ -30,24 +30,10 @@ class MessageViewController: UIViewController {
     var MessageTableView: UITableView!
     
     var messageTextField = CustomTextField(placeholder: "Type Message here")
-    //
-    //    let sendButton: UIButton = {
-    //        let button = UIButton()
-    //        button.setImage(UIImage(systemName: "paperplane.fill"), for: .normal)
-    //        button.addTarget(self, action: #selector(sendButtonTapped), for: .touchUpInside)
-    //        button.tintColor = .systemRed
-    //        button.translatesAutoresizingMaskIntoConstraints = false
-    //        button.backgroundColor = .white
-    //        button.layer.borderWidth = 2
-    //        button.layer.cornerRadius = 10
-    //        button.heightAnchor.constraint(equalToConstant: 50).isActive = true
-    //        button.widthAnchor.constraint(equalToConstant: 50).isActive = true
-    //        return button
-    //    }()
     
     lazy var inputContainerView: UIView = {
         let containerView = UIView()
-        containerView.frame = CGRect(x: 0, y: 0, width: view.frame.width, height: 50)
+        containerView.frame = CGRect(x: 0, y: 0, width: view.frame.width, height: 65)
         containerView.backgroundColor = .white
         
         let sendButton: UIButton = {
@@ -75,11 +61,11 @@ class MessageViewController: UIViewController {
         sendButton.rightAnchor.constraint(equalTo: containerView.rightAnchor,constant: -2).isActive = true
         sendButton.heightAnchor.constraint(equalToConstant: 50).isActive = true
         sendButton.widthAnchor.constraint(equalToConstant: 50).isActive = true
-        sendButton.bottomAnchor.constraint(equalTo: containerView.bottomAnchor, constant: -10).isActive = true
+        sendButton.bottomAnchor.constraint(equalTo: containerView.bottomAnchor, constant: -15).isActive = true
         
         self.messageTextField.rightAnchor.constraint(equalTo: sendButton.leftAnchor, constant: -5).isActive = true
         self.messageTextField.leftAnchor.constraint(equalTo: containerView.leftAnchor,constant: 2).isActive = true
-        self.messageTextField.bottomAnchor.constraint(equalTo: containerView.bottomAnchor, constant: -10).isActive = true
+        self.messageTextField.bottomAnchor.constraint(equalTo: containerView.bottomAnchor, constant: -15).isActive = true
         self.messageTextField.heightAnchor.constraint(equalToConstant: 50).isActive = true
         
         return containerView
@@ -92,7 +78,6 @@ class MessageViewController: UIViewController {
         configureNavigationBar()
         configureTableView()
         configureUI()
-//        createDismissKeyboardTapGesture()
         configureNotificationObserver()
         fetchChats()
     }
@@ -112,7 +97,6 @@ class MessageViewController: UIViewController {
         return true
     }
     
-    
     func configureTableView(){
         MessageTableView = UITableView(frame: CGRect(x: 0, y: 50, width: view.frame.width, height: view.frame.height-120))
         MessageTableView.separatorStyle = .none
@@ -127,16 +111,6 @@ class MessageViewController: UIViewController {
     var containerViewBottomAnchor: NSLayoutConstraint?
     
     func configureUI(){
-        //        view.addSubview(containerView)
-        //        containerView.translatesAutoresizingMaskIntoConstraints = false
-        //        containerView.backgroundColor = .white
-        //        messageTextField.layer.cornerRadius = 12
-        //        messageTextField.layer.borderColor = UIColor.systemGray.cgColor
-        //        messageTextField.layer.borderWidth = 1
-        //        messageTextField.translatesAutoresizingMaskIntoConstraints = false
-        //        containerView.addSubview(messageTextField)
-        //        containerView.addSubview(sendButton)
-        //
         chatId = "\(chat.users[0].userId)_\(chat.users[1].userId)"
         if chat.otherUser == 0 {
             otherUser = chat.users[0]
@@ -148,36 +122,14 @@ class MessageViewController: UIViewController {
         
         navigationItem.title = "\(otherUser.firstName) \(otherUser.lastName)"
         navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Back", style: .done, target: self, action: #selector(dismissAndGoHome))
-        
-        //        containerViewBottomAnchor =  containerView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor)
-        //        containerViewBottomAnchor?.isActive = true
-        //
-        //        NSLayoutConstraint.activate ([
-        //
-        //            containerView.leftAnchor.constraint(equalTo: view.leftAnchor),
-        //            containerView.heightAnchor.constraint(equalToConstant: 50),
-        //            containerView.widthAnchor.constraint(equalTo: view.widthAnchor),
-        //
-        //            sendButton.rightAnchor.constraint(equalTo: containerView.rightAnchor,constant: -2),
-        //            sendButton.heightAnchor.constraint(equalToConstant: 50),
-        //            sendButton.widthAnchor.constraint(equalToConstant: 50),
-        //            sendButton.bottomAnchor.constraint(equalTo: containerView.bottomAnchor, constant: 0),
-        //
-        //            messageTextField.rightAnchor.constraint(equalTo: sendButton.leftAnchor, constant: -5),
-        //            messageTextField.leftAnchor.constraint(equalTo: containerView.leftAnchor,constant: 2),
-        //            messageTextField.bottomAnchor.constraint(equalTo: containerView.bottomAnchor, constant: 0),
-        //            messageTextField.heightAnchor.constraint(equalToConstant: 50),
-        //
-        //
-        //        ])
     }
     
-    func createDismissKeyboardTapGesture(){
+    private func createDismissKeyboardTapGesture(){
         let tap = UITapGestureRecognizer(target: self.view, action: #selector(UIView.endEditing))
         view.addGestureRecognizer(tap)
     }
     
-    func configureNotificationObserver(){
+    private func configureNotificationObserver(){
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow), name: UIResponder.keyboardWillShowNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide), name: UIResponder.keyboardDidHideNotification, object: nil)
     }
@@ -201,7 +153,7 @@ class MessageViewController: UIViewController {
     
     @objc func dismissAndGoHome(){
         dismiss(animated: true)
-        navigationController?.popViewController(animated: true)
+//        navigationController?.popViewController(animated: true)
     }
     
     @objc func sendButtonTapped(){
@@ -215,12 +167,11 @@ class MessageViewController: UIViewController {
         }
     }
     
-    func fetchChats(){
+    public func fetchChats(){
         messages = []
         NetworkManager.shared.fetchMessages(chatId: chat.chatId!) { messages in
             //print("Messages\(messages)")
             self.messages = messages
-            
             DispatchQueue.main.async {
                 self.MessageTableView.reloadData()
             }
