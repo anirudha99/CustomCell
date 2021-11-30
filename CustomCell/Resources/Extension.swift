@@ -38,11 +38,10 @@ extension UIViewController {
         appearance.largeTitleTextAttributes = [.foregroundColor: UIColor.white]
         appearance.backgroundColor = .darkGray
         
-        //        navigationController?.navigationBar.prefersLargeTitles = true
+        navigationController?.navigationBar.prefersLargeTitles = true
         navigationController?.navigationBar.standardAppearance = appearance
         navigationController?.navigationBar.compactAppearance = appearance
         navigationController?.navigationBar.scrollEdgeAppearance = appearance
-        
         navigationController?.navigationBar.tintColor = .systemRed
         
     }
@@ -84,3 +83,6 @@ extension UIViewController {
     }
 }
 
+extension UIImageView {
+    
+}

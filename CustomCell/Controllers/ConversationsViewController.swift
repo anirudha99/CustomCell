@@ -100,7 +100,6 @@ class ConversationsViewController: UIViewController {
     //MARK: -Handlers
     
     func validateAuth(){
-        
         if FirebaseAuth.Auth.auth().currentUser == nil {
             let vc = LoginViewController()
             let navigation = UINavigationController(rootViewController: vc)
@@ -114,6 +113,7 @@ class ConversationsViewController: UIViewController {
         vc.currentUser = currentUser
         vc.chats = chats
         let navVc = UINavigationController(rootViewController: vc)
+        navVc.modalPresentationStyle = .fullScreen
         present(navVc,animated: true)
     }
     
@@ -154,7 +154,6 @@ extension ConversationsViewController: UICollectionViewDataSource, UICollectionV
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "ConversationCell", for: indexPath) as! ConversationCell
         
         let chat = chats[indexPath.row]
-       
         cell.chat = chat
         cell.hideCheckBoxButton(isHide: isEdit)
 
@@ -167,7 +166,7 @@ extension ConversationsViewController: UICollectionViewDataSource, UICollectionV
         let vc = MessageViewController()
         vc.chat = chats[indexPath.row]
 
-        vc.navigationItem.largeTitleDisplayMode = .never
+//        vc.navigationItem.largeTitleDisplayMode = .never
         navigationController?.modalPresentationStyle = .fullScreen
         navigationController?.pushViewController(vc, animated: true)
     }

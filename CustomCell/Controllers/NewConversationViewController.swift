@@ -158,30 +158,28 @@ extension NewConversationViewController: UICollectionViewDelegate, UICollectionV
         let users: [ChatAppUser] = [currentUser!, selectedUser]
         let id = "\(currentUser!.userId)_\(selectedUser.userId)"
         let messageVC = MessageViewController()
-        var viewControlArray = navigationController?.viewControllers
-        viewControlArray?.removeLast()
-        for chat in chats{
-            var currentChat = chat
+        var vcArray = navigationController?.viewControllers
+        vcArray?.removeLast()
+        for var chat in chats{
+//            var currentChat = chat
             let uidF = chat.users[0].userId
             let uidS = chat.users[1].userId
             if uidF == currentUser!.userId && uidS == selectedUser.userId || uidF == selectedUser.userId && uidS == currentUser!.userId {
                 print("Chat already there")
-                currentChat.otherUser =  uidF == currentUser!.userId ? 1 : 0
-                messageVC.chat = currentChat
-                viewControlArray?.append(messageVC)
+                chat.otherUser =  uidF == currentUser!.userId ? 1 : 0
+                messageVC.chat = chat
+                vcArray?.append(messageVC)
                 navigationController?.modalPresentationStyle = .fullScreen
-                navigationController?.setViewControllers(viewControlArray!, animated: true)
-//                navigationController?.pushViewController(messageVC, animated: true)
+                navigationController?.setViewControllers(vcArray!, animated: true)
                 return
             }
         }
         print("New Chat")
         NetworkManager.shared.addChat(user1: currentUser!, user2: selectedUser, id: id)
         messageVC.chat = Chats(chatId: id, users: users, lastMessage: nil, messages: [], otherUser: 1)
-        viewControlArray?.append(messageVC)
+        vcArray?.append(messageVC)
         navigationController?.modalPresentationStyle = .fullScreen
-        navigationController?.setViewControllers(viewControlArray!, animated: true)
-//        navigationController?.pushViewController(messageVC, animated: true)
+        navigationController?.setViewControllers(vcArray!, animated: true)
     }
 }
 
@@ -201,7 +199,6 @@ extension NewConversationViewController:  UICollectionViewDelegateFlowLayout {
     
 }
 
-
 extension NewConversationViewController: UISearchResultsUpdating, UISearchBarDelegate {
     
     func updateSearchResults(for searchController: UISearchController){
@@ -212,11 +209,13 @@ extension NewConversationViewController: UISearchResultsUpdating, UISearchBarDel
             resultArr.removeAll()
             
             for user in users {
+                startSpinning()
                 if user.firstName.lowercased().contains(searchText.lowercased()) || user.lastName.lowercased().contains(searchText.lowercased()) || user.emailAddress.lowercased().contains(searchText.lowercased()) {
                     resultArr.append(user)
                 }
             }
         }
+        stopSpinning()
         collectionView.reloadData()
     }
     

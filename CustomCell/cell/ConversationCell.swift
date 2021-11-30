@@ -100,7 +100,7 @@ class ConversationCell: UICollectionViewCell {
     
     //MARK: -HANDLERS
     
-     private func configureChat(){
+     private func configureChat() {
         guard let chat = chat else { return }
         let otherUser = chat.users[chat.otherUser!]
         titleLabel.text = "\(otherUser.firstName) \(otherUser.lastName)"

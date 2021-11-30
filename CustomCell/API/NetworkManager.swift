@@ -15,6 +15,7 @@ struct NetworkManager {
     
     private let database = Database.database().reference()
     private let storage = Storage.storage()
+    private let imageCache = NSCache<AnyObject, AnyObject>()
     
     let databaseDateFormatter: DateFormatter = {
         let formatter = DateFormatter()
@@ -87,7 +88,6 @@ struct NetworkManager {
             }
         }
     }
-    
     
     func addChat(user1: ChatAppUser, user2: ChatAppUser, id: String) {
         var userDictionary: [[String: Any]] = []
@@ -191,7 +191,6 @@ struct NetworkManager {
                     print("Messages\(message)")
                     resultArray.append(createMessageObject(dictionary: message , id: id))
                 }
-                
                 completion(resultArray)
             }
         }

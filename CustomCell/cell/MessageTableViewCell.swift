@@ -50,6 +50,8 @@ class MessageTableViewCell: UITableViewCell {
         dateFormatter.dateFormat = "hh:mm:a"
         
         addSubview(messageView)
+//        messageView.addSubview(messageLabel)
+//        messageView.addSubview(time)
         addSubview(messageLabel)
         addSubview(time)
         messageLabel.text = messageItem!.content
@@ -60,12 +62,13 @@ class MessageTableViewCell: UITableViewCell {
         messageView.translatesAutoresizingMaskIntoConstraints = false
         messageLabel.translatesAutoresizingMaskIntoConstraints = false
         time.translatesAutoresizingMaskIntoConstraints = false
-        
-        leadingConstraint = messageLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 40)
+
+        leadingConstraint = messageLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 32)
         leadingConstraint.isActive = true
-        
-        trailingConstraint = messageLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -40)
+
+        trailingConstraint = messageLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -32)
         trailingConstraint.isActive = true
+    
         
         
         if isSender {
@@ -89,16 +92,16 @@ class MessageTableViewCell: UITableViewCell {
             messageLabel.widthAnchor.constraint(lessThanOrEqualToConstant: 250),
             messageLabel.topAnchor.constraint(equalTo: topAnchor, constant: 32),
             messageLabel.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -32),
-            
-            //            time.topAnchor.constraint(equalTo: topAnchor, constant: 32),
-            //            time.rightAnchor.constraint(equalTo: rightAnchor, constant: -5),
-            time.leftAnchor.constraint(equalTo: messageLabel.rightAnchor, constant: 10),
-            time.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -16),
-            
+          
             messageView.topAnchor.constraint(equalTo: messageLabel.topAnchor, constant: -16),
             messageView.bottomAnchor.constraint(equalTo: messageLabel.bottomAnchor, constant: 16),
             messageView.leadingAnchor.constraint(equalTo: messageLabel.leadingAnchor,constant: -16),
             messageView.trailingAnchor.constraint(equalTo: messageLabel.trailingAnchor,constant: 16),
+            
+            time.topAnchor.constraint(equalTo: messageLabel.bottomAnchor),
+            time.rightAnchor.constraint(equalTo: messageView.rightAnchor),
+
+         
             
         ])
     }

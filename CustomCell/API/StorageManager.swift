@@ -9,7 +9,7 @@ import Foundation
 import FirebaseStorage
 import Firebase
 
-final class StorageManager{
+final class StorageManager {
     
     static let shared = StorageManager()
     
@@ -76,10 +76,8 @@ struct ImageUploader {
                 }
                 
                 let urlString = url.absoluteString
-                
                 print("Download URL: \(urlString)")
                 completion(urlString)
-//                UserDefaults.standard.set(urlString, forKey: "url")
             }
         }
     }
