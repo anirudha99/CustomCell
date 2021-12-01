@@ -91,7 +91,6 @@ class RegistrationViewController: UIViewController {
         let button = UIButton()
         button.setTitle("Login", for: .normal)
         button.setTitleColor(.red, for: .normal)
-        //        button.tintColor = .white
         button.addTarget(self, action: #selector(transistionToLogin), for: .touchUpInside)
         button.translatesAutoresizingMaskIntoConstraints = false
         button.heightAnchor.constraint(equalToConstant: 50).isActive = true
@@ -209,7 +208,6 @@ class RegistrationViewController: UIViewController {
         }
         
         //Firebase Log in
-        
         DispatchQueue.main.async {
             self.startSpinning()
         }
@@ -241,7 +239,6 @@ class RegistrationViewController: UIViewController {
         controller.modalPresentationStyle = .fullScreen
         navigationController?.pushViewController(controller, animated: true)
     }
-    
 }
 
 

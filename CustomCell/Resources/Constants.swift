@@ -24,5 +24,3 @@ struct MessageConstants {
     static let usernameInvalid = "User Name must be atleast 3 Characters"
     static let profilePictureInvalid = "Please Upload a Profile Picture"
 }
-
-

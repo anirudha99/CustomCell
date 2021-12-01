@@ -99,10 +99,7 @@ class MessageTableViewCell: UITableViewCell {
             messageView.trailingAnchor.constraint(equalTo: messageLabel.trailingAnchor,constant: 16),
             
             time.topAnchor.constraint(equalTo: messageLabel.bottomAnchor),
-            time.rightAnchor.constraint(equalTo: messageView.rightAnchor),
-
-         
-            
+            time.rightAnchor.constraint(equalTo: messageView.rightAnchor)
         ])
     }
 }

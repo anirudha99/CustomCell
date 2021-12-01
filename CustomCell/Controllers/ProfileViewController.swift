@@ -13,10 +13,8 @@ let cellIdentifier = "cell"
 
 class ProfileViewController: UIViewController {
     
-    
     //MARK: -Properties
     
-
     let username = CustomLabel(text: "")
     let emailLabel = CustomLabel(text: "")
     let imageView = UIImageView()
@@ -28,8 +26,6 @@ class ProfileViewController: UIViewController {
         super.viewDidLoad()
         configureNavigationBarT()
         configureProfileUI()
-        
-        view.backgroundColor = .systemGray4
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -38,8 +34,8 @@ class ProfileViewController: UIViewController {
     }
     
     func configureNavigationBarT() {
-        view.backgroundColor = .red
-        
+        view.backgroundColor = UIColor(white: 0.85, alpha: 1)
+
         let appearance = UINavigationBarAppearance()
         appearance.configureWithOpaqueBackground()
         appearance.largeTitleTextAttributes = [.foregroundColor: UIColor.white]
@@ -52,7 +48,6 @@ class ProfileViewController: UIViewController {
         
         navigationController?.navigationBar.tintColor = .systemRed
         navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Logout", style: .done, target: self, action: #selector(logoutButtonTapped))
-        //        navigationItem.title = "CustomCell"
     }
     
     //MARK: -Handlers
@@ -111,7 +106,6 @@ class ProfileViewController: UIViewController {
     }
     
     func fetchUserData() {
-        print("Fetching")
         NetworkManager.shared.fetchCurrentUser() { user in
             self.username.text = "Username - \(user.firstName)" + " "+"\(user.lastName)"
             self.emailLabel.text = "Email - \(user.emailAddress)"
@@ -146,10 +140,8 @@ class ProfileViewController: UIViewController {
     func uploadNewProfile(image: UIImage) {
         ImageUploader.uploadImage(image: image) { url in
             self.currentUser?.profileURL = url
-
+            
             NetworkManager.shared.addUser(user: self.currentUser!)
-            print("New URL\(url)")
-
         }
     }
 }

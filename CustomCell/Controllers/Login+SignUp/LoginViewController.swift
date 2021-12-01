@@ -16,7 +16,6 @@ class LoginViewController: UIViewController {
     
     var isUserEntered : Bool {
         return !emailTextField.text!.isEmpty && !passwordTextField.text!.isEmpty
-        //        password.count >= 6
     }
     
     var delegate: UserAuthenticatedDelegate?
@@ -199,7 +198,6 @@ class LoginViewController: UIViewController {
             showAlert(title: "Login error", message: "Please enter all information properly to Log in")
             return
         }
-        //        spinner.show(in: view)
         startSpinning()
         //Firebase
         print("Login button tapped")
@@ -208,7 +206,6 @@ class LoginViewController: UIViewController {
                 return
             }
             DispatchQueue.main.async {
-                //                strongSelf.spinner.dismiss()
                 strongSelf.stopSpinning()
             }
             if error != nil {
@@ -219,7 +216,6 @@ class LoginViewController: UIViewController {
                 self?.delegate?.userAuthenticated()
                 strongSelf.navigationController?.dismiss(animated: true, completion: nil)
             }
-            UserDefaults.standard.set(email,forKey: "email")
         }
     }
     
@@ -230,7 +226,6 @@ class LoginViewController: UIViewController {
         navigationController?.pushViewController(controller, animated: true)
     }
 }
-
 
 extension LoginViewController: UITextFieldDelegate {
     

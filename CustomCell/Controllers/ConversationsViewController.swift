@@ -15,9 +15,6 @@ class ConversationsViewController: UIViewController {
     
     //MARK: -Properties
     var collectionView: UICollectionView!
-    
-    //    private let spinner = JGProgressHUD(style: .dark)
-    
     var spinnerT = UIActivityIndicatorView(style: .large)
     
     var  isEdit = false
@@ -26,33 +23,16 @@ class ConversationsViewController: UIViewController {
     var chats: [Chats] = []
     var currentUser: ChatAppUser?
     
-    let noConversationsLabel: UILabel = {
-        let label = UILabel()
-        label.text = "No Conversations!"
-        label.textAlignment = .center
-        label.font = UIFont.boldSystemFont(ofSize: 14)
-        label.textColor = .systemGray
-        label.backgroundColor = .clear
-        label.translatesAutoresizingMaskIntoConstraints = false
-        label.isHidden = true
-        return label
-    }()
-    
     //MARK: -Init
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .lightGray
-        
         configureNavigationBarT()
         configureUICollectionView()
-        view.addSubview(noConversationsLabel)
         
         validateAuth()
         fetchConversations()
         fetchUserConvo()
-
-        
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -83,20 +63,12 @@ class ConversationsViewController: UIViewController {
         collectionView = UICollectionView(frame: view.bounds, collectionViewLayout: UICollectionViewFlowLayout())
         view.addSubview(collectionView)
         collectionView.isHidden = true
-        collectionView.backgroundColor = .lightGray
+        collectionView.backgroundColor = UIColor(white: 0.95, alpha: 1)
         collectionView.dataSource = self
         collectionView.delegate = self
         collectionView.register(ConversationCell.self, forCellWithReuseIdentifier: reuseIdentifier)
     }
-    
-    //    func startSpinning(){
-    //        spinnerT.startAnimating()
-    //    }
-    //
-    //    func stopSpinning(){
-    //        spinnerT.stopAnimating()
-    //    }
-    
+
     //MARK: -Handlers
     
     func validateAuth(){

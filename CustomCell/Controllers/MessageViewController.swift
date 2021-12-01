@@ -91,11 +91,6 @@ class MessageViewController: UIViewController {
         fetchChats()
     }
     
-    override func viewDidDisappear(_ animated: Bool) {
-        super.viewDidDisappear(animated)
-        NotificationCenter.default.removeObserver(self)
-    }
-    
     override var inputAccessoryView: UIView?{
         get{
             return inputContainerView
@@ -118,8 +113,6 @@ class MessageViewController: UIViewController {
         MessageTableView.alwaysBounceVertical = true
         view.addSubview(MessageTableView)
     }
-    
-    var containerViewBottomAnchor: NSLayoutConstraint?
     
     func configureUI(){
         chatId = "\(chat.users[0].userId)_\(chat.users[1].userId)"
@@ -170,12 +163,13 @@ class MessageViewController: UIViewController {
     }
     
     private func uploadPhotoToSend(image: UIImage){
-//        let newMessage = Message(sender: currentUser.userId, content: "", time: Date(), seen: false, imageUrl: String?)
-//        var messagesArray = messages
-//        messagesArray.append(newMessage)
         ImageUploader.uploadToFirebaseUsingImage(image: image) { url in
             self.currentUser?.profileURL = url
         }
+        //        let newMessage = Message(sender: currentUser.userId, content: "", time: Date(), seen: false, imageUrl: url)
+        //        var messagesArray = messages
+        //        messagesArray.append(newMessage)
+        //        NetworkManager.shared.addMessageWithImageURL(messages: messagesArray, lastMessage: newMessage, id: chatId!, imageUrl: )
     }
 }
 

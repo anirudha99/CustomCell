@@ -17,11 +17,8 @@ class NewConversationViewController: UIViewController {
     var resultArr: [ChatAppUser] = []
     
     let cellSpacingHeight: CGFloat = 20
-    
     var spinnerT = UIActivityIndicatorView(style: .large)
-    
     let searchController = UISearchController(searchResultsController: nil)
-    
     var collectionView: UICollectionView!
     
     private var inSearchMode: Bool {
@@ -56,7 +53,6 @@ class NewConversationViewController: UIViewController {
         appearance.largeTitleTextAttributes = [.foregroundColor: UIColor.white]
         appearance.backgroundColor = .darkGray
         
-        //        navigationController?.navigationBar.prefersLargeTitles = true
         navigationController?.navigationBar.standardAppearance = appearance
         navigationController?.navigationBar.compactAppearance = appearance
         navigationController?.navigationBar.scrollEdgeAppearance = appearance
@@ -70,7 +66,6 @@ class NewConversationViewController: UIViewController {
     
     func configureCollectionView() {
         collectionView = UICollectionView(frame: view.bounds, collectionViewLayout: UICollectionViewFlowLayout())
-        
         view.addSubview(collectionView)
         view.addSubview(noResultsLabel)
         collectionView.dataSource = self
@@ -207,7 +202,7 @@ extension NewConversationViewController: UISearchResultsUpdating, UISearchBarDel
         }
         if inSearchMode {
             resultArr.removeAll()
-            
+
             for user in users {
                 startSpinning()
                 if user.firstName.lowercased().contains(searchText.lowercased()) || user.lastName.lowercased().contains(searchText.lowercased()) || user.emailAddress.lowercased().contains(searchText.lowercased()) {
