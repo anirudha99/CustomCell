@@ -196,6 +196,25 @@ struct NetworkManager {
         }
     }
     
+    func addMessageWithImageURL(messages: [Message], lastMessage: Message, id: String, imageUrl: String){
+        var lastMessageObj = lastMessage
+        let dateString = databaseDateFormatter.string(from: lastMessage.time)
+        lastMessageObj.dateString = dateString
+        
+        let lastMessageDictionary = lastMessageObj.dictionary
+        var messageDictionary: [[String:Any]] = []
+        
+        for var message in messages {
+            let dateString = databaseDateFormatter.string(from: message.time)
+            message.dateString = dateString
+            messageDictionary.append(message.dictionary)
+        }
+        let finalDictionary = ["lastMessage": lastMessageDictionary]
+        
+        database.child("Chats").child(id).updateChildValues(finalDictionary)
+        database.child("Chats").child(id).child("messages").childByAutoId().setValue(lastMessageDictionary)
+    }
+    
     func downloadImage(url: String, completion: @escaping(UIImage) -> Void) {
         let result = storage.reference(forURL: url)
         result.getData(maxSize: 1 * 1024 * 1024) { data, error in

@@ -7,14 +7,6 @@
 
 import UIKit
 
-struct ChatMessage {
-    var sender: String?
-    let text: String
-    let isIncoming: Bool
-    let date: Date
-    var seen: Bool?
-}
-
 class MessageViewController: UIViewController {
     
     var chat: Chats!
@@ -33,20 +25,32 @@ class MessageViewController: UIViewController {
     
     lazy var inputContainerView: UIView = {
         let containerView = UIView()
-        containerView.frame = CGRect(x: 0, y: 0, width: view.frame.width, height: 65)
+        containerView.frame = CGRect(x: 0, y: 0, width: self.view.frame.width, height: 65)
         containerView.backgroundColor = .white
         
         let sendButton: UIButton = {
             let button = UIButton()
-            button.setImage(UIImage(systemName: "paperplane.fill"), for: .normal)
+            button.setImage(ImageConstants.sendButton, for: .normal)
             button.addTarget(self, action: #selector(sendButtonTapped), for: .touchUpInside)
             button.tintColor = .systemRed
             button.translatesAutoresizingMaskIntoConstraints = false
             button.backgroundColor = .white
-            button.layer.borderWidth = 2
+            button.layer.borderWidth = 1
             button.layer.cornerRadius = 10
             button.heightAnchor.constraint(equalToConstant: 50).isActive = true
             button.widthAnchor.constraint(equalToConstant: 50).isActive = true
+            return button
+        }()
+        
+        let picButton: UIButton = {
+            let button = UIButton()
+            button.setImage(ImageConstants.picture, for: .normal)
+            button.addTarget(self, action: #selector(picButtonTapped), for: .touchUpInside)
+            button.tintColor = .systemRed
+            button.layer.borderWidth = 1
+            button.layer.cornerRadius = 10
+            button.translatesAutoresizingMaskIntoConstraints = false
+            button.backgroundColor = .white
             return button
         }()
         
@@ -57,13 +61,19 @@ class MessageViewController: UIViewController {
         
         containerView.addSubview(self.messageTextField)
         containerView.addSubview(sendButton)
+        containerView.addSubview(picButton)
         
         sendButton.rightAnchor.constraint(equalTo: containerView.rightAnchor,constant: -5).isActive = true
         sendButton.heightAnchor.constraint(equalToConstant: 50).isActive = true
         sendButton.widthAnchor.constraint(equalToConstant: 50).isActive = true
         sendButton.bottomAnchor.constraint(equalTo: containerView.bottomAnchor, constant: -15).isActive = true
         
-        self.messageTextField.rightAnchor.constraint(equalTo: sendButton.leftAnchor, constant: -5).isActive = true
+        picButton.rightAnchor.constraint(equalTo: sendButton.leftAnchor,constant: -5).isActive = true
+        picButton.heightAnchor.constraint(equalToConstant: 50).isActive = true
+        picButton.widthAnchor.constraint(equalToConstant: 50).isActive = true
+        picButton.bottomAnchor.constraint(equalTo: containerView.bottomAnchor, constant: -15).isActive = true
+        
+        self.messageTextField.rightAnchor.constraint(equalTo: picButton.leftAnchor, constant: -5).isActive = true
         self.messageTextField.leftAnchor.constraint(equalTo: containerView.leftAnchor,constant: 5).isActive = true
         self.messageTextField.bottomAnchor.constraint(equalTo: containerView.bottomAnchor, constant: -15).isActive = true
         self.messageTextField.heightAnchor.constraint(equalToConstant: 50).isActive = true
@@ -104,6 +114,8 @@ class MessageViewController: UIViewController {
         MessageTableView.register(MessageTableViewCell.self, forCellReuseIdentifier: cellIdentifier)
         MessageTableView.isUserInteractionEnabled = true
         MessageTableView.keyboardDismissMode = .interactive
+        MessageTableView.contentInset = UIEdgeInsets(top: 8, left: 0, bottom: 8, right: 0)
+        MessageTableView.alwaysBounceVertical = true
         view.addSubview(MessageTableView)
     }
     
@@ -123,18 +135,13 @@ class MessageViewController: UIViewController {
         navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Back", style: .done, target: self, action: #selector(dismissAndGoHome))
     }
     
-    private func createDismissKeyboardTapGesture(){
-        let tap = UITapGestureRecognizer(target: self.view, action: #selector(UIView.endEditing))
-        view.addGestureRecognizer(tap)
-    }
     
     @objc func dismissAndGoHome(){
         dismiss(animated: true)
-//        navigationController?.popViewController(animated: true)
+        navigationController?.popViewController(animated: true)
     }
     
     @objc func sendButtonTapped(){
-        print("send button tapped")
         if messageTextField.text != "" {
             let newMessage = Message(sender: currentUser.userId, content: messageTextField.text!, time: Date(), seen: false)
             var messagesArray = messages
@@ -142,6 +149,13 @@ class MessageViewController: UIViewController {
             NetworkManager.shared.addMessages(messages: messagesArray, lastMessage: newMessage, id: chatId!)
             messageTextField.text = ""
         }
+    }
+    
+    @objc func picButtonTapped(){
+        let picker = UIImagePickerController()
+        picker.allowsEditing = true
+        picker.delegate = self
+        present(picker, animated: true, completion: nil)
     }
     
     public func fetchChats(){
@@ -154,7 +168,17 @@ class MessageViewController: UIViewController {
             }
         }
     }
+    
+    private func uploadPhotoToSend(image: UIImage){
+//        let newMessage = Message(sender: currentUser.userId, content: "", time: Date(), seen: false, imageUrl: String?)
+//        var messagesArray = messages
+//        messagesArray.append(newMessage)
+        ImageUploader.uploadToFirebaseUsingImage(image: image) { url in
+            self.currentUser?.profileURL = url
+        }
+    }
 }
+
 extension MessageViewController: UITableViewDelegate, UITableViewDataSource{
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -170,5 +194,14 @@ extension MessageViewController: UITableViewDelegate, UITableViewDataSource{
         
         cell.messageItem = messages[indexPath.row]
         return cell
+    }
+}
+
+extension MessageViewController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+        if let imageSelected = info[UIImagePickerController.InfoKey.editedImage] as? UIImage {
+            uploadPhotoToSend(image: imageSelected)
+        }
+        dismiss(animated: true, completion: nil)
     }
 }

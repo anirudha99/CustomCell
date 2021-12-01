@@ -166,7 +166,7 @@ extension ConversationsViewController: UICollectionViewDataSource, UICollectionV
         let vc = MessageViewController()
         vc.chat = chats[indexPath.row]
 
-//        vc.navigationItem.largeTitleDisplayMode = .never
+        vc.navigationItem.largeTitleDisplayMode = .never
         navigationController?.modalPresentationStyle = .fullScreen
         navigationController?.pushViewController(vc, animated: true)
     }

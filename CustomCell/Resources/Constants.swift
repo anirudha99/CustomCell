@@ -14,6 +14,7 @@ struct ImageConstants {
     static let round = UIImage(systemName: "circle")
     static let sendButton =  UIImage(systemName: "paperplane.fill")
     static let square = UIImage(systemName: "square")
+    static let picture = UIImage(systemName: "photo.fill")
 
 }
 
@@ -24,23 +25,4 @@ struct MessageConstants {
     static let profilePictureInvalid = "Please Upload a Profile Picture"
 }
 
-public protocol SenderType {
-    var senderId: String { get }
-    var displayName: String { get }
-}
 
-public protocol MessageType {
-    
-    var sender: SenderType { get }
-    var messageId: String { get }
-    var sentDate: Date { get }
-    var kind: MessageKind { get }
-    
-}
-
-public enum MessageKind {
-    case text(String)
-//    case photo(MediaItem)
-//    case video(MediaItem)
-    
-}

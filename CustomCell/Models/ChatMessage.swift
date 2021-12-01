@@ -14,6 +14,7 @@ struct Message {
     var seen: Bool
     var dateString: String?
     var id: String?
+    var imageUrl: String?
     
     var dictionary: [String: Any] {
         return [

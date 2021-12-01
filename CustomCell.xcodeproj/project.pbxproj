@@ -17,6 +17,7 @@
 		1C282534273CD930001EE811 /* CustomTextfield.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C282533273CD930001EE811 /* CustomTextfield.swift */; };
 		1C282537273D387B001EE811 /* CustomLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C282536273D387B001EE811 /* CustomLabel.swift */; };
 		1CCA4CE5274B578C00B2C4DD /* Protocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CCA4CE4274B578C00B2C4DD /* Protocols.swift */; };
+		1CD11C572755E5DA00CA49F5 /* CutomInputAccessoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CD11C562755E5DA00CA49F5 /* CutomInputAccessoryView.swift */; };
 		1CD730A12744E29900531CEA /* MessageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CD730A02744E29900531CEA /* MessageViewController.swift */; };
 		1CD730A52745689400531CEA /* MessageTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CD730A42745689400531CEA /* MessageTableViewCell.swift */; };
 		1CDAA1002742183000394D19 /* Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CDAA0FF2742183000394D19 /* Extension.swift */; };
@@ -25,7 +26,6 @@
 		1CDAA10727425C6B00394D19 /* NewConversationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CDAA10627425C6B00394D19 /* NewConversationViewController.swift */; };
 		1CDAA10927425C7B00394D19 /* ProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CDAA10827425C7B00394D19 /* ProfileViewController.swift */; };
 		1CDAA10E27429BB600394D19 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 1CDAA10D27429BB600394D19 /* GoogleService-Info.plist */; };
-		1CDAA1102742ABD100394D19 /* DatabaseManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CDAA10F2742ABD100394D19 /* DatabaseManager.swift */; };
 		1CF46FD0273A781300945374 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CF46FCF273A781300945374 /* AppDelegate.swift */; };
 		1CF46FD2273A781300945374 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CF46FD1273A781300945374 /* SceneDelegate.swift */; };
 		1CF46FD4273A781300945374 /* PhotoViewerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CF46FD3273A781300945374 /* PhotoViewerViewController.swift */; };
@@ -48,6 +48,7 @@
 		1C282533273CD930001EE811 /* CustomTextfield.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomTextfield.swift; sourceTree = "<group>"; };
 		1C282536273D387B001EE811 /* CustomLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomLabel.swift; sourceTree = "<group>"; };
 		1CCA4CE4274B578C00B2C4DD /* Protocols.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Protocols.swift; sourceTree = "<group>"; };
+		1CD11C562755E5DA00CA49F5 /* CutomInputAccessoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CutomInputAccessoryView.swift; sourceTree = "<group>"; };
 		1CD730A02744E29900531CEA /* MessageViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageViewController.swift; sourceTree = "<group>"; };
 		1CD730A42745689400531CEA /* MessageTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageTableViewCell.swift; sourceTree = "<group>"; };
 		1CDAA0FF2742183000394D19 /* Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extension.swift; sourceTree = "<group>"; };
@@ -56,7 +57,6 @@
 		1CDAA10627425C6B00394D19 /* NewConversationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewConversationViewController.swift; sourceTree = "<group>"; };
 		1CDAA10827425C7B00394D19 /* ProfileViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileViewController.swift; sourceTree = "<group>"; };
 		1CDAA10D27429BB600394D19 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
-		1CDAA10F2742ABD100394D19 /* DatabaseManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DatabaseManager.swift; sourceTree = "<group>"; };
 		1CF46FCC273A781300945374 /* CustomCell.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CustomCell.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1CF46FCF273A781300945374 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		1CF46FD1273A781300945374 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -116,6 +116,7 @@
 				1C282531273CD91A001EE811 /* InputContainerView.swift */,
 				1C282533273CD930001EE811 /* CustomTextfield.swift */,
 				1C282536273D387B001EE811 /* CustomLabel.swift */,
+				1CD11C562755E5DA00CA49F5 /* CutomInputAccessoryView.swift */,
 			);
 			path = Custom;
 			sourceTree = "<group>";
@@ -144,7 +145,6 @@
 		1CDAA1112742ABDE00394D19 /* API */ = {
 			isa = PBXGroup;
 			children = (
-				1CDAA10F2742ABD100394D19 /* DatabaseManager.swift */,
 				1C0198882743957E00F5C603 /* NetworkManager.swift */,
 				1C01988A27440B9700F5C603 /* StorageManager.swift */,
 			);
@@ -348,10 +348,10 @@
 				1CD730A52745689400531CEA /* MessageTableViewCell.swift in Sources */,
 				1CF46FD0273A781300945374 /* AppDelegate.swift in Sources */,
 				1CFB6164274A978E00BCC7CD /* Chats.swift in Sources */,
+				1CD11C572755E5DA00CA49F5 /* CutomInputAccessoryView.swift in Sources */,
 				1C0D7C35274672A70020163E /* ChatAppUser.swift in Sources */,
 				1CDAA1002742183000394D19 /* Extension.swift in Sources */,
 				1CF46FD2273A781300945374 /* SceneDelegate.swift in Sources */,
-				1CDAA1102742ABD100394D19 /* DatabaseManager.swift in Sources */,
 				1CF46FE6273A815100945374 /* ConversationCell.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
