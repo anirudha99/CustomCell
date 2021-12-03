@@ -7,6 +7,8 @@
 
 import UIKit
 
+let collectIdentifier = "ConversationCell"
+
 class MessageViewController: UIViewController {
     
     var chat: Chats!
@@ -20,6 +22,7 @@ class MessageViewController: UIViewController {
     let containerView = UIView()
     
     var MessageTableView: UITableView!
+    var messageCollectionView: UICollectionView!
     
     var messageTextField = CustomTextField(placeholder: "Type Message here")
     
@@ -86,7 +89,8 @@ class MessageViewController: UIViewController {
         view.backgroundColor = .white
         tabBarController?.tabBar.isHidden = true
         configureNavigationBar()
-        configureTableView()
+//        configureTableView()
+        configureCollectionView()
         configureUI()
         fetchChats()
     }
@@ -101,19 +105,33 @@ class MessageViewController: UIViewController {
         return true
     }
     
-    func configureTableView(){
-        MessageTableView = UITableView(frame: CGRect(x: 0, y: 50, width: view.frame.width, height: view.frame.height-120))
-        MessageTableView.separatorStyle = .none
-        MessageTableView.delegate = self
-        MessageTableView.dataSource = self
-        MessageTableView.register(MessageTableViewCell.self, forCellReuseIdentifier: cellIdentifier)
-        MessageTableView.isUserInteractionEnabled = true
-        MessageTableView.keyboardDismissMode = .interactive
-        MessageTableView.contentInset = UIEdgeInsets(top: 8, left: 0, bottom: 8, right: 0)
-        MessageTableView.alwaysBounceVertical = true
-        view.addSubview(MessageTableView)
+    func configureCollectionView(){
+        messageCollectionView = UICollectionView(frame: view.bounds, collectionViewLayout: UICollectionViewFlowLayout())
+        view.addSubview(messageCollectionView)
+        messageCollectionView.backgroundColor = UIColor(white: 0.95, alpha: 1)
+        messageCollectionView.dataSource = self
+        messageCollectionView.delegate = self
+        messageCollectionView.alwaysBounceVertical = true
+        messageCollectionView.isUserInteractionEnabled = true
+        messageCollectionView.keyboardDismissMode = .interactive
+        messageCollectionView.contentInset = UIEdgeInsets(top: 8, left: 0, bottom: 58, right: 0)
+        messageCollectionView.scrollIndicatorInsets = UIEdgeInsets(top: 0, left: 0, bottom: 58, right: 0)
+        messageCollectionView.register(MessageViewCell.self, forCellWithReuseIdentifier: collectIdentifier)
     }
     
+//    func configureTableView(){
+//        MessageTableView = UITableView(frame: CGRect(x: 0, y: 50, width: view.frame.width, height: view.frame.height-120))
+//        MessageTableView.separatorStyle = .none
+//        MessageTableView.delegate = self
+//        MessageTableView.dataSource = self
+//        MessageTableView.register(MessageTableViewCell.self, forCellReuseIdentifier: cellIdentifier)
+//        MessageTableView.isUserInteractionEnabled = true
+//        MessageTableView.keyboardDismissMode = .interactive
+//        MessageTableView.contentInset = UIEdgeInsets(top: 8, left: 0, bottom: 8, right: 0)
+//        MessageTableView.alwaysBounceVertical = true
+//        view.addSubview(MessageTableView)
+//    }
+//
     func configureUI(){
         chatId = "\(chat.users[0].userId)_\(chat.users[1].userId)"
         if chat.otherUser == 0 {
@@ -136,7 +154,7 @@ class MessageViewController: UIViewController {
     
     @objc func sendButtonTapped(){
         if messageTextField.text != "" {
-            let newMessage = Message(sender: currentUser.userId, content: messageTextField.text!, time: Date(), seen: false)
+            let newMessage = Message(sender: currentUser.userId, content: messageTextField.text!, time: Date(), seen: false, imagePath: "")
             var messagesArray = messages
             messagesArray.append(newMessage)
             NetworkManager.shared.addMessages(messages: messagesArray, lastMessage: newMessage, id: chatId!)
@@ -154,41 +172,108 @@ class MessageViewController: UIViewController {
     public func fetchChats(){
         messages = []
         NetworkManager.shared.fetchMessages(chatId: chat.chatId!) { messages in
-            //print("Messages\(messages)")
             self.messages = messages
             DispatchQueue.main.async {
-                self.MessageTableView.reloadData()
+//                self.MessageTableView.reloadData()
+                self.messageCollectionView.reloadData()
             }
         }
     }
     
     private func uploadPhotoToSend(image: UIImage){
-        ImageUploader.uploadToFirebaseUsingImage(image: image) { url in
-            self.currentUser?.profileURL = url
-        }
-        //        let newMessage = Message(sender: currentUser.userId, content: "", time: Date(), seen: false, imageUrl: url)
-        //        var messagesArray = messages
-        //        messagesArray.append(newMessage)
-        //        NetworkManager.shared.addMessageWithImageURL(messages: messagesArray, lastMessage: newMessage, id: chatId!, imageUrl: )
+        let imagePath = "Chats/\(chatId!)/\(UUID())"
+        let newMessage = Message(sender: currentUser.userId, content: "", time: Date(), seen: false, imagePath: imagePath)
+        var messagesArray = self.messages
+        messagesArray.append(newMessage)
+        ImageUploader.uploadImage(image: image, name: imagePath) { url in }
+        NetworkManager.shared.addMessages(messages: messagesArray, lastMessage: newMessage, id: chatId!)
+//        self.MessageTableView.reloadData()
+        self.messageCollectionView.reloadData()
     }
 }
 
-extension MessageViewController: UITableViewDelegate, UITableViewDataSource{
+//extension MessageViewController: UITableViewDelegate, UITableViewDataSource{
+//
+//    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+//        return messages.count
+//    }
+//
+//    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+//        let cell = MessageTableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath) as! MessageTableViewCell
+//        cell.messageItem = messages[indexPath.row]
+//        return cell
+//    }
     
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    private func estimateTextFrame(text:String) -> CGRect{
+        let size = CGSize(width: 200, height: 1000)
+        let options = NSStringDrawingOptions.usesFontLeading.union(.usesLineFragmentOrigin)
+        return NSString(string: text).boundingRect(with: size, options: options, attributes: [NSAttributedString.Key.font: UIFont(name: "San Francisco Pro Display", size: 20) ?? UIFont.systemFont(ofSize: 18)], context: nil)
+    }
+    
+//    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+//        var height: CGFloat = CGFloat()
+//
+//        let messageobj = messages[indexPath.row]
+//
+//        if messageobj.imagePath == ""{
+//            let textString = messageobj.content
+//            height = estimateTextFrame(text:textString).height + 20
+//        } else {
+//            height = 220
+//        }
+//        return height
+//    }
+//
+//    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+//        return 5
+//    }
+//
+//    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+//        let headerView = UIView()
+//        headerView.backgroundColor = .clear
+//        return headerView
+//    }
+//}
+
+extension MessageViewController: UICollectionViewDelegate, UICollectionViewDataSource {
+    
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return messages.count
     }
     
-    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        return 50
-    }
-    
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = MessageTableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath) as! MessageTableViewCell
-        
-        cell.messageItem = messages[indexPath.row]
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        let cell = messageCollectionView.dequeueReusableCell(withReuseIdentifier: collectIdentifier, for: indexPath) as! MessageViewCell
+        let messageObj = messages[indexPath.item]
+        cell.messageItem = messageObj
+        let textS = messageObj.content
+        cell.widthConstraint?.constant = estimateTextFrame(text: textS).width + 30
         return cell
     }
+    
+}
+
+extension MessageViewController: UICollectionViewDelegateFlowLayout {
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
+        return 5
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        var height: CGFloat = CGFloat()
+        
+        let messageobj = messages[indexPath.row]
+        
+        if messageobj.imagePath == ""{
+            let textString = messageobj.content
+            height = estimateTextFrame(text:textString).height + 32
+            
+        } else {
+            height = 220
+        }
+        
+        return CGSize(width: view.frame.width, height: height)
+    }
+    
 }
 
 extension MessageViewController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {

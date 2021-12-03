@@ -219,7 +219,8 @@ class RegistrationViewController: UIViewController {
             }
             if let authResult = authResult {
                 let userid = authResult.user.uid
-                ImageUploader.uploadImage(image: self!.profilePicImage.image!) { url in
+                let path = "Profile/\(userid)"
+                ImageUploader.uploadImage(image: self!.profilePicImage.image!, name: path) { url in
                     
                     let chatUser = ChatAppUser(userId: userid, firstName: firstName, lastName: lastName, emailAddress: email, profileURL: url)
                     NetworkManager.shared.addUser(user: chatUser)

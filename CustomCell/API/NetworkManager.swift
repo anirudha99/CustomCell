@@ -106,22 +106,23 @@ struct NetworkManager {
             if let result = snapshot.value as? [String: [String: Any]] {
                 for key in result.keys {
                     let value = result[key]!
-                    var messagesArray: [Message] = []
                     var lastMessage: Message?
+                    
                     let users = value["Users"] as! [[String: Any]]
                     let lastMessageDictionary = value["lastMessage"] as? [String: Any]
-                    let messagesDictionary = value["messages"] as? [[String: Any]]
                     if lastMessageDictionary != nil {
+                        
                         let sender = lastMessageDictionary!["sender"] as! String
                         let content = lastMessageDictionary!["content"] as! String
                         let timeString = lastMessageDictionary!["time"] as! String
                         let seen = lastMessageDictionary!["seen"] as! Bool
+                        let imagePath = lastMessageDictionary!["imagePath"] as! String
                         
                         let time = databaseDateFormatter.date(from: timeString)
                         
-                        lastMessage = Message(sender: sender, content: content, time: time!, seen: seen)
+                        lastMessage = Message(sender: sender, content: content, time: time!, seen: seen, imagePath: imagePath)
+//                        print(lastMessage)
                     } else {
-                        messagesArray = []
                         lastMessage = nil
                     }
                     let user1 = users[0]
@@ -140,6 +141,7 @@ struct NetworkManager {
                     let uid2 = user2["uid"] as! String
                     let profileURL2 = user2["profileURL"] as! String
                     let secondUser = ChatAppUser(userId: uid2, firstName: firstname2, lastName: lastname2, emailAddress: email2, profileURL: profileURL2)
+                    
                     var otherUser: Int
                     
                     if uid1 == uid {
@@ -182,37 +184,15 @@ struct NetworkManager {
     func fetchMessages(chatId: String, completion: @escaping([Message]) -> Void) {
         database.child("Chats").child("\(chatId)/messages").observe(.value) { snapshot in
             var resultArray: [Message] = []
-            print("Messages\(snapshot.value)")
             if let result = snapshot.value as? [String: [String: Any]] {
-                print("Result\(result)")
                 let sortedKeyArray = result.keys.sorted()
                 for id in sortedKeyArray {
                     let message = result[id]!
-                    print("Messages\(message)")
                     resultArray.append(createMessageObject(dictionary: message , id: id))
                 }
                 completion(resultArray)
             }
         }
-    }
-    
-    func addMessageWithImageURL(messages: [Message], lastMessage: Message, id: String, imageUrl: String){
-        var lastMessageObj = lastMessage
-        let dateString = databaseDateFormatter.string(from: lastMessage.time)
-        lastMessageObj.dateString = dateString
-        
-        let lastMessageDictionary = lastMessageObj.dictionary
-        var messageDictionary: [[String:Any]] = []
-        
-        for var message in messages {
-            let dateString = databaseDateFormatter.string(from: message.time)
-            message.dateString = dateString
-            messageDictionary.append(message.dictionary)
-        }
-        let finalDictionary = ["lastMessage": lastMessageDictionary]
-        
-        database.child("Chats").child(id).updateChildValues(finalDictionary)
-        database.child("Chats").child(id).child("messages").childByAutoId().setValue(lastMessageDictionary)
     }
     
     func downloadImage(url: String, completion: @escaping(UIImage) -> Void) {
@@ -243,7 +223,8 @@ struct NetworkManager {
         let timeString = dictionary["time"] as! String
         let seen = dictionary["seen"] as! Bool
         let time = databaseDateFormatter.date(from: timeString)
-        return Message(sender: sender, content: content, time: time!, seen: seen, id: id)
+        let imagePath = dictionary["imagePath"] as! String
+        return Message(sender: sender, content: content, time: time!, seen: seen, id: id, imagePath: imagePath)
     }
     
     func logout() -> Bool {

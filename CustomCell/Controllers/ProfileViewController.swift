@@ -18,7 +18,7 @@ class ProfileViewController: UIViewController {
     let username = CustomLabel(text: "")
     let emailLabel = CustomLabel(text: "")
     let imageView = UIImageView()
-    
+  
     var currentUser: ChatAppUser?
     
     //MARK: -Init
@@ -31,6 +31,8 @@ class ProfileViewController: UIViewController {
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         fetchUserData()
+       
+        
     }
     
     func configureNavigationBarT() {
@@ -137,8 +139,12 @@ class ProfileViewController: UIViewController {
         self.present(navigation,animated: true)
     }
     
+    
+    
     func uploadNewProfile(image: UIImage) {
-        ImageUploader.uploadImage(image: image) { url in
+        let userid = NetworkManager.shared.getUID()!
+        let imagePath = "Profile/\(userid)"
+        ImageUploader.uploadImage(image: image, name: imagePath) { url in
             self.currentUser?.profileURL = url
             
             NetworkManager.shared.addUser(user: self.currentUser!)
