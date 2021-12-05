@@ -128,6 +128,7 @@
 		1CDAA101274231C200394D19 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				1CDAA10D27429BB600394D19 /* GoogleService-Info.plist */,
 				1CF46FCF273A781300945374 /* AppDelegate.swift */,
 				1CF46FD1273A781300945374 /* SceneDelegate.swift */,
 				1CDAA0FF2742183000394D19 /* Extension.swift */,
@@ -178,7 +179,6 @@
 			children = (
 				1C0D7C36274672AE0020163E /* Models */,
 				1CDAA1112742ABDE00394D19 /* API */,
-				1CDAA10D27429BB600394D19 /* GoogleService-Info.plist */,
 				1CDAA101274231C200394D19 /* Resources */,
 				1C282535273CFAC9001EE811 /* Custom */,
 				1CF46FE7273A815400945374 /* cell */,

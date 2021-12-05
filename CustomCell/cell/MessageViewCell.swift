@@ -20,28 +20,9 @@ class MessageViewCell: UICollectionViewCell {
             } else {
                 isSender = true
             }
-//            if messageItem!.imagePath! == "" {
                 configureCell(isSender: isSender)
-//            } else {
-//                configureImageCell(isSender: isSender)
-//            }
         }
     }
-    
-//    override init(frame: CGRect) {
-//        super.init(frame: frame)
-//
-//        NetworkManager.shared.downloadImageWithPath(path: messageItem?.content!) { image in
-//            DispatchQueue.main.async {
-//                self.imageChat.image = image
-//            }
-//        }
-//    }
-//
-//
-//    required init?(coder: NSCoder) {
-//        fatalError("init(coder:) has not been implemented")
-//    }
     
     var messageView : UIView = {
         let mesView = UIView()
@@ -65,18 +46,6 @@ class MessageViewCell: UICollectionViewCell {
         label.font = UIFont(name: "San Francisco Pro Display", size: 20)
         return label
     }()
-//
-//    var imageChat: UIImageView = {
-//        let image = UIImageView()
-//        image.layer.cornerRadius = 10
-//        image.clipsToBounds = true
-//        image.contentMode = .scaleAspectFill
-//        image.widthAnchor.constraint(equalToConstant: 200).isActive = true
-//        image.heightAnchor.constraint(equalToConstant: 200).isActive = true
-//        image.translatesAutoresizingMaskIntoConstraints = false
-//        image.image = ImageConstants.picture
-//        return image
-//    }()
     
     var time = CustomLabel(text: "")
     
@@ -130,55 +99,4 @@ class MessageViewCell: UICollectionViewCell {
             time.rightAnchor.constraint(equalTo: messageView.rightAnchor)
         ])
     }
-    
-//    func configureImageCell(isSender: Bool) {
-//        let dateFormatter = DateFormatter()
-//        dateFormatter.dateFormat = "hh:mm:a"
-//        NetworkManager.shared.downloadImageWithPath(path: (messageItem?.imagePath)!) { image in
-//            DispatchQueue.main.async {
-//                self.imageChat.image = image
-//            }
-//        }
-//
-//        addSubview(messageView)
-//        addSubview(time)
-//        messageView.addSubview(imageChat)
-//        time.text = dateFormatter.string(from: messageItem!.time)
-//        time.font = UIFont.systemFont(ofSize: 12)
-//        messageView.layer.cornerRadius = 10
-//        messageView.translatesAutoresizingMaskIntoConstraints = false
-//        time.translatesAutoresizingMaskIntoConstraints = false
-//
-//        leadingConstraint = messageView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 16)
-//        leadingConstraint?.isActive = true
-//
-//        trailingConstraint = messageView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -16)
-//        trailingConstraint?.isActive = true
-//        //        widthConstraint = messageView.widthAnchor.constraint(lessThanOrEqualToConstant: 250)
-//        //        widthConstraint?.isActive = true
-//
-//        if isSender {
-//            leadingConstraint.isActive = false
-//            trailingConstraint.isActive = true
-//            messageView.backgroundColor = .systemRed
-//        }
-//        else {
-//            leadingConstraint.isActive = true
-//            trailingConstraint.isActive = false
-//            messageView.backgroundColor = .systemGray
-//        }
-//        NSLayoutConstraint.activate([
-//            messageView.topAnchor.constraint(equalTo: topAnchor, constant: 8),
-//            messageView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -8),
-//            //            messageView.widthAnchor.constraint(lessThanOrEqualToConstant: 250),
-//
-//            imageChat.topAnchor.constraint(equalTo: messageView.topAnchor),
-//            imageChat.leftAnchor.constraint(equalTo: messageView.leftAnchor),
-//            imageChat.widthAnchor.constraint(equalTo: messageView.widthAnchor),
-//            imageChat.heightAnchor.constraint(equalTo: messageView.heightAnchor),
-//
-//            time.topAnchor.constraint(equalTo: imageChat.bottomAnchor, constant: -16),
-//            time.rightAnchor.constraint(equalTo: messageView.rightAnchor)
-//        ])
-//    }
 }

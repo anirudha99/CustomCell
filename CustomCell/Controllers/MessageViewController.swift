@@ -90,7 +90,6 @@ class MessageViewController: UIViewController {
         view.backgroundColor = .white
         tabBarController?.tabBar.isHidden = true
         configureNavigationBar()
-        //        configureTableView()
         configureCollectionView()
         configureUI()
         fetchChats()
@@ -121,19 +120,6 @@ class MessageViewController: UIViewController {
         messageCollectionView.register(ImageMessageViewCell.self, forCellWithReuseIdentifier: imageCollectIdentifier)
     }
     
-    //    func configureTableView(){
-    //        MessageTableView = UITableView(frame: CGRect(x: 0, y: 50, width: view.frame.width, height: view.frame.height-120))
-    //        MessageTableView.separatorStyle = .none
-    //        MessageTableView.delegate = self
-    //        MessageTableView.dataSource = self
-    //        MessageTableView.register(MessageTableViewCell.self, forCellReuseIdentifier: cellIdentifier)
-    //        MessageTableView.isUserInteractionEnabled = true
-    //        MessageTableView.keyboardDismissMode = .interactive
-    //        MessageTableView.contentInset = UIEdgeInsets(top: 8, left: 0, bottom: 8, right: 0)
-    //        MessageTableView.alwaysBounceVertical = true
-    //        view.addSubview(MessageTableView)
-    //    }
-    //
     func configureUI(){
         chatId = "\(chat.users[0].userId)_\(chat.users[1].userId)"
         if chat.otherUser == 0 {
@@ -196,45 +182,6 @@ class MessageViewController: UIViewController {
     
 }
 
-//extension MessageViewController: UITableViewDelegate, UITableViewDataSource{
-//
-//    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-//        return messages.count
-//    }
-//
-//    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-//        let cell = MessageTableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath) as! MessageTableViewCell
-//        cell.messageItem = messages[indexPath.row]
-//        return cell
-//    }
-
-
-
-//    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-//        var height: CGFloat = CGFloat()
-//
-//        let messageobj = messages[indexPath.row]
-//
-//        if messageobj.imagePath == ""{
-//            let textString = messageobj.content
-//            height = estimateTextFrame(text:textString).height + 20
-//        } else {
-//            height = 220
-//        }
-//        return height
-//    }
-//
-//    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-//        return 5
-//    }
-//
-//    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-//        let headerView = UIView()
-//        headerView.backgroundColor = .clear
-//        return headerView
-//    }
-//}
-
 extension MessageViewController: UICollectionViewDelegate, UICollectionViewDataSource {
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
@@ -260,10 +207,7 @@ extension MessageViewController: UICollectionViewDelegate, UICollectionViewDataS
             }
             return cell
         }
-
-//        let textS = messageObj.content
-//        cell.widthConstraint?.constant = estimateTextFrame(text: textS).width + 30
-       
+        
     }
     
     override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {

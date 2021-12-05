@@ -31,7 +31,6 @@ class ConversationsViewController: UIViewController {
         configureUICollectionView()
         
         validateAuth()
-        fetchConversations()
         fetchUserConvo()
     }
     
@@ -62,13 +61,12 @@ class ConversationsViewController: UIViewController {
     func configureUICollectionView(){
         collectionView = UICollectionView(frame: view.bounds, collectionViewLayout: UICollectionViewFlowLayout())
         view.addSubview(collectionView)
-        collectionView.isHidden = true
         collectionView.backgroundColor = UIColor(white: 0.95, alpha: 1)
         collectionView.dataSource = self
         collectionView.delegate = self
         collectionView.register(ConversationCell.self, forCellWithReuseIdentifier: reuseIdentifier)
     }
-
+    
     //MARK: -Handlers
     
     func validateAuth(){
@@ -103,17 +101,12 @@ class ConversationsViewController: UIViewController {
             }
         })
     }
-
     
     @objc func didTapEditButton(){
         print("edit button tapped")
         isEdit = !isEdit
         initialFetch  = true
         collectionView.reloadData()
-    }
-    
-    func fetchConversations(){
-        collectionView.isHidden = false
     }
 }
 
@@ -128,7 +121,7 @@ extension ConversationsViewController: UICollectionViewDataSource, UICollectionV
         let chat = chats[indexPath.row]
         cell.chat = chat
         cell.hideCheckBoxButton(isHide: isEdit)
-
+        
         return cell
     }
     
@@ -137,7 +130,7 @@ extension ConversationsViewController: UICollectionViewDataSource, UICollectionV
         
         let vc = MessageViewController()
         vc.chat = chats[indexPath.row]
-
+        
         vc.navigationItem.largeTitleDisplayMode = .never
         navigationController?.modalPresentationStyle = .fullScreen
         navigationController?.pushViewController(vc, animated: true)

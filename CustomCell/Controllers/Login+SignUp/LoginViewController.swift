@@ -90,7 +90,7 @@ class LoginViewController: UIViewController {
         button.tintColor = .white
         button.addTarget(self, action: #selector(handleForgotPasswordButtonTapped), for: .touchUpInside)
         button.translatesAutoresizingMaskIntoConstraints = false
-//        button.backgroundColor = .red
+        //        button.backgroundColor = .red
         button.layer.cornerRadius = 10
         button.heightAnchor.constraint(equalToConstant: 45).isActive = true
         return button
@@ -150,7 +150,7 @@ class LoginViewController: UIViewController {
         stackView.addArrangedSubview(forgotPasswordButton)
         stackView.addArrangedSubview(signUpPageTransistionContainer)
         scrollView.addSubview(stackView)
-       
+        
         scrollView.translatesAutoresizingMaskIntoConstraints = false
         logoContainer.translatesAutoresizingMaskIntoConstraints = false
         stackView.translatesAutoresizingMaskIntoConstraints = false
@@ -168,7 +168,7 @@ class LoginViewController: UIViewController {
         stackView.topAnchor.constraint(equalTo: logoContainer.bottomAnchor, constant: 50).isActive = true
         stackView.leftAnchor.constraint(equalTo: scrollView.leftAnchor, constant: 45).isActive = true
         stackView.widthAnchor.constraint(equalToConstant: 300).isActive = true
-//        stackView.rightAnchor.constraint(equalTo: scrollView.rightAnchor).isActive = true
+        //        stackView.rightAnchor.constraint(equalTo: scrollView.rightAnchor).isActive = true
         
     }
     
