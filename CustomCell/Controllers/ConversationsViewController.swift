@@ -152,7 +152,6 @@ extension ConversationsViewController: UserAuthenticatedDelegate {
         configureNavigationBarT()
         configureUICollectionView()
         validateAuth()
-        fetchConversations()
     }
 }
 
