@@ -15,7 +15,7 @@ struct NetworkManager {
     
     private let database = Database.database().reference()
     private let storage = Storage.storage()
-    private let imageCache = NSCache<AnyObject, AnyObject>()
+    private let imageCache = NSCache<AnyObject, UIImage>()
     
     let databaseDateFormatter: DateFormatter = {
         let formatter = DateFormatter()
@@ -41,6 +41,16 @@ struct NetworkManager {
         //Firebase
         print("Login button tapped")
         FirebaseAuth.Auth.auth().signIn(withEmail: email, password: password, completion: completion)
+    }
+    
+    func resetPasswordWithEmail(email: String, completion: @escaping(String) -> Void) {
+        Auth.auth().sendPasswordReset(withEmail: email) { error in
+            if let error = error {
+                completion(error.localizedDescription)
+                return
+            }
+            completion("LinkSent")
+        }
     }
     
     
@@ -121,7 +131,7 @@ struct NetworkManager {
                         let time = databaseDateFormatter.date(from: timeString)
                         
                         lastMessage = Message(sender: sender, content: content, time: time!, seen: seen, imagePath: imagePath)
-//                        print(lastMessage)
+                        //                        print(lastMessage)
                     } else {
                         lastMessage = nil
                     }
@@ -207,11 +217,16 @@ struct NetworkManager {
     }
     
     func downloadImageWithPath(path: String, completion: @escaping(UIImage) -> Void) {
+        if let cachedImage = self.imageCache.object(forKey: path as AnyObject){
+            completion(cachedImage)
+            return
+        }
         let result = storage.reference(withPath: path)
         result.getData(maxSize: 1 * 1024 * 1024) { data, error in
             guard error == nil else { return }
             if let data = data {
                 let resultImage: UIImage! = UIImage(data: data)
+                self.imageCache.setObject(resultImage, forKey: path as AnyObject)
                 completion(resultImage)
             }
         }

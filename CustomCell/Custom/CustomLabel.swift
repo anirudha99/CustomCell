@@ -12,7 +12,7 @@ class CustomLabel: UILabel {
     
     init(text: String){
         super.init(frame: .zero)
-        font = UIFont.systemFont(ofSize: 16, weight: .semibold)
+        font = UIFont.systemFont(ofSize: 18, weight: .semibold)
         textColor = .black
         textAlignment = .center
         translatesAutoresizingMaskIntoConstraints = false

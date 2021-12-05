@@ -19,7 +19,7 @@ struct ImageConstants {
 }
 
 struct MessageConstants {
-    static let emailInvalid = "Email is Invalid. Please Enter a Valid Email ID"
+    static let emailInvalid = "Please Enter a Valid Email Address"
     static let passwordInvalid = "Password is Invalid. Password must contain atleast 8 character with 1 number and 1 special character"
     static let usernameInvalid = "User Name must be atleast 3 Characters"
     static let profilePictureInvalid = "Please Upload a Profile Picture"

@@ -21,6 +21,8 @@ class LoginViewController: UIViewController {
     var delegate: UserAuthenticatedDelegate?
     var spinnerT = UIActivityIndicatorView(style: .large)
     
+    let scrollView = UIScrollView()
+    
     let appLogo : UIImageView = {
         let iv = UIImageView()
         iv.image = UIImage(named: ImageConstants.appIcon)
@@ -82,6 +84,18 @@ class LoginViewController: UIViewController {
         return button
     }()
     
+    let forgotPasswordButton: UIButton = {
+        let button = UIButton()
+        button.setTitle("Forgot Password?", for: .normal)
+        button.tintColor = .white
+        button.addTarget(self, action: #selector(handleForgotPasswordButtonTapped), for: .touchUpInside)
+        button.translatesAutoresizingMaskIntoConstraints = false
+//        button.backgroundColor = .red
+        button.layer.cornerRadius = 10
+        button.heightAnchor.constraint(equalToConstant: 45).isActive = true
+        return button
+    }()
+    
     lazy var signUpPageTransistionContainer: UIView = {
         let view = UIView()
         view.backgroundColor = .darkGray
@@ -91,7 +105,7 @@ class LoginViewController: UIViewController {
         view.addSubview(signUpLabel)
         signUpLabel.translatesAutoresizingMaskIntoConstraints = false
         signUpLabel.widthAnchor.constraint(equalToConstant: 200).isActive = true
-        signUpLabel.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 30).isActive = true
+        signUpLabel.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 10).isActive = true
         signUpLabel.centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive = true
         
         view.addSubview(signupPageButton)
@@ -127,24 +141,34 @@ class LoginViewController: UIViewController {
     func configureUI(){
         
         view.backgroundColor = .darkGray
-        
-        view.addSubview(logoContainer)
-        logoContainer.translatesAutoresizingMaskIntoConstraints = false
-        logoContainer.heightAnchor.constraint(equalToConstant: 100).isActive = true
-        logoContainer.widthAnchor.constraint(equalToConstant: 100).isActive = true
-        logoContainer.topAnchor.constraint(equalTo: view.topAnchor, constant: 100).isActive = true
-        logoContainer.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 140).isActive = true
+        view.addSubview(scrollView)
+        scrollView.addSubview(logoContainer)
         
         stackView.addArrangedSubview(emailContainer)
         stackView.addArrangedSubview(passwordContainer)
         stackView.addArrangedSubview(loginButton)
+        stackView.addArrangedSubview(forgotPasswordButton)
         stackView.addArrangedSubview(signUpPageTransistionContainer)
-        
-        view.addSubview(stackView)
+        scrollView.addSubview(stackView)
+       
+        scrollView.translatesAutoresizingMaskIntoConstraints = false
+        logoContainer.translatesAutoresizingMaskIntoConstraints = false
         stackView.translatesAutoresizingMaskIntoConstraints = false
-        stackView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor , constant: 150).isActive = true
-        stackView.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 20).isActive = true
-        stackView.rightAnchor.constraint(equalTo: view.rightAnchor, constant: -20).isActive = true
+        
+        scrollView.leftAnchor.constraint(equalTo: view.leftAnchor).isActive = true
+        scrollView.rightAnchor.constraint(equalTo: view.rightAnchor).isActive = true
+        scrollView.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
+        scrollView.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
+        
+        logoContainer.heightAnchor.constraint(equalToConstant: 100).isActive = true
+        logoContainer.widthAnchor.constraint(equalToConstant: 100).isActive = true
+        logoContainer.topAnchor.constraint(equalTo: scrollView.topAnchor, constant: 50).isActive = true
+        logoContainer.leftAnchor.constraint(equalTo: scrollView.leftAnchor, constant: 140).isActive = true
+        
+        stackView.topAnchor.constraint(equalTo: logoContainer.bottomAnchor, constant: 50).isActive = true
+        stackView.leftAnchor.constraint(equalTo: scrollView.leftAnchor, constant: 45).isActive = true
+        stackView.widthAnchor.constraint(equalToConstant: 300).isActive = true
+//        stackView.rightAnchor.constraint(equalTo: scrollView.rightAnchor).isActive = true
         
     }
     
@@ -172,22 +196,25 @@ class LoginViewController: UIViewController {
     func configureNotificationObserver(){
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow), name: UIResponder.keyboardWillShowNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide), name: UIResponder.keyboardDidHideNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(handleOrientationChange), name: UIDevice.orientationDidChangeNotification, object: nil)
     }
     
     //MARK: -Handlers
     
     @objc func keyboardWillShow(){
-        print("Keyboard will show")
         if view.frame.origin.y == 0 {
             self.view.frame.origin.y -= 80
         }
     }
     
     @objc func keyboardWillHide(){
-        print("Keyboard will hide")
         if view.frame.origin.y == -80 {
             self.view.frame.origin.y = 0
         }
+    }
+    
+    @objc func handleOrientationChange() {
+        scrollView.contentSize = CGSize(width: view.frame.width, height: 600)
     }
     
     @objc func handleLoginButtonTapped(){
@@ -219,8 +246,23 @@ class LoginViewController: UIViewController {
         }
     }
     
+    @objc func handleForgotPasswordButtonTapped(){
+        guard let email = emailTextField.text else { return }
+        if emailValidation(email: email){
+            NetworkManager.shared.resetPasswordWithEmail(email: email) { result in
+                if result == "LinkSent" {
+                    self.showAlert(title: "Password Reset Email Sent", message: "Reset link is sent to your registered email, please check your email")
+                }
+                else{
+                    self.showAlert(title: "Failed to send link", message: "Please try again later")
+                }
+            }
+        } else {
+            showAlert(title: "Invalid email address", message: MessageConstants.emailInvalid)
+        }
+    }
+    
     @objc func transistionToSignUp(){
-        print("Transistion to sign up page")
         let controller = RegistrationViewController()
         controller.modalPresentationStyle = .fullScreen
         navigationController?.pushViewController(controller, animated: true)

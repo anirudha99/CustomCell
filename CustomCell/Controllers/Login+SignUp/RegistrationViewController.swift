@@ -15,6 +15,7 @@ class RegistrationViewController: UIViewController {
     var delegate: UserAuthenticatedDelegate?
     
     var spinnerT = UIActivityIndicatorView(style: .large )
+    let scrollView = UIScrollView()
     
     let profilePicImage: UIImageView = {
         let imageView = UIImageView()
@@ -64,13 +65,13 @@ class RegistrationViewController: UIViewController {
         
         view.addSubview(loginLabel)
         loginLabel.translatesAutoresizingMaskIntoConstraints = false
-        loginLabel.widthAnchor.constraint(equalToConstant: 200).isActive = true
-        loginLabel.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 40).isActive = true
+        loginLabel.widthAnchor.constraint(equalToConstant: 240).isActive = true
+        loginLabel.leftAnchor.constraint(equalTo: view.leftAnchor).isActive = true
         loginLabel.centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive = true
         
         view.addSubview(loginPageButton)
         loginPageButton.centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive = true
-        loginPageButton.leftAnchor.constraint(equalTo: loginLabel.rightAnchor, constant: 10).isActive = true
+        loginPageButton.leftAnchor.constraint(equalTo: loginLabel.rightAnchor).isActive = true
         loginPageButton.heightAnchor.constraint(equalToConstant: 50).isActive = true
         
         return view
@@ -120,11 +121,19 @@ class RegistrationViewController: UIViewController {
     func configureUI(){
         navigationController?.isNavigationBarHidden = true
         view.backgroundColor = .darkGray
-        view.addSubview(profilePicImage)
+        view.addSubview(scrollView)
+        scrollView.translatesAutoresizingMaskIntoConstraints = false
+        scrollView.addSubview(profilePicImage)
         let gesture = UITapGestureRecognizer(target: self, action: #selector(didTapChangeProfilePic))
         profilePicImage.addGestureRecognizer(gesture)
-        profilePicImage.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
-        profilePicImage.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 40).isActive = true
+        
+        scrollView.leftAnchor.constraint(equalTo: view.leftAnchor).isActive = true
+        scrollView.rightAnchor.constraint(equalTo: view.rightAnchor).isActive = true
+        scrollView.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
+        scrollView.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
+        
+        profilePicImage.centerXAnchor.constraint(equalTo: scrollView.centerXAnchor).isActive = true
+        profilePicImage.topAnchor.constraint(equalTo: scrollView.safeAreaLayoutGuide.topAnchor, constant: 40).isActive = true
         profilePicImage.heightAnchor.constraint(equalToConstant: 120).isActive = true
         profilePicImage.widthAnchor.constraint(equalToConstant: 120).isActive = true
         //
@@ -135,10 +144,11 @@ class RegistrationViewController: UIViewController {
         stackView.addArrangedSubview(signUpButton)
         stackView.addArrangedSubview(loginPageTransistionContainer)
         
-        view.addSubview(stackView)
+        scrollView.addSubview(stackView)
         stackView.topAnchor.constraint(equalTo: profilePicImage.bottomAnchor , constant: 40).isActive = true
-        stackView.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 20).isActive = true
-        stackView.rightAnchor.constraint(equalTo: view.rightAnchor, constant: -20).isActive = true
+        stackView.leftAnchor.constraint(equalTo: scrollView.leftAnchor, constant: 45).isActive = true
+        stackView.widthAnchor.constraint(equalToConstant: 300).isActive = true
+//        stackView.rightAnchor.constraint(equalTo: scrollView.rightAnchor, constant: -20).isActive = true
         
     }
     
@@ -150,6 +160,7 @@ class RegistrationViewController: UIViewController {
     func configureNotificationObserver(){
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow), name: UIResponder.keyboardWillShowNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide), name: UIResponder.keyboardDidHideNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(handleOrientationChange), name: UIDevice.orientationDidChangeNotification, object: nil)
     }
     
     func configureSpinner(){
@@ -168,31 +179,32 @@ class RegistrationViewController: UIViewController {
         spinnerT.stopAnimating()
     }
     
+    @objc func handleOrientationChange() {
+        scrollView.contentSize = CGSize(width: view.frame.width, height: 600)
+    }
+    
     //MARK: -Handlers
     
     @objc func keyboardWillShow(){
-        print("Keybaord will show")
         if view.frame.origin.y == 0 {
             self.view.frame.origin.y -= 80
         }
     }
     
     @objc func keyboardWillHide(){
-        print("Keybaord will hide")
         if view.frame.origin.y == -80 {
             self.view.frame.origin.y = 0
         }
     }
     
     @objc func didTapChangeProfilePic(){
-        print("profilepictapped")
         let picker = UIImagePickerController()
         picker.allowsEditing = true
         picker.delegate = self
         present(picker, animated: true, completion: nil)
         
     }
-   
+    
     
     @objc func handleRegisterButtonTapped(){
         guard profilePicImage.image != nil else { return }
@@ -235,7 +247,6 @@ class RegistrationViewController: UIViewController {
     }
     
     @objc func transistionToLogin(){
-        print("Transistion to login page")
         let controller = LoginViewController()
         controller.modalPresentationStyle = .fullScreen
         navigationController?.pushViewController(controller, animated: true)
