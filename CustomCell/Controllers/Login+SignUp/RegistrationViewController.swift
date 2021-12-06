@@ -146,9 +146,8 @@ class RegistrationViewController: UIViewController {
         
         scrollView.addSubview(stackView)
         stackView.topAnchor.constraint(equalTo: profilePicImage.bottomAnchor , constant: 40).isActive = true
-        stackView.leftAnchor.constraint(equalTo: scrollView.leftAnchor, constant: 45).isActive = true
-        stackView.widthAnchor.constraint(equalToConstant: 300).isActive = true
-        //        stackView.rightAnchor.constraint(equalTo: scrollView.rightAnchor, constant: -20).isActive = true
+        stackView.leftAnchor.constraint(equalTo: scrollView.leftAnchor, constant: 20).isActive = true
+        stackView.rightAnchor.constraint(equalTo: view.rightAnchor,constant: -20).isActive = true
         
     }
     

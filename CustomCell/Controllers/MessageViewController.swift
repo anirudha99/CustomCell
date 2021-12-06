@@ -18,7 +18,7 @@ class MessageViewController: UIViewController {
     var isNewConversation = false
     var otherUser: ChatAppUser!
     var currentUser: ChatAppUser!
-    var chatId: String?
+    let uid = NetworkManager.shared.getUID()
     
     let containerView = UIView()
     
@@ -121,16 +121,21 @@ class MessageViewController: UIViewController {
     }
     
     func configureUI(){
-        chatId = "\(chat.users[0].userId)_\(chat.users[1].userId)"
-        if chat.otherUser == 0 {
-            otherUser = chat.users[0]
-            currentUser = chat.users[1]
+        var name: String
+        NetworkManager.shared.fetchCurrentUser { user in
+            self.currentUser = user
+        }
+        if chat.isGroupChat {
+            name = chat.groupName!
         } else {
-            otherUser = chat.users[1]
-            currentUser = chat.users[0]
+            if chat.users[0].userId == uid {
+                name = "\(chat.users[1].firstName) \(chat.users[1].lastName)"
+            } else {
+                name = "\(chat.users[0].firstName) \(chat.users[0].lastName)"
+            }
         }
         
-        navigationItem.title = "\(otherUser.firstName) \(otherUser.lastName)"
+        navigationItem.title = name
         navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Back", style: .done, target: self, action: #selector(dismissAndGoHome))
     }
     
@@ -145,7 +150,7 @@ class MessageViewController: UIViewController {
             let newMessage = Message(sender: currentUser.userId, content: messageTextField.text!, time: Date(), seen: false, imagePath: "")
             var messagesArray = messages
             messagesArray.append(newMessage)
-            NetworkManager.shared.addMessages(messages: messagesArray, lastMessage: newMessage, id: chatId!)
+            NetworkManager.shared.addMessages(messages: messagesArray, lastMessage: newMessage, id: chat.chatId!)
             messageTextField.text = ""
         }
     }
@@ -169,13 +174,12 @@ class MessageViewController: UIViewController {
     }
     
     private func uploadPhotoToSend(image: UIImage){
-        let imagePath = "Chats/\(chatId!)/\(UUID())"
+        let imagePath = "Chats/\(chat.chatId!)/\(UUID())"
         let newMessage = Message(sender: currentUser.userId, content: "", time: Date(), seen: false, imagePath: imagePath)
         var messagesArray = self.messages
         messagesArray.append(newMessage)
         ImageUploader.uploadImage(image: image, name: imagePath) { url in }
-        NetworkManager.shared.addMessages(messages: messagesArray, lastMessage: newMessage, id: chatId!)
-        //        self.MessageTableView.reloadData()
+        NetworkManager.shared.addMessages(messages: messagesArray, lastMessage: newMessage, id: chat.chatId!)
         self.messageCollectionView.reloadData()
     }
     
@@ -207,7 +211,6 @@ extension MessageViewController: UICollectionViewDelegate, UICollectionViewDataS
             }
             return cell
         }
-        
     }
     
     override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
@@ -221,7 +224,7 @@ extension MessageViewController: UICollectionViewDelegateFlowLayout {
         return 5
     }
     
-    func estimateTextFrame(text:String) -> CGRect {
+    private func estimateTextFrame(text:String) -> CGRect {
         let size = CGSize(width: 200, height: 1000)
         let options = NSStringDrawingOptions.usesFontLeading.union(.usesLineFragmentOrigin)
         return NSString(string: text).boundingRect(with: size, options: options, attributes: [NSAttributedString.Key.font: UIFont(name: "San Francisco Pro Display", size: 20) ?? UIFont.systemFont(ofSize: 18)], context: nil)
@@ -229,15 +232,29 @@ extension MessageViewController: UICollectionViewDelegateFlowLayout {
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         
-        var height: CGFloat = CGFloat()
         let messageobj = messages[indexPath.row]
-        if messageobj.imagePath == ""{
-            let textString = messageobj.content
-            height = estimateTextFrame(text:textString).height + 32
-            
-        } else {
-            height = 220
+        var height: CGFloat = CGFloat()
+        
+        let frame = CGRect(x: 0, y: 0, width: view.frame.width, height: 50)
+        let imageFrame = CGRect(x: 0, y: 0, width: view.frame.width, height: 200)
+        let estimateSizeCell = MessageViewCell(frame: frame)
+        let estimateImageSizeCell = ImageMessageViewCell(frame: imageFrame)
+        
+        if messageobj.imagePath == "" {
+            estimateSizeCell.messageItem = messages[indexPath.row]
+            estimateSizeCell.layoutIfNeeded()
+            let targetSize = CGSize(width: view.frame.width, height: 1000)
+            let estimatedSize = estimateSizeCell.systemLayoutSizeFitting(targetSize)
+            height = estimatedSize.height
         }
+        else{
+            estimateImageSizeCell.messageItem = messages[indexPath.row]
+            estimateImageSizeCell.layoutIfNeeded()
+            let targetSize = CGSize(width: view.frame.width, height: 1000)
+            let estimatedSize = estimateImageSizeCell.systemLayoutSizeFitting(targetSize)
+            height = estimatedSize.height
+        }
+      
         let width = UIScreen.main.bounds.width
         return CGSize(width: width, height: height)
     }

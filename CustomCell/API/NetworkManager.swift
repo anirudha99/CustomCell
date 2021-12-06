@@ -71,7 +71,6 @@ struct NetworkManager {
     }
     
     func fetchAllUsers(completion: @escaping([ChatAppUser]) -> Void) {
-        print("wdwewedwef")
         var users = [ChatAppUser]()
         guard let uid = Auth.auth().currentUser?.uid else { return }
         database.child("users").observe(.value) { snapshot in
@@ -99,14 +98,25 @@ struct NetworkManager {
         }
     }
     
-    func addChat(user1: ChatAppUser, user2: ChatAppUser, id: String) {
+    func addChat(users: [ChatAppUser], id: String, isGroupChat: Bool, groupName: String?, groupIconPath: String?) {
         var userDictionary: [[String: Any]] = []
+        var finalDictionary: [String: Any]
         
-        userDictionary.append(user1.dictionary)
-        userDictionary.append(user2.dictionary)
-        let finalDic = ["Users" : userDictionary]
+        for user in users {
+            userDictionary.append(user.dictionary)
+        }
         
-        database.child("Chats").child(id).setValue(finalDic)
+        if isGroupChat {
+            finalDictionary = ["users": userDictionary,
+                               "isGroupChat": isGroupChat,
+                               "groupName": groupName!,
+                               "groupIconPath": groupIconPath!]
+        } else {
+            finalDictionary = ["users": userDictionary,
+                               "isGroupChat": isGroupChat]
+        }
+        
+        database.child("Chats").child(id).setValue(finalDictionary)
     }
     
     func fetchChats(completion: @escaping([Chats]) -> Void) {
@@ -120,48 +130,48 @@ struct NetworkManager {
                     
                     let users = value["Users"] as! [[String: Any]]
                     let lastMessageDictionary = value["lastMessage"] as? [String: Any]
+                    let isGroupChat = value["isGroupChat"] as! Bool
+                    
                     if lastMessageDictionary != nil {
-                        
                         let sender = lastMessageDictionary!["sender"] as! String
                         let content = lastMessageDictionary!["content"] as! String
                         let timeString = lastMessageDictionary!["time"] as! String
                         let seen = lastMessageDictionary!["seen"] as! Bool
                         let imagePath = lastMessageDictionary!["imagePath"] as! String
-                        
                         let time = databaseDateFormatter.date(from: timeString)
                         
                         lastMessage = Message(sender: sender, content: content, time: time!, seen: seen, imagePath: imagePath)
-                        //                        print(lastMessage)
                     } else {
                         lastMessage = nil
                     }
-                    let user1 = users[0]
-                    let user2 = users[1]
-                    
-                    let email1 = user1["email"] as! String
-                    let firstname1 = user1["firstname"] as! String
-                    let lastname1 = user1["lastname"] as! String
-                    let uid1 = user1["uid"] as! String
-                    let profileURL1 = user1["profileURL"] as! String
-                    let firstUser = ChatAppUser(userId: uid1, firstName: firstname1, lastName: lastname1, emailAddress: email1, profileURL: profileURL1)
-                    
-                    let email2 = user2["email"] as! String
-                    let firstname2 = user2["firstname"] as! String
-                    let lastname2 = user2["lastname"] as! String
-                    let uid2 = user2["uid"] as! String
-                    let profileURL2 = user2["profileURL"] as! String
-                    let secondUser = ChatAppUser(userId: uid2, firstName: firstname2, lastName: lastname2, emailAddress: email2, profileURL: profileURL2)
-                    
-                    var otherUser: Int
-                    
-                    if uid1 == uid {
-                        otherUser = 1
-                    } else {
-                        otherUser = 0
-                    }
+                    var usersArray: [ChatAppUser] = []
+                    var uidArray: [String] = []
                     let id = key
-                    let chat = Chats(chatId: id, users: [firstUser, secondUser], lastMessage: lastMessage, messages: [], otherUser: otherUser)
-                    if firstUser.userId == uid || secondUser.userId == uid {
+                    var chat: Chats
+                    
+                    for user in users {
+                        let userObject = createUserObject(dictionary: user)
+                        usersArray.append(userObject)
+                        uidArray.append(userObject.userId)
+                    }
+                    if isGroupChat {
+                        let groupName = value["groupName"] as! String
+                        let groupIconPath = value["groupIconPath"] as! String
+                        
+                        chat = Chats(chatId: id, users: usersArray, lastMessage: lastMessage, messages: [], isGroupChat: isGroupChat, groupName: groupName, groupIconPath: groupIconPath)
+                        
+                    }
+                    else {
+                        var otherUser: Int
+                        if usersArray[0].userId == uid {
+                            otherUser = 1
+                        } else {
+                            otherUser = 0
+                        }
+                        
+                        chat = Chats(chatId: id, users: usersArray, lastMessage: lastMessage, messages: [], otherUser: otherUser, isGroupChat: isGroupChat)
+                    }
+                    if uidArray.contains(uid) {
                         chats.append(chat)
                     }
                 }
@@ -179,11 +189,11 @@ struct NetworkManager {
         let lastMessageDictionary = lastMessageObj.dictionary
         var messageDictionary: [[String:Any]] = []
         
-        for var message in messages {
-            let dateString = databaseDateFormatter.string(from: message.time)
-            message.dateString = dateString
-            messageDictionary.append(message.dictionary)
-        }
+        //        for var message in messages {
+        //            let dateString = databaseDateFormatter.string(from: message.time)
+        //            message.dateString = dateString
+        //            messageDictionary.append(message.dictionary)
+        //        }
         let finalDictionary = ["lastMessage": lastMessageDictionary]
         
         database.child("Chats").child(id).updateChildValues(finalDictionary)
@@ -240,6 +250,15 @@ struct NetworkManager {
         let time = databaseDateFormatter.date(from: timeString)
         let imagePath = dictionary["imagePath"] as! String
         return Message(sender: sender, content: content, time: time!, seen: seen, id: id, imagePath: imagePath)
+    }
+    
+    func createUserObject(dictionary: [String: Any]) -> ChatAppUser {
+        let email = dictionary["email"] as! String
+        let firstname = dictionary["firstname"] as! String
+        let lastname = dictionary["lastname"] as! String
+        let uid = dictionary["uid"] as! String
+        let profileURL = dictionary["profileURL"] as! String
+        return ChatAppUser(userId: uid, firstName: firstname, lastName: lastname, emailAddress: email, profileURL: profileURL)
     }
     
     func logout() -> Bool {

@@ -30,7 +30,6 @@ class ImageMessageViewCell: UICollectionViewCell {
         return mesView
     }()
     
-    var widthConstraint: NSLayoutConstraint!
     var leadingConstraint: NSLayoutConstraint!
     var trailingConstraint: NSLayoutConstraint!
     
@@ -48,16 +47,11 @@ class ImageMessageViewCell: UICollectionViewCell {
     
     var time = CustomLabel(text: "")
     
-    func configureImageCell(isSender: Bool) {
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "hh:mm:a"
-        
+    override init(frame: CGRect) {
+        super.init(frame: frame)
         addSubview(messageView)
         addSubview(time)
         messageView.addSubview(imageChat)
-        time.text = dateFormatter.string(from: messageItem!.time)
-        time.font = UIFont.systemFont(ofSize: 12)
-        messageView.layer.cornerRadius = 10
         messageView.translatesAutoresizingMaskIntoConstraints = false
         time.translatesAutoresizingMaskIntoConstraints = false
         
@@ -66,8 +60,33 @@ class ImageMessageViewCell: UICollectionViewCell {
         
         trailingConstraint = messageView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -16)
         trailingConstraint?.isActive = true
-        //        widthConstraint = messageView.widthAnchor.constraint(lessThanOrEqualToConstant: 250)
-        //        widthConstraint?.isActive = true
+        
+        NSLayoutConstraint.activate([
+            messageView.topAnchor.constraint(equalTo: topAnchor, constant: 8),
+            messageView.bottomAnchor.constraint(equalTo: bottomAnchor),
+            messageView.widthAnchor.constraint(lessThanOrEqualToConstant: 250),
+            
+            imageChat.topAnchor.constraint(equalTo: messageView.topAnchor),
+            imageChat.leftAnchor.constraint(equalTo: messageView.leftAnchor),
+            imageChat.widthAnchor.constraint(equalTo: messageView.widthAnchor),
+            imageChat.heightAnchor.constraint(equalTo: messageView.heightAnchor),
+            
+            time.topAnchor.constraint(equalTo: imageChat.bottomAnchor, constant: -16),
+            time.rightAnchor.constraint(equalTo: messageView.rightAnchor)
+        ])
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    func configureImageCell(isSender: Bool) {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "hh:mm:a"
+        
+        time.text = dateFormatter.string(from: messageItem!.time)
+        time.font = UIFont.systemFont(ofSize: 12)
+        messageView.layer.cornerRadius = 10
         
         if isSender {
             leadingConstraint.isActive = false
@@ -79,19 +98,7 @@ class ImageMessageViewCell: UICollectionViewCell {
             trailingConstraint.isActive = false
             messageView.backgroundColor = .systemGray
         }
-        NSLayoutConstraint.activate([
-            messageView.topAnchor.constraint(equalTo: topAnchor, constant: 8),
-            messageView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -8),
-            //            messageView.widthAnchor.constraint(lessThanOrEqualToConstant: 250),
-            
-            imageChat.topAnchor.constraint(equalTo: messageView.topAnchor),
-            imageChat.leftAnchor.constraint(equalTo: messageView.leftAnchor),
-            imageChat.widthAnchor.constraint(equalTo: messageView.widthAnchor),
-            imageChat.heightAnchor.constraint(equalTo: messageView.heightAnchor),
-            
-            time.topAnchor.constraint(equalTo: imageChat.bottomAnchor, constant: -16),
-            time.rightAnchor.constraint(equalTo: messageView.rightAnchor)
-        ])
+        
     }
     
 }

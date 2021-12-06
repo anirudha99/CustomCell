@@ -15,6 +15,7 @@ struct ImageConstants {
     static let sendButton =  UIImage(systemName: "paperplane.fill")
     static let square = UIImage(systemName: "square")
     static let picture = UIImage(systemName: "photo.fill")
+    static let groupPhoto = UIImage(systemName: "person.3.fill")
 
 }
 
@@ -23,4 +24,8 @@ struct MessageConstants {
     static let passwordInvalid = "Password is Invalid. Password must contain atleast 8 character with 1 number and 1 special character"
     static let usernameInvalid = "User Name must be atleast 3 Characters"
     static let profilePictureInvalid = "Please Upload a Profile Picture"
+    static let groupPhotoInvalid = "Please Upload a Group Picture"
+    static let groupNameInvalid = "Please Enter a Valid Group Name"
+    static let minimumGroupMemberError = "Please select more than 1 user"
+    
 }

@@ -100,10 +100,12 @@ class ConversationsViewController: UIViewController {
                 self.collectionView.reloadData()
             }
         })
+        DispatchQueue.main.async {
+            self.collectionView.reloadData()
+        }
     }
     
     @objc func didTapEditButton(){
-        print("edit button tapped")
         isEdit = !isEdit
         initialFetch  = true
         collectionView.reloadData()

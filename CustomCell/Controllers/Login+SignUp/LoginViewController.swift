@@ -78,7 +78,6 @@ class LoginViewController: UIViewController {
         let button = UIButton()
         button.setTitle("Sign Up", for: .normal)
         button.setTitleColor(.red, for: .normal)
-        button.tintColor = .systemGray
         button.translatesAutoresizingMaskIntoConstraints = false
         button.addTarget(self, action: #selector(transistionToSignUp), for: .touchUpInside)
         return button
@@ -90,7 +89,6 @@ class LoginViewController: UIViewController {
         button.tintColor = .white
         button.addTarget(self, action: #selector(handleForgotPasswordButtonTapped), for: .touchUpInside)
         button.translatesAutoresizingMaskIntoConstraints = false
-        //        button.backgroundColor = .red
         button.layer.cornerRadius = 10
         button.heightAnchor.constraint(equalToConstant: 45).isActive = true
         return button
@@ -98,7 +96,6 @@ class LoginViewController: UIViewController {
     
     lazy var signUpPageTransistionContainer: UIView = {
         let view = UIView()
-        view.backgroundColor = .darkGray
         view.heightAnchor.constraint(equalToConstant: 50).isActive = true
         view.translatesAutoresizingMaskIntoConstraints = false
         
@@ -140,7 +137,7 @@ class LoginViewController: UIViewController {
     
     func configureUI(){
         
-        view.backgroundColor = .darkGray
+        view.backgroundColor = UIColor(white: 0.40, alpha: 1)
         view.addSubview(scrollView)
         scrollView.addSubview(logoContainer)
         
@@ -160,15 +157,12 @@ class LoginViewController: UIViewController {
         scrollView.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
         scrollView.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
         
-        logoContainer.heightAnchor.constraint(equalToConstant: 100).isActive = true
-        logoContainer.widthAnchor.constraint(equalToConstant: 100).isActive = true
         logoContainer.topAnchor.constraint(equalTo: scrollView.topAnchor, constant: 50).isActive = true
-        logoContainer.leftAnchor.constraint(equalTo: scrollView.leftAnchor, constant: 140).isActive = true
-        
+        logoContainer.centerXAnchor.constraint(equalTo: scrollView.centerXAnchor).isActive = true
+
         stackView.topAnchor.constraint(equalTo: logoContainer.bottomAnchor, constant: 50).isActive = true
-        stackView.leftAnchor.constraint(equalTo: scrollView.leftAnchor, constant: 45).isActive = true
-        stackView.widthAnchor.constraint(equalToConstant: 300).isActive = true
-        //        stackView.rightAnchor.constraint(equalTo: scrollView.rightAnchor).isActive = true
+        stackView.rightAnchor.constraint(equalTo: view.rightAnchor,constant: -20).isActive = true
+        stackView.leftAnchor.constraint(equalTo: scrollView.leftAnchor, constant: 20).isActive = true
         
     }
     
@@ -227,7 +221,6 @@ class LoginViewController: UIViewController {
         }
         startSpinning()
         //Firebase
-        print("Login button tapped")
         NetworkManager.shared.logInUsingFirebase(withEmail: email, password: password) { [weak self] authResult, error in
             guard let strongSelf = self else {
                 return

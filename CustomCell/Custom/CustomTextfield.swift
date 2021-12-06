@@ -18,7 +18,7 @@ class CustomTextField: UITextField {
         self.placeholder = placeholder
         layer.shadowColor = UIColor.darkGray.cgColor
         layer.shadowRadius = 5
-        layer.shadowOpacity = 0.7
+        layer.shadowOpacity = 0.5
         layer.shadowOffset.height = -3
     }
     

@@ -32,7 +32,6 @@ class ProfileViewController: UIViewController {
         super.viewDidAppear(animated)
         fetchUserData()
        
-        
     }
     
     func configureNavigationBarT() {
@@ -54,7 +53,6 @@ class ProfileViewController: UIViewController {
     
     //MARK: -Handlers
     func configureProfileUI(){
-        //        imageView.contentMode = .scaleToFill
         imageView.backgroundColor = .white
         imageView.layer.borderColor = UIColor.systemRed.cgColor
         imageView.layer.borderWidth = 3
@@ -66,7 +64,6 @@ class ProfileViewController: UIViewController {
         view.addSubview(imageView)
         
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(presentImagePicker))
-        
         imageView.addGestureRecognizer(tapGesture)
         
         username.backgroundColor = .darkGray

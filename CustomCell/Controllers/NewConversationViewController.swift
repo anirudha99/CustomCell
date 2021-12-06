@@ -25,6 +25,18 @@ class NewConversationViewController: UIViewController {
         return !searchController.searchBar.text!.isEmpty
     }
     
+    let groupChatButton: UIButton = {
+        let button = UIButton()
+        button.setTitle("Create Group Chat", for: .normal)
+        button.backgroundColor = .systemRed
+        button.tintColor = .white
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.layer.cornerRadius = 25
+        button.addTarget(self, action: #selector(handleGroupChat), for: .touchUpInside)
+        button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 18)
+        return button
+    }()
+    
     private let noResultsLabel: UILabel = {
         let label = UILabel()
         label.text = "No search results"
@@ -42,6 +54,7 @@ class NewConversationViewController: UIViewController {
         configureNavBar()
         configureCollectionView()
         configureSpinner()
+        configureUI()
         fetchAllUser()
     }
     
@@ -95,6 +108,17 @@ class NewConversationViewController: UIViewController {
         spinnerT.centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive = true
     }
     
+    func configureUI(){
+        view.addSubview(groupChatButton)
+        view.bringSubviewToFront(groupChatButton)
+        NSLayoutConstraint.activate([
+            groupChatButton.heightAnchor.constraint(equalToConstant: 50),
+            groupChatButton.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 10),
+            groupChatButton.rightAnchor.constraint(equalTo: view.rightAnchor, constant: -10),
+            groupChatButton.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -20),
+        ])
+    }
+    
     func startSpinning(){
         spinnerT.startAnimating()
     }
@@ -105,6 +129,12 @@ class NewConversationViewController: UIViewController {
     
     @objc func dissmissScreen(){
         dismiss(animated: true, completion: nil)
+    }
+    
+    @objc func handleGroupChat(){
+        let vc = GroupChatViewController()
+        vc.currentUser = currentUser
+        navigationController?.pushViewController(vc, animated: true)
     }
     
     func fetchAllUser(){
@@ -156,7 +186,7 @@ extension NewConversationViewController: UICollectionViewDelegate, UICollectionV
         var vcArray = navigationController?.viewControllers
         vcArray?.removeLast()
         for var chat in chats{
-//            var currentChat = chat
+            if chat.isGroupChat { continue }
             let uidF = chat.users[0].userId
             let uidS = chat.users[1].userId
             if uidF == currentUser!.userId && uidS == selectedUser.userId || uidF == selectedUser.userId && uidS == currentUser!.userId {
@@ -170,8 +200,8 @@ extension NewConversationViewController: UICollectionViewDelegate, UICollectionV
             }
         }
         print("New Chat")
-        NetworkManager.shared.addChat(user1: currentUser!, user2: selectedUser, id: id)
-        messageVC.chat = Chats(chatId: id, users: users, lastMessage: nil, messages: [], otherUser: 1)
+        NetworkManager.shared.addChat(users: [currentUser!,selectedUser], id: id, isGroupChat: false, groupName: "", groupIconPath: "")
+        messageVC.chat = Chats(chatId: id, users: users, lastMessage: nil, messages: [], otherUser: 1, isGroupChat: false)
         vcArray?.append(messageVC)
         navigationController?.modalPresentationStyle = .fullScreen
         navigationController?.setViewControllers(vcArray!, animated: true)

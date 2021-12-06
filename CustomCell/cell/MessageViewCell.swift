@@ -12,7 +12,6 @@ class MessageViewCell: UICollectionViewCell {
     
     var messageItem: Message? {
         didSet {
-            //            var height = messageVc.estimateTextFrame(text: messageItem!.content).width + 32
             var isSender : Bool
             guard let uid = NetworkManager.shared.getUID() else { return }
             if uid != messageItem?.sender {
@@ -20,7 +19,7 @@ class MessageViewCell: UICollectionViewCell {
             } else {
                 isSender = true
             }
-                configureCell(isSender: isSender)
+            configureCell(isSender: isSender)
         }
     }
     
@@ -33,7 +32,6 @@ class MessageViewCell: UICollectionViewCell {
         return mesView
     }()
     
-    var widthConstraint: NSLayoutConstraint!
     var leadingConstraint: NSLayoutConstraint!
     var trailingConstraint: NSLayoutConstraint!
     
@@ -49,17 +47,11 @@ class MessageViewCell: UICollectionViewCell {
     
     var time = CustomLabel(text: "")
     
-    func configureCell(isSender: Bool){
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "hh:mm:a"
+    override init(frame: CGRect) {
+        super.init(frame: frame)
         addSubview(messageView)
         messageView.addSubview(messageLabel)
         addSubview(time)
-        messageLabel.text = messageItem!.content
-        time.text = dateFormatter.string(from: messageItem!.time)
-        time.font = UIFont.systemFont(ofSize: 12)
-        messageView.layer.cornerRadius = 10
-        
         messageView.translatesAutoresizingMaskIntoConstraints = false
         messageLabel.translatesAutoresizingMaskIntoConstraints = false
         time.translatesAutoresizingMaskIntoConstraints = false
@@ -68,21 +60,6 @@ class MessageViewCell: UICollectionViewCell {
         leadingConstraint?.isActive = true
         trailingConstraint = messageView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -16)
         trailingConstraint?.isActive = true
-        //        widthConstraint = messageView.widthAnchor.constraint(lessThanOrEqualToConstant: 250)
-        //        widthConstraint?.isActive = true
-        
-        if isSender {
-            leadingConstraint.isActive = false
-            trailingConstraint.isActive = true
-            messageView.backgroundColor = .systemRed
-            messageLabel.textColor = .white
-        }
-        else {
-            trailingConstraint.isActive = false
-            leadingConstraint.isActive = true
-            messageView.backgroundColor = UIColor(white: 0.75, alpha: 1)
-            messageLabel.textColor = .black
-        }
         
         NSLayoutConstraint.activate([
             
@@ -98,5 +75,33 @@ class MessageViewCell: UICollectionViewCell {
             time.topAnchor.constraint(equalTo: messageView.bottomAnchor,constant: -16),
             time.rightAnchor.constraint(equalTo: messageView.rightAnchor)
         ])
+        
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    func configureCell(isSender: Bool){
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "hh:mm:a"
+        
+        messageLabel.text = messageItem!.content
+        time.text = dateFormatter.string(from: messageItem!.time)
+        time.font = UIFont.systemFont(ofSize: 12)
+        messageView.layer.cornerRadius = 10
+        
+        if isSender {
+            leadingConstraint.isActive = false
+            trailingConstraint.isActive = true
+            messageView.backgroundColor = .systemRed
+            messageLabel.textColor = .white
+        }
+        else {
+            trailingConstraint.isActive = false
+            leadingConstraint.isActive = true
+            messageView.backgroundColor = UIColor(white: 0.75, alpha: 1)
+            messageLabel.textColor = .black
+        }
     }
 }
