@@ -62,14 +62,14 @@ class ImageMessageViewCell: UICollectionViewCell {
         trailingConstraint?.isActive = true
         
         NSLayoutConstraint.activate([
-            messageView.topAnchor.constraint(equalTo: topAnchor, constant: 8),
-            messageView.bottomAnchor.constraint(equalTo: bottomAnchor),
+            messageView.topAnchor.constraint(equalTo: topAnchor, constant: 0),
+            messageView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: 0),
             messageView.widthAnchor.constraint(lessThanOrEqualToConstant: 250),
             
             imageChat.topAnchor.constraint(equalTo: messageView.topAnchor),
             imageChat.leftAnchor.constraint(equalTo: messageView.leftAnchor),
-            imageChat.widthAnchor.constraint(equalTo: messageView.widthAnchor),
-            imageChat.heightAnchor.constraint(equalTo: messageView.heightAnchor),
+            imageChat.rightAnchor.constraint(equalTo: messageView.rightAnchor),
+            imageChat.bottomAnchor.constraint(equalTo: messageView.bottomAnchor),
             
             time.topAnchor.constraint(equalTo: imageChat.bottomAnchor, constant: -16),
             time.rightAnchor.constraint(equalTo: messageView.rightAnchor)

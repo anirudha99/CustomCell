@@ -40,8 +40,19 @@ class MessageViewCell: UICollectionViewCell {
         label.text = ""
         label.lineBreakMode = .byWordWrapping
         label.numberOfLines = 0
-        label.textAlignment = .left
-        label.font = UIFont(name: "San Francisco Pro Display", size: 20)
+        label.textAlignment = .center
+        label.font = UIFont(name: "San Francisco Pro Display", size: 24)
+        return label
+    }()
+    
+    let senderLabel : UILabel = {
+        let label = UILabel()
+        label.backgroundColor = .blue
+        label.text = ""
+        label.lineBreakMode = .byWordWrapping
+        label.numberOfLines = 0
+        label.textAlignment = .center
+        label.font = UIFont(name: "San Francisco Pro Display", size: 24)
         return label
     }()
     
@@ -50,6 +61,7 @@ class MessageViewCell: UICollectionViewCell {
     override init(frame: CGRect) {
         super.init(frame: frame)
         addSubview(messageView)
+        messageView.addSubview(senderLabel)
         messageView.addSubview(messageLabel)
         addSubview(time)
         messageView.translatesAutoresizingMaskIntoConstraints = false
@@ -63,11 +75,15 @@ class MessageViewCell: UICollectionViewCell {
         
         NSLayoutConstraint.activate([
             
-            messageView.topAnchor.constraint(equalTo: topAnchor,constant: 8),
-            messageView.bottomAnchor.constraint(equalTo: bottomAnchor,constant: -8),
+            messageView.topAnchor.constraint(equalTo: topAnchor,constant: 0),
+            messageView.bottomAnchor.constraint(equalTo: bottomAnchor,constant: 0),
             messageView.widthAnchor.constraint(lessThanOrEqualToConstant: 250),
             
-            messageLabel.topAnchor.constraint(equalTo: messageView.topAnchor,constant: 5),
+            senderLabel.topAnchor.constraint(equalTo: messageView.topAnchor,constant: 0),
+            senderLabel.leftAnchor.constraint(equalTo: messageView.leftAnchor,constant: 0),
+            senderLabel.rightAnchor.constraint(equalTo: messageView.rightAnchor,constant: 0),
+            
+            messageLabel.topAnchor.constraint(equalTo: senderLabel.bottomAnchor ,constant: 5),
             messageLabel.bottomAnchor.constraint(equalTo: messageView.bottomAnchor,constant: -5),
             messageLabel.leftAnchor.constraint(equalTo: messageView.leftAnchor,constant: 8),
             messageLabel.rightAnchor.constraint(equalTo: messageView.rightAnchor,constant: -8),
@@ -102,6 +118,13 @@ class MessageViewCell: UICollectionViewCell {
             leadingConstraint.isActive = true
             messageView.backgroundColor = UIColor(white: 0.75, alpha: 1)
             messageLabel.textColor = .black
+//            NetworkManager.shared.fetchAllUsers { user in
+//                guard let uid = NetworkManager.shared.getUID() else { return }
+//                if uid == self.messageItem?.sender{
+//                    senderLabel.text = user.
+//                }
+//            }
+            senderLabel.text = "sender"
         }
     }
 }

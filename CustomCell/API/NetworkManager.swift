@@ -33,13 +33,13 @@ struct NetworkManager {
         Auth.auth().createUser(withEmail: email, password: password, completion: completion)
     }
     
+    
     func addUser(user: ChatAppUser) {
         database.child("users").child(user.userId).setValue(user.dictionary)
     }
     
     func logInUsingFirebase(withEmail email: String, password: String, completion: AuthDataResultCallback?){
         //Firebase
-        print("Login button tapped")
         FirebaseAuth.Auth.auth().signIn(withEmail: email, password: password, completion: completion)
     }
     
@@ -52,7 +52,6 @@ struct NetworkManager {
             completion("LinkSent")
         }
     }
-    
     
     func fetchCurrentUser( completion: @escaping(ChatAppUser) -> Void) {
         guard let uid = Auth.auth().currentUser?.uid else { return }
@@ -74,9 +73,7 @@ struct NetworkManager {
         var users = [ChatAppUser]()
         guard let uid = Auth.auth().currentUser?.uid else { return }
         database.child("users").observe(.value) { snapshot in
-            print("Fetching all users")
             if let result = snapshot.value as? [String: Any] {
-                //                print(result)
                 for userid in result.keys {
                     if userid == uid {
                         continue
@@ -115,7 +112,6 @@ struct NetworkManager {
             finalDictionary = ["users": userDictionary,
                                "isGroupChat": isGroupChat]
         }
-        
         database.child("Chats").child(id).setValue(finalDictionary)
     }
     
@@ -128,7 +124,7 @@ struct NetworkManager {
                     let value = result[key]!
                     var lastMessage: Message?
                     
-                    let users = value["Users"] as! [[String: Any]]
+                    let users = value["users"] as! [[String: Any]]
                     let lastMessageDictionary = value["lastMessage"] as? [String: Any]
                     let isGroupChat = value["isGroupChat"] as! Bool
                     
@@ -188,12 +184,6 @@ struct NetworkManager {
         
         let lastMessageDictionary = lastMessageObj.dictionary
         var messageDictionary: [[String:Any]] = []
-        
-        //        for var message in messages {
-        //            let dateString = databaseDateFormatter.string(from: message.time)
-        //            message.dateString = dateString
-        //            messageDictionary.append(message.dictionary)
-        //        }
         let finalDictionary = ["lastMessage": lastMessageDictionary]
         
         database.child("Chats").child(id).updateChildValues(finalDictionary)

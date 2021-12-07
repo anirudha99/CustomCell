@@ -34,7 +34,7 @@ class ProfileViewController: UIViewController {
        
     }
     
-    func configureNavigationBarT() {
+    private func configureNavigationBarT() {
         view.backgroundColor = UIColor(white: 0.85, alpha: 1)
 
         let appearance = UINavigationBarAppearance()
@@ -52,7 +52,7 @@ class ProfileViewController: UIViewController {
     }
     
     //MARK: -Handlers
-    func configureProfileUI(){
+    private func configureProfileUI(){
         imageView.backgroundColor = .white
         imageView.layer.borderColor = UIColor.systemRed.cgColor
         imageView.layer.borderWidth = 3
@@ -110,8 +110,8 @@ class ProfileViewController: UIViewController {
             self.emailLabel.text = "Email - \(user.emailAddress)"
 
             self.currentUser = user
-
-            NetworkManager.shared.downloadImage(url: user.profileURL) { image in
+            
+            NetworkManager.shared.downloadImageWithPath(path: user.profileURL) { image in
                 DispatchQueue.main.async {
                     self.imageView.image = image
                 }
@@ -129,7 +129,7 @@ class ProfileViewController: UIViewController {
         showAlertWithCancel(title: "Logging Out", message: "Are you sure?", buttonText: "Logout", buttonAction: loggingOut)
     }
     
-    func transistionToLoginScreen(){
+    private func transistionToLoginScreen(){
         let vc = LoginViewController()
         let navigation = UINavigationController(rootViewController: vc)
         navigation.modalPresentationStyle = .fullScreen
@@ -138,7 +138,7 @@ class ProfileViewController: UIViewController {
     
     
     
-    func uploadNewProfile(image: UIImage) {
+    private func uploadNewProfile(image: UIImage) {
         let userid = NetworkManager.shared.getUID()!
         let imagePath = "Profile/\(userid)"
         ImageUploader.uploadImage(image: image, name: imagePath) { url in

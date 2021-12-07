@@ -221,13 +221,7 @@ extension MessageViewController: UICollectionViewDelegate, UICollectionViewDataS
 extension MessageViewController: UICollectionViewDelegateFlowLayout {
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
-        return 5
-    }
-    
-    private func estimateTextFrame(text:String) -> CGRect {
-        let size = CGSize(width: 200, height: 1000)
-        let options = NSStringDrawingOptions.usesFontLeading.union(.usesLineFragmentOrigin)
-        return NSString(string: text).boundingRect(with: size, options: options, attributes: [NSAttributedString.Key.font: UIFont(name: "San Francisco Pro Display", size: 20) ?? UIFont.systemFont(ofSize: 18)], context: nil)
+        return 20
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
@@ -254,7 +248,6 @@ extension MessageViewController: UICollectionViewDelegateFlowLayout {
             let estimatedSize = estimateImageSizeCell.systemLayoutSizeFitting(targetSize)
             height = estimatedSize.height
         }
-      
         let width = UIScreen.main.bounds.width
         return CGSize(width: width, height: height)
     }

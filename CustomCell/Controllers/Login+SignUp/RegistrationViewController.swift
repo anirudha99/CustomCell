@@ -66,7 +66,7 @@ class RegistrationViewController: UIViewController {
         view.addSubview(loginLabel)
         loginLabel.translatesAutoresizingMaskIntoConstraints = false
         loginLabel.widthAnchor.constraint(equalToConstant: 240).isActive = true
-        loginLabel.leftAnchor.constraint(equalTo: view.leftAnchor).isActive = true
+        loginLabel.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 30).isActive = true
         loginLabel.centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive = true
         
         view.addSubview(loginPageButton)
@@ -133,7 +133,7 @@ class RegistrationViewController: UIViewController {
         scrollView.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
         
         profilePicImage.centerXAnchor.constraint(equalTo: scrollView.centerXAnchor).isActive = true
-        profilePicImage.topAnchor.constraint(equalTo: scrollView.safeAreaLayoutGuide.topAnchor, constant: 40).isActive = true
+        profilePicImage.topAnchor.constraint(equalTo: scrollView.topAnchor, constant: 40).isActive = true
         profilePicImage.heightAnchor.constraint(equalToConstant: 120).isActive = true
         profilePicImage.widthAnchor.constraint(equalToConstant: 120).isActive = true
         //
@@ -225,7 +225,7 @@ class RegistrationViewController: UIViewController {
         
         NetworkManager.shared.signup(withEmail: email, password: password) { [weak self] authResult, error in
             guard authResult != nil, error == nil else {
-                self?.showAlert(title: "Error", message: "Error creating user")
+                self?.showAlert(title: "Error", message: "Error creating user!")
                 return
             }
             if let authResult = authResult {
@@ -233,12 +233,12 @@ class RegistrationViewController: UIViewController {
                 let path = "Profile/\(userid)"
                 ImageUploader.uploadImage(image: self!.profilePicImage.image!, name: path) { url in
                     
-                    let chatUser = ChatAppUser(userId: userid, firstName: firstName, lastName: lastName, emailAddress: email, profileURL: url)
-                    NetworkManager.shared.addUser(user: chatUser)
-                    self?.delegate?.userAuthenticated()
-                    DispatchQueue.main.async {
-                        self?.stopSpinning()
-                    }
+                }
+                let chatUser = ChatAppUser(userId: userid, firstName: firstName, lastName: lastName, emailAddress: email, profileURL: path)
+                NetworkManager.shared.addUser(user: chatUser)
+                self?.delegate?.userAuthenticated()
+                DispatchQueue.main.async {
+                    self?.stopSpinning()
                     self?.navigationController?.dismiss(animated: true, completion: nil)
                 }
             }

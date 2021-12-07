@@ -102,7 +102,7 @@ class LoginViewController: UIViewController {
         view.addSubview(signUpLabel)
         signUpLabel.translatesAutoresizingMaskIntoConstraints = false
         signUpLabel.widthAnchor.constraint(equalToConstant: 200).isActive = true
-        signUpLabel.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 10).isActive = true
+        signUpLabel.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 40).isActive = true
         signUpLabel.centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive = true
         
         view.addSubview(signupPageButton)

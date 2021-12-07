@@ -102,26 +102,34 @@ class ConversationCell: UICollectionViewCell {
     
      private func configureChat() {
         guard let chat = chat else { return }
-        let otherUser = chat.users[chat.otherUser!]
-        titleLabel.text = "\(otherUser.firstName) \(otherUser.lastName)"
-        //            print(chat.chatId)
+
         lastMessageItem = chat.lastMessage
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "hh:mm:a"
-        
+         var path: String
+         if chat.isGroupChat{
+             titleLabel.text = chat.groupName
+             path = chat.groupIconPath!
+         }
+         else{
+             let otherUser = chat.users[chat.otherUser!]
+             titleLabel.text = "\(otherUser.firstName) \(otherUser.lastName)"
+             path = "Profile/\(otherUser.userId)"
+         }
+         
         if chat.lastMessage == nil {
             timeLabel.text = ""
         }
         else {
             timeLabel.text = dateFormatter.string(from: chat.lastMessage!.time)
         }
-        var fetchUser: ChatAppUser
-        if chat.otherUser == 0 {
-            fetchUser = chat.users[0]
-        } else {
-            fetchUser = chat.users[1]
-        }
-        NetworkManager.shared.downloadImageWithPath(path: "Profile/\(fetchUser.userId)") { image in
+//        var fetchUser: ChatAppUser
+//        if chat.otherUser == 0 {
+//            fetchUser = chat.users[0]
+//        } else {
+//            fetchUser = chat.users[1]
+//        }
+        NetworkManager.shared.downloadImageWithPath(path: path) { image in
             DispatchQueue.main.async {
                 self.iconImageView.image = image
             }

@@ -38,7 +38,7 @@ class GroupChatViewController: UIViewController {
     func configureCollectionView(){
         groupCollectionView = UICollectionView(frame: view.bounds, collectionViewLayout: UICollectionViewFlowLayout())
         view.addSubview(groupCollectionView)
-        groupCollectionView.backgroundColor = UIColor(white: 0.95, alpha: 1)
+        groupCollectionView.backgroundColor = .white
         groupCollectionView.dataSource = self
         groupCollectionView.delegate = self
         groupCollectionView.alwaysBounceVertical = true
@@ -127,10 +127,9 @@ class GroupChatViewController: UIViewController {
                 usersList.append(user)
             }
             ImageUploader.uploadImage(image: groupPhoto.image!, name: groupPhotoPath) { url in
-                
             }
             NetworkManager.shared.addChat(users: usersList, id: chatID, isGroupChat: true, groupName: groupName.text, groupIconPath: groupPhotoPath)
-            messageVC.chat = Chats(chatId: groupPhotoPath, users: usersList, lastMessage: nil, messages: [], isGroupChat: true, groupName: groupName.text)
+            messageVC.chat = Chats(chatId: chatID, users: usersList, lastMessage: nil, messages: [], isGroupChat: true, groupName: groupName.text, groupIconPath: groupPhotoPath)
             vcArray?.append(messageVC)
             navigationController?.setViewControllers(vcArray!, animated: true)
         }
@@ -178,7 +177,7 @@ extension GroupChatViewController: UICollectionViewDelegate, UICollectionViewDat
             cell.backgroundColor = .systemRed
         }
         else {
-            cell.backgroundColor = .lightGray
+            cell.backgroundColor = .white
         }
         NetworkManager.shared.downloadImageWithPath(path: "Profile/\(userObject.userId)") { image in
             cell.iconImageView.image = image
@@ -193,7 +192,7 @@ extension GroupChatViewController: UICollectionViewDelegate, UICollectionViewDat
             selectedCell.backgroundColor = .white
         } else {
             selectedUsers.append(indexPath)
-            selectedCell.backgroundColor = .lightGray
+            selectedCell.backgroundColor = .systemRed
         }
     }
     
