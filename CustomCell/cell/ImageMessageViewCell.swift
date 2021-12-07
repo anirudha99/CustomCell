@@ -42,7 +42,7 @@ class ImageMessageViewCell: UICollectionViewCell {
         label.lineBreakMode = .byWordWrapping
         label.numberOfLines = 0
         label.textAlignment = .left
-        label.font = FontConstants.textFont
+        label.font = FontConstants.senderTextfont
         return label
     }()
     
@@ -60,7 +60,7 @@ class ImageMessageViewCell: UICollectionViewCell {
         image.clipsToBounds = true
         image.contentMode = .scaleAspectFill
         image.widthAnchor.constraint(equalToConstant: 200).isActive = true
-//        image.heightAnchor.constraint(equalToConstant: 200).isActive = true
+        image.heightAnchor.constraint(equalToConstant: 200).isActive = true
         image.translatesAutoresizingMaskIntoConstraints = false
         image.image = ImageConstants.picture
         return image
@@ -84,9 +84,9 @@ class ImageMessageViewCell: UICollectionViewCell {
         trailingConstraint = messageView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -16)
         trailingConstraint?.isActive = true
         
-        userConstraint = imageChat.topAnchor.constraint(equalTo: messageView.topAnchor)
-        imageUserConstraint = imageChat.heightAnchor.constraint(equalToConstant: 230)
-        imageSenderConstraint = imageChat.heightAnchor.constraint(equalToConstant: 200)
+        userConstraint = imageChat.topAnchor.constraint(equalTo: messageView.topAnchor,constant: 0)
+//        imageUserConstraint = imageChat.heightAnchor.constraint(equalToConstant: 230)
+//        imageSenderConstraint = imageChat.heightAnchor.constraint(equalToConstant: 200)
         recieverMessageConstraint = imageChat.topAnchor.constraint(equalTo: senderLabel.bottomAnchor,constant: 0)
         senderNameTopConstraint = senderLabel.topAnchor.constraint(equalTo: messageView.topAnchor,constant: 0)
       
@@ -103,6 +103,7 @@ class ImageMessageViewCell: UICollectionViewCell {
             imageChat.leftAnchor.constraint(equalTo: messageView.leftAnchor),
             imageChat.rightAnchor.constraint(equalTo: messageView.rightAnchor),
             imageChat.bottomAnchor.constraint(equalTo: messageView.bottomAnchor),
+//            imageChat.centerXAnchor.constraint(equalTo: messageView.centerXAnchor),
             
             time.topAnchor.constraint(equalTo: imageChat.bottomAnchor, constant: -16),
             time.rightAnchor.constraint(equalTo: messageView.rightAnchor)
@@ -126,22 +127,23 @@ class ImageMessageViewCell: UICollectionViewCell {
             trailingConstraint.isActive = true
             messageView.backgroundColor = .systemRed
             senderLabel.isHidden = true
+//            imageSenderConstraint.isActive = true
+//            imageUserConstraint.isActive = false
             userConstraint.isActive = true
-            imageSenderConstraint.isActive = true
-            imageUserConstraint.isActive = false
             recieverMessageConstraint.isActive = false
             senderNameTopConstraint.isActive = false
+            
         }
         else {
             leadingConstraint.isActive = true
             trailingConstraint.isActive = false
             messageView.backgroundColor = .systemGray
             senderLabel.isHidden = false
-            userConstraint.isActive = false
-            imageSenderConstraint.isActive = false
-            imageUserConstraint.isActive = true
             recieverMessageConstraint.isActive = true
             senderNameTopConstraint.isActive = true
+            userConstraint.isActive = false
+//            imageSenderConstraint.isActive = false
+//            imageUserConstraint.isActive = true
         }
     }
     

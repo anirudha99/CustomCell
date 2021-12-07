@@ -178,7 +178,6 @@
 				1CDAA1112742ABDE00394D19 /* API */,
 				1C0D7C36274672AE0020163E /* Models */,
 				1CDAA101274231C200394D19 /* Resources */,
-				1C282535273CFAC9001EE811 /* Custom */,
 				1CF46FE7273A815400945374 /* cell */,
 				1C0C750F273BD49F005E50E7 /* Controllers */,
 				1CF46FD5273A781300945374 /* Main.storyboard */,
@@ -192,6 +191,7 @@
 		1CF46FE7273A815400945374 /* cell */ = {
 			isa = PBXGroup;
 			children = (
+				1C282535273CFAC9001EE811 /* Custom */,
 				1CF46FE5273A815100945374 /* ConversationCell.swift */,
 				1CD198A32759297E001762AA /* MessageViewCell.swift */,
 				1CD441522759E0D9001A853C /* ImageMessageViewCell.swift */,
