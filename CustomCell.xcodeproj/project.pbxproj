@@ -28,7 +28,7 @@
 		1CDAA10927425C7B00394D19 /* ProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CDAA10827425C7B00394D19 /* ProfileViewController.swift */; };
 		1CF46FD0273A781300945374 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CF46FCF273A781300945374 /* AppDelegate.swift */; };
 		1CF46FD2273A781300945374 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CF46FD1273A781300945374 /* SceneDelegate.swift */; };
-		1CF46FD4273A781300945374 /* PhotoViewerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CF46FD3273A781300945374 /* PhotoViewerViewController.swift */; };
+		1CF46FD4273A781300945374 /* ResetPasswordViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CF46FD3273A781300945374 /* ResetPasswordViewController.swift */; };
 		1CF46FD7273A781300945374 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1CF46FD5273A781300945374 /* Main.storyboard */; };
 		1CF46FD9273A781700945374 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1CF46FD8273A781700945374 /* Assets.xcassets */; };
 		1CF46FDC273A781700945374 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1CF46FDA273A781700945374 /* LaunchScreen.storyboard */; };
@@ -62,7 +62,7 @@
 		1CF46FCC273A781300945374 /* CustomCell.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CustomCell.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1CF46FCF273A781300945374 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		1CF46FD1273A781300945374 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
-		1CF46FD3273A781300945374 /* PhotoViewerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoViewerViewController.swift; sourceTree = "<group>"; };
+		1CF46FD3273A781300945374 /* ResetPasswordViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResetPasswordViewController.swift; sourceTree = "<group>"; };
 		1CF46FD6273A781300945374 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		1CF46FD8273A781700945374 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		1CF46FDB273A781700945374 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
@@ -97,7 +97,6 @@
 				1CD730A02744E29900531CEA /* MessageViewController.swift */,
 				1CDAA10427425C4800394D19 /* GroupChatViewController.swift */,
 				1CDAA10A27425DDA00394D19 /* Login+SignUp */,
-				1CF46FD3273A781300945374 /* PhotoViewerViewController.swift */,
 			);
 			path = Controllers;
 			sourceTree = "<group>";
@@ -141,6 +140,7 @@
 			children = (
 				1C0C750B273BC9E1005E50E7 /* LoginViewController.swift */,
 				1C0C750D273BCF41005E50E7 /* RegistrationViewController.swift */,
+				1CF46FD3273A781300945374 /* ResetPasswordViewController.swift */,
 			);
 			path = "Login+SignUp";
 			sourceTree = "<group>";
@@ -346,7 +346,7 @@
 				1C0C750E273BCF41005E50E7 /* RegistrationViewController.swift in Sources */,
 				1C282532273CD91A001EE811 /* InputContainerView.swift in Sources */,
 				1CDAA1032742320200394D19 /* Constants.swift in Sources */,
-				1CF46FD4273A781300945374 /* PhotoViewerViewController.swift in Sources */,
+				1CF46FD4273A781300945374 /* ResetPasswordViewController.swift in Sources */,
 				1CFB61612747540D00BCC7CD /* ChatMessage.swift in Sources */,
 				1CD730A12744E29900531CEA /* MessageViewController.swift in Sources */,
 				1CD441532759E0D9001A853C /* ImageMessageViewCell.swift in Sources */,

@@ -136,14 +136,11 @@ class ProfileViewController: UIViewController {
         self.present(navigation,animated: true)
     }
     
-    
-    
     private func uploadNewProfile(image: UIImage) {
         let userid = NetworkManager.shared.getUID()!
         let imagePath = "Profile/\(userid)"
         ImageUploader.uploadImage(image: image, name: imagePath) { url in
             self.currentUser?.profileURL = url
-            
             NetworkManager.shared.addUser(user: self.currentUser!)
         }
     }

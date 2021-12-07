@@ -181,7 +181,6 @@ extension NewConversationViewController: UICollectionViewDelegate, UICollectionV
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        print(currentUser)
         let selectedUser = users[indexPath.row]
         let users: [ChatAppUser] = [currentUser!, selectedUser]
         let id = "\(currentUser!.userId)_\(selectedUser.userId)"

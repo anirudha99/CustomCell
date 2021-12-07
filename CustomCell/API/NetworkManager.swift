@@ -53,7 +53,7 @@ struct NetworkManager {
         }
     }
     
-    func fetchCurrentUser( completion: @escaping(ChatAppUser) -> Void) {
+    func fetchCurrentUser(completion: @escaping(ChatAppUser) -> Void) {
         guard let uid = Auth.auth().currentUser?.uid else { return }
         database.child("users").child(uid).observe(.value) { snapshot in
             if let dictionary = snapshot.value as? [String: Any] {
@@ -183,7 +183,7 @@ struct NetworkManager {
         lastMessageObj.dateString = dateString
         
         let lastMessageDictionary = lastMessageObj.dictionary
-        var messageDictionary: [[String:Any]] = []
+//        var messageDictionary: [[String:Any]] = []
         let finalDictionary = ["lastMessage": lastMessageDictionary]
         
         database.child("Chats").child(id).updateChildValues(finalDictionary)

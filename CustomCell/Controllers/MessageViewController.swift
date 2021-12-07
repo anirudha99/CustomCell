@@ -167,7 +167,6 @@ class MessageViewController: UIViewController {
         NetworkManager.shared.fetchMessages(chatId: chat.chatId!) { messages in
             self.messages = messages
             DispatchQueue.main.async {
-                //                self.MessageTableView.reloadData()
                 self.messageCollectionView.reloadData()
             }
         }
@@ -198,12 +197,14 @@ extension MessageViewController: UICollectionViewDelegate, UICollectionViewDataS
         if messageObj.imagePath == "" {
             let cell = messageCollectionView.dequeueReusableCell(withReuseIdentifier: collectIdentifier, for: indexPath) as! MessageViewCell
             cell.messageItem = messageObj
+            cell.usersArray = chat.users
             return cell
         }
         else{
             let cell = messageCollectionView.dequeueReusableCell(withReuseIdentifier: imageCollectIdentifier, for: indexPath) as! ImageMessageViewCell
             
             cell.messageItem = messageObj
+            cell.usersArray = chat.users
             NetworkManager.shared.downloadImageWithPath(path: messageObj.imagePath!) { image in
                 DispatchQueue.main.async {
                     cell.imageChat.image = image
@@ -229,7 +230,7 @@ extension MessageViewController: UICollectionViewDelegateFlowLayout {
         let messageobj = messages[indexPath.row]
         var height: CGFloat = CGFloat()
         
-        let frame = CGRect(x: 0, y: 0, width: view.frame.width, height: 50)
+        let frame = CGRect(x: 0, y: 0, width: view.frame.width, height: 60)
         let imageFrame = CGRect(x: 0, y: 0, width: view.frame.width, height: 200)
         let estimateSizeCell = MessageViewCell(frame: frame)
         let estimateImageSizeCell = ImageMessageViewCell(frame: imageFrame)
@@ -239,14 +240,14 @@ extension MessageViewController: UICollectionViewDelegateFlowLayout {
             estimateSizeCell.layoutIfNeeded()
             let targetSize = CGSize(width: view.frame.width, height: 1000)
             let estimatedSize = estimateSizeCell.systemLayoutSizeFitting(targetSize)
-            height = estimatedSize.height
+            height = estimatedSize.height + 20
         }
         else{
             estimateImageSizeCell.messageItem = messages[indexPath.row]
             estimateImageSizeCell.layoutIfNeeded()
             let targetSize = CGSize(width: view.frame.width, height: 1000)
             let estimatedSize = estimateImageSizeCell.systemLayoutSizeFitting(targetSize)
-            height = estimatedSize.height
+            height = estimatedSize.height + 30
         }
         let width = UIScreen.main.bounds.width
         return CGSize(width: width, height: height)

@@ -79,7 +79,6 @@ class ConversationsViewController: UIViewController {
     
     @objc func didTapNewMessageButton(){
         let vc = NewConversationViewController()
-//        vc.currentUser = currentUser
         vc.chats = chats
         let navVc = UINavigationController(rootViewController: vc)
         navVc.modalPresentationStyle = .fullScreen

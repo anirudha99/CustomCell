@@ -240,19 +240,9 @@ class LoginViewController: UIViewController {
     }
     
     @objc func handleForgotPasswordButtonTapped(){
-        guard let email = emailTextField.text else { return }
-        if emailValidation(email: email){
-            NetworkManager.shared.resetPasswordWithEmail(email: email) { result in
-                if result == "LinkSent" {
-                    self.showAlert(title: "Password Reset Email Sent", message: "Reset link is sent to your registered email, please check your email")
-                }
-                else{
-                    self.showAlert(title: "Failed to send link", message: "Please try again later")
-                }
-            }
-        } else {
-            showAlert(title: "Invalid email address", message: MessageConstants.emailInvalid)
-        }
+        let controller = ResetPasswordViewerViewController()
+        controller.modalPresentationStyle = .fullScreen
+        navigationController?.pushViewController(controller, animated: true)
     }
     
     @objc func transistionToSignUp(){

@@ -23,6 +23,12 @@ class MessageViewCell: UICollectionViewCell {
         }
     }
     
+    var usersArray: [ChatAppUser]? {
+        didSet{
+            setSenderName()
+        }
+    }
+    
     var messageView : UIView = {
         let mesView = UIView()
         mesView.backgroundColor = .systemGray
@@ -34,25 +40,27 @@ class MessageViewCell: UICollectionViewCell {
     
     var leadingConstraint: NSLayoutConstraint!
     var trailingConstraint: NSLayoutConstraint!
+    var userConstraint: NSLayoutConstraint!
+    var recieverMessageConstraint: NSLayoutConstraint!
+    var senderNameTopConstraint: NSLayoutConstraint!
     
     let messageLabel : UILabel = {
         let label = UILabel()
         label.text = ""
         label.lineBreakMode = .byWordWrapping
         label.numberOfLines = 0
-        label.textAlignment = .center
-        label.font = UIFont(name: "San Francisco Pro Display", size: 24)
+        label.textAlignment = .left
+        label.font = FontConstants.textFont
         return label
     }()
     
     let senderLabel : UILabel = {
         let label = UILabel()
-        label.backgroundColor = .blue
         label.text = ""
         label.lineBreakMode = .byWordWrapping
         label.numberOfLines = 0
-        label.textAlignment = .center
-        label.font = UIFont(name: "San Francisco Pro Display", size: 24)
+        label.textAlignment = .left
+        label.font = FontConstants.senderTextfont
         return label
     }()
     
@@ -67,11 +75,16 @@ class MessageViewCell: UICollectionViewCell {
         messageView.translatesAutoresizingMaskIntoConstraints = false
         messageLabel.translatesAutoresizingMaskIntoConstraints = false
         time.translatesAutoresizingMaskIntoConstraints = false
+        senderLabel.translatesAutoresizingMaskIntoConstraints = false
         
         leadingConstraint = messageView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 16)
         leadingConstraint?.isActive = true
         trailingConstraint = messageView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -16)
         trailingConstraint?.isActive = true
+        
+        userConstraint = messageLabel.topAnchor.constraint(equalTo: messageView.topAnchor, constant: 5)
+        senderNameTopConstraint = senderLabel.topAnchor.constraint(equalTo: messageView.topAnchor,constant: 2)
+        recieverMessageConstraint = messageLabel.topAnchor.constraint(equalTo: senderLabel.bottomAnchor,constant: 0)
         
         NSLayoutConstraint.activate([
             
@@ -79,11 +92,10 @@ class MessageViewCell: UICollectionViewCell {
             messageView.bottomAnchor.constraint(equalTo: bottomAnchor,constant: 0),
             messageView.widthAnchor.constraint(lessThanOrEqualToConstant: 250),
             
-            senderLabel.topAnchor.constraint(equalTo: messageView.topAnchor,constant: 0),
-            senderLabel.leftAnchor.constraint(equalTo: messageView.leftAnchor,constant: 0),
-            senderLabel.rightAnchor.constraint(equalTo: messageView.rightAnchor,constant: 0),
+            senderLabel.widthAnchor.constraint(lessThanOrEqualToConstant: 250),
+            senderLabel.leftAnchor.constraint(equalTo: messageView.leftAnchor,constant: 8),
+            senderLabel.rightAnchor.constraint(equalTo: messageView.rightAnchor,constant: -8),
             
-            messageLabel.topAnchor.constraint(equalTo: senderLabel.bottomAnchor ,constant: 5),
             messageLabel.bottomAnchor.constraint(equalTo: messageView.bottomAnchor,constant: -5),
             messageLabel.leftAnchor.constraint(equalTo: messageView.leftAnchor,constant: 8),
             messageLabel.rightAnchor.constraint(equalTo: messageView.rightAnchor,constant: -8),
@@ -112,19 +124,29 @@ class MessageViewCell: UICollectionViewCell {
             trailingConstraint.isActive = true
             messageView.backgroundColor = .systemRed
             messageLabel.textColor = .white
+            senderLabel.isHidden = true
+            userConstraint.isActive = true
+            recieverMessageConstraint.isActive = false
+            senderNameTopConstraint.isActive = false
+            
         }
         else {
             trailingConstraint.isActive = false
             leadingConstraint.isActive = true
             messageView.backgroundColor = UIColor(white: 0.75, alpha: 1)
             messageLabel.textColor = .black
-//            NetworkManager.shared.fetchAllUsers { user in
-//                guard let uid = NetworkManager.shared.getUID() else { return }
-//                if uid == self.messageItem?.sender{
-//                    senderLabel.text = user.
-//                }
-//            }
-            senderLabel.text = "sender"
+            senderLabel.isHidden = false
+            userConstraint.isActive = false
+            recieverMessageConstraint.isActive = true
+            senderNameTopConstraint.isActive = true
+        }
+    }
+    
+    func setSenderName(){
+        for user in usersArray! {
+            if user.userId == messageItem?.sender {
+                senderLabel.text = "\(user.firstName) \(user.lastName)"
+            }
         }
     }
 }

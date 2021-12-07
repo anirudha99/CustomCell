@@ -236,7 +236,7 @@ class RegistrationViewController: UIViewController {
                 }
                 let chatUser = ChatAppUser(userId: userid, firstName: firstName, lastName: lastName, emailAddress: email, profileURL: path)
                 NetworkManager.shared.addUser(user: chatUser)
-                self?.delegate?.userAuthenticated()
+//                self?.delegate?.userAuthenticated()
                 DispatchQueue.main.async {
                     self?.stopSpinning()
                     self?.navigationController?.dismiss(animated: true, completion: nil)

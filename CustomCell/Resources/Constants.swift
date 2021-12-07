@@ -29,3 +29,9 @@ struct MessageConstants {
     static let minimumGroupMemberError = "Please select more than 1 user"
     
 }
+
+struct FontConstants {
+    static let textFont = UIFont(name: "San Francisco Pro Display", size: 24)
+    static let labelFont = UIFont(name: "San Francisco", size: 16)
+    static let senderTextfont = UIFont.systemFont(ofSize: 16, weight: .semibold)
+}

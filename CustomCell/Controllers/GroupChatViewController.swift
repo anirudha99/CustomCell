@@ -16,7 +16,7 @@ class GroupChatViewController: UIViewController {
     var selectedUsers: [IndexPath] = []
     var currentUser: ChatAppUser!
     
-    let groupPhotoLabel = CustomLabel(text: "Group Photo")
+    let groupPhotoLabel = CustomLabel(text: "Select Group Photo")
     let groupPhoto = CustomImageView(image: ImageConstants.groupPhoto!, height: 100, width: 100, cornerRadius: 45, color: .white)
     let groupNameLabel = CustomLabel(text: "Group Name")
     let groupName = CustomTextField(placeholder: "Enter Group Name")
@@ -43,19 +43,20 @@ class GroupChatViewController: UIViewController {
         groupCollectionView.delegate = self
         groupCollectionView.alwaysBounceVertical = true
         groupCollectionView.isUserInteractionEnabled = true
-        //        groupCollectionView.keyboardDismissMode = .interactive
-        //        groupCollectionView.contentInset = UIEdgeInsets(top: 8, left: 0, bottom: 58, right: 0)
-        //        groupCollectionView.scrollIndicatorInsets = UIEdgeInsets(top: 0, left: 0, bottom: 58, right: 0)
         groupCollectionView.register(ConversationCell.self, forCellWithReuseIdentifier: collectIdentifier)
         
     }
     
     func configureUI(){
-        view.backgroundColor = UIColor(white: 0.95, alpha: 1)
+        view.backgroundColor = UIColor(white: 0.85, alpha: 1)
         let createButton = UIBarButtonItem(title: "Create", style: .plain, target: self, action: #selector(handleCreate))
         navigationItem.rightBarButtonItems = [createButton]
         navigationItem.title = "Create Group Chat"
+        navigationItem.largeTitleDisplayMode = .never
         navigationItem.backButtonTitle = ""
+        
+        groupPhotoLabel.font = FontConstants.labelFont
+        groupNameLabel.font = FontConstants.labelFont
         
         groupPhoto.layer.borderWidth = 1
         groupPhoto.layer.borderColor = UIColor.systemRed.cgColor
@@ -80,7 +81,7 @@ class GroupChatViewController: UIViewController {
         groupCollectionView.translatesAutoresizingMaskIntoConstraints = false
         
         NSLayoutConstraint.activate([
-            
+ 
             groupPhotoLabel.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 10),
             groupPhotoLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             
@@ -195,7 +196,6 @@ extension GroupChatViewController: UICollectionViewDelegate, UICollectionViewDat
             selectedCell.backgroundColor = .systemRed
         }
     }
-    
 }
 
 extension GroupChatViewController: UICollectionViewDelegateFlowLayout {
