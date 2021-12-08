@@ -88,12 +88,12 @@ class ProfileViewController: UIViewController {
         imageView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 20).isActive = true
         
         username.topAnchor.constraint(equalTo: imageView.bottomAnchor,constant: 10).isActive = true
-        username.leftAnchor.constraint(equalTo: view.leftAnchor,constant: 80).isActive = true
-        username.rightAnchor.constraint(equalTo: view.rightAnchor,constant: -80).isActive = true
+        username.leftAnchor.constraint(equalTo: view.leftAnchor,constant: 40).isActive = true
+        username.rightAnchor.constraint(equalTo: view.rightAnchor,constant: -40).isActive = true
         
         emailLabel.topAnchor.constraint(equalTo: username.bottomAnchor,constant: 10).isActive = true
-        emailLabel.leftAnchor.constraint(equalTo: view.leftAnchor,constant: 80).isActive = true
-        emailLabel.rightAnchor.constraint(equalTo: view.rightAnchor,constant: -80).isActive = true
+        emailLabel.leftAnchor.constraint(equalTo: view.leftAnchor,constant: 40).isActive = true
+        emailLabel.rightAnchor.constraint(equalTo: view.rightAnchor,constant: -40).isActive = true
         
     }
     

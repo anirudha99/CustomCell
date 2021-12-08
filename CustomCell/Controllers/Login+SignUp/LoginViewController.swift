@@ -159,7 +159,7 @@ class LoginViewController: UIViewController {
         
         logoContainer.topAnchor.constraint(equalTo: scrollView.topAnchor, constant: 50).isActive = true
         logoContainer.centerXAnchor.constraint(equalTo: scrollView.centerXAnchor).isActive = true
-
+        
         stackView.topAnchor.constraint(equalTo: logoContainer.bottomAnchor, constant: 50).isActive = true
         stackView.rightAnchor.constraint(equalTo: view.rightAnchor,constant: -20).isActive = true
         stackView.leftAnchor.constraint(equalTo: scrollView.leftAnchor, constant: 20).isActive = true
