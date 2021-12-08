@@ -1,2 +1,2 @@
 # CustomCell
-Chat Application Starter
+Chat Application
