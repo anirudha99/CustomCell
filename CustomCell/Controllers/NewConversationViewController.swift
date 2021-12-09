@@ -131,7 +131,8 @@ class NewConversationViewController: UIViewController {
         dismiss(animated: true, completion: nil)
     }
     
-    @objc func handleGroupChat(){
+    @objc func handleGroupChat(_ sender: UIButton){
+        sender.pulse()
         let vc = GroupChatViewController()
         vc.currentUser = currentUser
         navigationController?.pushViewController(vc, animated: true)
@@ -141,10 +142,13 @@ class NewConversationViewController: UIViewController {
         NetworkManager.shared.fetchCurrentUser(completion: { currentUser in
             self.currentUser = currentUser
         })
+        DispatchQueue.main.async {
+            self.startSpinning()
+        }
         NetworkManager.shared.fetchAllUsers { users in
             self.users = users
-            print(users)
             DispatchQueue.main.async {
+                self.stopSpinning()
                 self.collectionView.reloadData()
             }
         }

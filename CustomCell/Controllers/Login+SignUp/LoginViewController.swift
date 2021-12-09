@@ -130,9 +130,6 @@ class LoginViewController: UIViewController {
         createDismissKeyboardTapGesture()
         configureNotificationObserver()
         configureSpinner()
-        
-        emailTextField.delegate = self
-        passwordTextField.delegate = self
     }
     
     func configureUI(){
@@ -211,7 +208,8 @@ class LoginViewController: UIViewController {
         scrollView.contentSize = CGSize(width: view.frame.width, height: 600)
     }
     
-    @objc func handleLoginButtonTapped(){
+    @objc func handleLoginButtonTapped(_ sender: UIButton){
+        sender.pulse()
         guard let email = emailTextField.text,
               let password = passwordTextField.text,
               isUserEntered
@@ -239,28 +237,17 @@ class LoginViewController: UIViewController {
         }
     }
     
-    @objc func handleForgotPasswordButtonTapped(){
+    @objc func handleForgotPasswordButtonTapped(_ sender: UIButton){
+        sender.flash()
         let controller = ResetPasswordViewerViewController()
         controller.modalPresentationStyle = .fullScreen
         navigationController?.pushViewController(controller, animated: true)
     }
     
-    @objc func transistionToSignUp(){
+    @objc func transistionToSignUp(_ sender: UIButton){
+        sender.flash()
         let controller = RegistrationViewController()
         controller.modalPresentationStyle = .fullScreen
         navigationController?.pushViewController(controller, animated: true)
-    }
-}
-
-extension LoginViewController: UITextFieldDelegate {
-    
-    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-        if textField == emailTextField{
-            passwordTextField.becomeFirstResponder()
-        }
-        else if textField == passwordTextField{
-            handleLoginButtonTapped()
-        }
-        return true
     }
 }

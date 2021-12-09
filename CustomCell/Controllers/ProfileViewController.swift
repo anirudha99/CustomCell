@@ -110,7 +110,7 @@ class ProfileViewController: UIViewController {
         }
     }
     
-    @objc func logoutButtonTapped(){
+    @objc func logoutButtonTapped(_ sender: UIButton){
         let loggingOut = {
             let isSignedOut  = NetworkManager.shared.logout()
             if isSignedOut {

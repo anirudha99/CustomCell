@@ -199,12 +199,12 @@ class RegistrationViewController: UIViewController {
         picker.allowsEditing = true
         picker.delegate = self
         present(picker, animated: true, completion: nil)
-        
     }
     
-    
-    @objc func handleRegisterButtonTapped(){
+    @objc func handleRegisterButtonTapped(_ sender: UIButton){
+        sender.pulse()
         guard profilePicImage.image != nil else { return }
+        guard passwordValidation(password: passwordTextField.text!) else { return }
         guard let firstName = firstNameTextField.text,
               let lastName = lastNameTextField.text,
               let email = emailTextField.text,
@@ -243,7 +243,8 @@ class RegistrationViewController: UIViewController {
         }
     }
     
-    @objc func transistionToLogin(){
+    @objc func transistionToLogin(_ sender: UIButton){
+        sender.flash()
         let controller = LoginViewController()
         controller.modalPresentationStyle = .fullScreen
         navigationController?.pushViewController(controller, animated: true)

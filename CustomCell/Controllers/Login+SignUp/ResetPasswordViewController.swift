@@ -41,7 +41,6 @@ class ResetPasswordViewerViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         configureUI()
-        createDismissKeyboardTapGesture()
         configureNotificationObserver()
     }
     
@@ -69,12 +68,6 @@ class ResetPasswordViewerViewController: UIViewController {
         stackView.leftAnchor.constraint(equalTo: scrollView.leftAnchor, constant: 20).isActive = true
     }
     
-    
-    func createDismissKeyboardTapGesture(){
-        let tap = UITapGestureRecognizer(target: self.view, action: #selector(UIView.endEditing))
-        view.addGestureRecognizer(tap)
-    }
-    
     func configureNotificationObserver(){
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow), name: UIResponder.keyboardWillShowNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide), name: UIResponder.keyboardDidHideNotification, object: nil)
@@ -97,7 +90,8 @@ class ResetPasswordViewerViewController: UIViewController {
         scrollView.contentSize = CGSize(width: view.frame.width, height: 600)
     }
     
-    @objc func handleForgotPasswordButtonTapped(){
+    @objc func handleForgotPasswordButtonTapped(_ sender: UIButton){
+        sender.pulse()
         guard let email = emailTextField.text else { return }
         if emailValidation(email: email){
             NetworkManager.shared.resetPasswordWithEmail(email: email) { result in
