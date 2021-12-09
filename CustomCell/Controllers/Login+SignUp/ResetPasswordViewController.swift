@@ -22,7 +22,7 @@ class ResetPasswordViewerViewController: UIViewController {
         let button = UIButton()
         button.setTitle("Reset Password", for: .normal)
         button.setTitleColor(.white, for: .normal)
-        button.backgroundColor = .systemRed
+        button.backgroundColor = ColorConstants.tealGreen
         button.addTarget(self, action: #selector(handleForgotPasswordButtonTapped), for: .touchUpInside)
         button.translatesAutoresizingMaskIntoConstraints = false
         button.layer.cornerRadius = 10

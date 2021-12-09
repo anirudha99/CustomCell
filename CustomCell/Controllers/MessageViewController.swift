@@ -241,7 +241,7 @@ extension MessageViewController: UICollectionViewDelegateFlowLayout {
             estimateSizeCell.layoutIfNeeded()
             let targetSize = CGSize(width: view.frame.width, height: 250)
             let estimatedSize = estimateSizeCell.systemLayoutSizeFitting(targetSize)
-            height = estimatedSize.height + 15
+            height = estimatedSize.height + 20
         }
         else{
             estimateImageSizeCell.messageItem = messages[indexPath.row]

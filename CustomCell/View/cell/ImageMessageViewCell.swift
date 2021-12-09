@@ -57,6 +57,7 @@ class ImageMessageViewCell: UICollectionViewCell {
     
     var imageChat: UIImageView = {
         let image = UIImageView()
+        image.backgroundColor = ColorConstants.tealGreen
         image.layer.cornerRadius = 10
         image.layer.masksToBounds = true
         image.contentMode = .scaleAspectFill
@@ -127,7 +128,6 @@ class ImageMessageViewCell: UICollectionViewCell {
             trailingConstraint.isActive = true
             messageView.backgroundColor = ColorConstants.tealGreen
             senderLabel.isHidden = true
-
             recieverMessageConstraint.isActive = false
             senderNameTopConstraint.isActive = false
             userConstraint.isActive = true
@@ -138,7 +138,6 @@ class ImageMessageViewCell: UICollectionViewCell {
             trailingConstraint.isActive = false
             messageView.backgroundColor = .systemGray
             senderLabel.isHidden = false
-
             userConstraint.isActive = false
             recieverMessageConstraint.isActive = true
             senderNameTopConstraint.isActive = true

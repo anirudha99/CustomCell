@@ -72,7 +72,6 @@ class MessageViewCell: UICollectionViewCell {
         messageView.addSubview(senderLabel)
         messageView.addSubview(messageLabel)
         messageView.addSubview(time)
-//        addSubview(time)
         messageView.translatesAutoresizingMaskIntoConstraints = false
         messageLabel.translatesAutoresizingMaskIntoConstraints = false
         time.translatesAutoresizingMaskIntoConstraints = false
@@ -86,7 +85,6 @@ class MessageViewCell: UICollectionViewCell {
         senderNameTopConstraint = senderLabel.topAnchor.constraint(equalTo: messageView.topAnchor,constant: 5)
         recieverMessageConstraint = messageLabel.topAnchor.constraint(equalTo: senderLabel.bottomAnchor,constant: 5)
         userConstraint = messageLabel.topAnchor.constraint(equalTo: messageView.topAnchor, constant: 10)
-        
         
         NSLayoutConstraint.activate([
             
