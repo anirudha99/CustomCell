@@ -64,14 +64,15 @@ class MessageViewCell: UICollectionViewCell {
         return label
     }()
     
-    var time = CustomLabel(text: "")
+    var time = CustomLabel(text: "", color: ColorConstants.black, font: UIFont.systemFont(ofSize: 12))
     
     override init(frame: CGRect) {
         super.init(frame: frame)
         addSubview(messageView)
         messageView.addSubview(senderLabel)
         messageView.addSubview(messageLabel)
-        addSubview(time)
+        messageView.addSubview(time)
+//        addSubview(time)
         messageView.translatesAutoresizingMaskIntoConstraints = false
         messageLabel.translatesAutoresizingMaskIntoConstraints = false
         time.translatesAutoresizingMaskIntoConstraints = false
@@ -82,9 +83,10 @@ class MessageViewCell: UICollectionViewCell {
         trailingConstraint = messageView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -16)
         trailingConstraint?.isActive = true
         
-        userConstraint = messageLabel.topAnchor.constraint(equalTo: messageView.topAnchor, constant: 5)
-        senderNameTopConstraint = senderLabel.topAnchor.constraint(equalTo: messageView.topAnchor,constant: 2)
-        recieverMessageConstraint = messageLabel.topAnchor.constraint(equalTo: senderLabel.bottomAnchor,constant: 0)
+        senderNameTopConstraint = senderLabel.topAnchor.constraint(equalTo: messageView.topAnchor,constant: 5)
+        recieverMessageConstraint = messageLabel.topAnchor.constraint(equalTo: senderLabel.bottomAnchor,constant: 5)
+        userConstraint = messageLabel.topAnchor.constraint(equalTo: messageView.topAnchor, constant: 10)
+        
         
         NSLayoutConstraint.activate([
             
@@ -92,16 +94,16 @@ class MessageViewCell: UICollectionViewCell {
             messageView.bottomAnchor.constraint(equalTo: bottomAnchor,constant: 0),
             messageView.widthAnchor.constraint(lessThanOrEqualToConstant: 250),
             
-            senderLabel.widthAnchor.constraint(lessThanOrEqualToConstant: 250),
             senderLabel.leftAnchor.constraint(equalTo: messageView.leftAnchor,constant: 8),
             senderLabel.rightAnchor.constraint(equalTo: messageView.rightAnchor,constant: -8),
             
-            messageLabel.bottomAnchor.constraint(equalTo: messageView.bottomAnchor,constant: -5),
+            messageLabel.widthAnchor.constraint(lessThanOrEqualToConstant: 250),
             messageLabel.leftAnchor.constraint(equalTo: messageView.leftAnchor,constant: 8),
             messageLabel.rightAnchor.constraint(equalTo: messageView.rightAnchor,constant: -8),
             
-            time.topAnchor.constraint(equalTo: messageView.bottomAnchor,constant: -16),
-            time.rightAnchor.constraint(equalTo: messageView.rightAnchor)
+            time.topAnchor.constraint(equalTo: messageLabel.bottomAnchor,constant: -10),
+            time.bottomAnchor.constraint(equalTo: messageView.bottomAnchor,constant: -5),
+            time.rightAnchor.constraint(equalTo: messageView.rightAnchor,constant: -5)
         ])
         
     }
@@ -116,13 +118,12 @@ class MessageViewCell: UICollectionViewCell {
         
         messageLabel.text = messageItem!.content
         time.text = dateFormatter.string(from: messageItem!.time)
-        time.font = UIFont.systemFont(ofSize: 12)
         messageView.layer.cornerRadius = 10
         
         if isSender {
             leadingConstraint.isActive = false
             trailingConstraint.isActive = true
-            messageView.backgroundColor = .systemRed
+            messageView.backgroundColor = ColorConstants.tealGreen
             messageLabel.textColor = .white
             senderLabel.isHidden = true
             userConstraint.isActive = true

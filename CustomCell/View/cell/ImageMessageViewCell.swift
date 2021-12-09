@@ -58,22 +58,21 @@ class ImageMessageViewCell: UICollectionViewCell {
     var imageChat: UIImageView = {
         let image = UIImageView()
         image.layer.cornerRadius = 10
-//        image.clipsToBounds = true
         image.layer.masksToBounds = true
         image.contentMode = .scaleAspectFill
         image.widthAnchor.constraint(equalToConstant: 200).isActive = true
-//        image.heightAnchor.constraint(equalToConstant: 200).isActive = true
+        image.heightAnchor.constraint(equalToConstant: 200).isActive = true
         image.translatesAutoresizingMaskIntoConstraints = false
         image.image = ImageConstants.picture
         return image
     }()
     
-    var time = CustomLabel(text: "")
+    var time = CustomLabel(text: "", color: ColorConstants.black, font: UIFont.systemFont(ofSize: 14))
     
     override init(frame: CGRect) {
         super.init(frame: frame)
         addSubview(messageView)
-        addSubview(time)
+        messageView.addSubview(time)
         messageView.addSubview(senderLabel)
         messageView.addSubview(imageChat)
         messageView.translatesAutoresizingMaskIntoConstraints = false
@@ -97,24 +96,18 @@ class ImageMessageViewCell: UICollectionViewCell {
             
             imageChat.leftAnchor.constraint(equalTo: messageView.leftAnchor),
             imageChat.rightAnchor.constraint(equalTo: messageView.rightAnchor),
-            imageChat.bottomAnchor.constraint(equalTo: messageView.bottomAnchor),
+//            imageChat.bottomAnchor.constraint(equalTo: messageView.bottomAnchor),
 //            imageChat.centerXAnchor.constraint(equalTo: messageView.centerXAnchor),
             
-            time.topAnchor.constraint(equalTo: imageChat.bottomAnchor, constant: -16),
-            time.rightAnchor.constraint(equalTo: messageView.rightAnchor)
+            time.topAnchor.constraint(equalTo: imageChat.bottomAnchor, constant: -15),
+//            time.bottomAnchor.constraint(equalTo: messageView.bottomAnchor),
+            time.rightAnchor.constraint(equalTo: messageView.rightAnchor,constant: -5)
         ])
-        
-       
-        imageUserConstraint = imageChat.heightAnchor.constraint(equalToConstant: 230)
-        imageUserConstraint.isActive = true
-        imageSenderConstraint = imageChat.heightAnchor.constraint(equalToConstant: 200)
-        imageSenderConstraint.isActive = true
-        recieverMessageConstraint = imageChat.topAnchor.constraint(equalTo: senderLabel.bottomAnchor,constant: 0)
-        recieverMessageConstraint.isActive = true
-        senderNameTopConstraint = senderLabel.topAnchor.constraint(equalTo: messageView.topAnchor,constant: 0)
-        senderNameTopConstraint.isActive = true
-        userConstraint = imageChat.topAnchor.constraint(equalTo: messageView.topAnchor,constant: 0)
-        userConstraint.isActive = true
+        recieverMessageConstraint = imageChat.topAnchor.constraint(equalTo: senderLabel.bottomAnchor,constant: 5)
+        senderNameTopConstraint = senderLabel.topAnchor.constraint(equalTo: messageView.topAnchor,constant: 5)
+        userConstraint = imageChat.topAnchor.constraint(equalTo: messageView.topAnchor,constant: 10)
+
+
     }
     
     required init?(coder: NSCoder) {
@@ -132,10 +125,9 @@ class ImageMessageViewCell: UICollectionViewCell {
         if isSender {
             leadingConstraint.isActive = false
             trailingConstraint.isActive = true
-            messageView.backgroundColor = .systemRed
+            messageView.backgroundColor = ColorConstants.tealGreen
             senderLabel.isHidden = true
-            imageSenderConstraint.isActive = true
-            imageUserConstraint.isActive = false
+
             recieverMessageConstraint.isActive = false
             senderNameTopConstraint.isActive = false
             userConstraint.isActive = true
@@ -146,8 +138,7 @@ class ImageMessageViewCell: UICollectionViewCell {
             trailingConstraint.isActive = false
             messageView.backgroundColor = .systemGray
             senderLabel.isHidden = false
-            imageSenderConstraint.isActive = false
-            imageUserConstraint.isActive = true
+
             userConstraint.isActive = false
             recieverMessageConstraint.isActive = true
             senderNameTopConstraint.isActive = true

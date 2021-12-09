@@ -16,16 +16,16 @@ class GroupChatViewController: UIViewController {
     var selectedUsers: [IndexPath] = []
     var currentUser: ChatAppUser!
     
-    let groupPhotoLabel = CustomLabel(text: "Select Group Photo")
+    let groupPhotoLabel = CustomLabel(text: "Select Group Photo", color: ColorConstants.tealGreen, font: FontConstants.senderTextfont)
     let groupPhoto = CustomImageView(image: ImageConstants.groupPhoto!, height: 100, width: 100, cornerRadius: 45, color: .white)
-    let groupNameLabel = CustomLabel(text: "Group Name")
-    let groupName = CustomTextField(placeholder: "Enter Group Name")
+    let groupNameLabel = CustomLabel(text: "Group Name", color: ColorConstants.tealGreen, font: FontConstants.senderTextfont)
+    let groupName = CustomTextField(placeholder: "Enter Group Name", color: ColorConstants.tealGreen)
     
     lazy var groupNameContainer: InputContainerView = {
         return InputContainerView(image: ImageConstants.groupPhoto!, textField: groupName)
     }()
     
-    let selectUsersLabel = CustomLabel(text: "Select Users")
+    let selectUsersLabel = CustomLabel(text: "Select Users", color: ColorConstants.tealGreen, font: FontConstants.senderTextfont)
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -38,7 +38,7 @@ class GroupChatViewController: UIViewController {
     func configureCollectionView(){
         groupCollectionView = UICollectionView(frame: view.bounds, collectionViewLayout: UICollectionViewFlowLayout())
         view.addSubview(groupCollectionView)
-        groupCollectionView.backgroundColor = .white
+        groupCollectionView.backgroundColor = UIColor(red: 0.898, green: 0.898, blue: 0.898, alpha: 1)
         groupCollectionView.dataSource = self
         groupCollectionView.delegate = self
         groupCollectionView.alwaysBounceVertical = true
@@ -48,18 +48,18 @@ class GroupChatViewController: UIViewController {
     }
     
     func configureUI(){
-        view.backgroundColor = UIColor(white: 0.85, alpha: 1)
+        view.backgroundColor = ColorConstants.background
         let createButton = UIBarButtonItem(title: "Create", style: .plain, target: self, action: #selector(handleCreate))
         navigationItem.rightBarButtonItems = [createButton]
         navigationItem.title = "Create Group Chat"
         navigationItem.largeTitleDisplayMode = .never
         navigationItem.backButtonTitle = ""
         
-        groupPhotoLabel.font = FontConstants.labelFont
-        groupNameLabel.font = FontConstants.labelFont
+        groupPhotoLabel.font = FontConstants.senderTextfont
+        groupNameLabel.font = FontConstants.senderTextfont
         
         groupPhoto.layer.borderWidth = 1
-        groupPhoto.layer.borderColor = UIColor.systemRed.cgColor
+        groupPhoto.layer.borderColor = ColorConstants.tealGreenDark.cgColor
         groupPhoto.clipsToBounds = true
         groupPhoto.isUserInteractionEnabled = true
         groupPhoto.contentMode = .scaleAspectFit
@@ -175,10 +175,10 @@ extension GroupChatViewController: UICollectionViewDelegate, UICollectionViewDat
         cell.timeLabel.isHidden = true
         cell.checkBox.isHidden = true
         if selectedUsers.contains(indexPath){
-            cell.backgroundColor = .systemRed
+            cell.backgroundColor = ColorConstants.tealGreen
         }
         else {
-            cell.backgroundColor = .white
+            cell.backgroundColor = ColorConstants.background
         }
         NetworkManager.shared.downloadImageWithPath(path: "Profile/\(userObject.userId)") { image in
             cell.iconImageView.image = image
@@ -190,10 +190,10 @@ extension GroupChatViewController: UICollectionViewDelegate, UICollectionViewDat
         let selectedCell: UICollectionViewCell = groupCollectionView.cellForItem(at: indexPath)!
         if selectedUsers.contains(indexPath) {
             selectedUsers.remove(at: selectedUsers.firstIndex(of: indexPath)!)
-            selectedCell.backgroundColor = .white
+            selectedCell.backgroundColor = ColorConstants.background
         } else {
             selectedUsers.append(indexPath)
-            selectedCell.backgroundColor = .systemRed
+            selectedCell.backgroundColor = ColorConstants.tealGreen
         }
     }
 }

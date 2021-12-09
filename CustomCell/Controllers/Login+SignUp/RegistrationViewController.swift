@@ -21,45 +21,44 @@ class RegistrationViewController: UIViewController {
         let imageView = UIImageView()
         imageView.tintColor = .white
         imageView.clipsToBounds = true
-        imageView.image = UIImage(systemName: "person.circle")
+        imageView.image = ImageConstants.person
         imageView.layer.cornerRadius = 60
         imageView.translatesAutoresizingMaskIntoConstraints = false
-        imageView.backgroundColor = .systemRed
+        imageView.backgroundColor = ColorConstants.tealGreen
         imageView.layer.borderWidth = 2
-        imageView.layer.borderColor = UIColor.systemRed.cgColor
+        imageView.layer.borderColor = ColorConstants.tealGreenDark.cgColor
         imageView.isUserInteractionEnabled = true
         return imageView
     }()
     
-    var firstNameTextField = CustomTextField(placeholder: "Enter First Name")
-    var lastNameTextField = CustomTextField(placeholder: "Enter Last Name")
-    var emailTextField = CustomTextField(placeholder: "Enter Email")
-    var passwordTextField = CustomTextField(placeholder: "Enter Password")
-    var loginLabel = CustomLabel(text: "Already have an account?")
+    var firstNameTextField = CustomTextField(placeholder: "Enter First Name", color: ColorConstants.black)
+    var lastNameTextField = CustomTextField(placeholder: "Enter Last Name", color: ColorConstants.black)
+    var emailTextField = CustomTextField(placeholder: "Enter Email", color: ColorConstants.black)
+    var passwordTextField = CustomTextField(placeholder: "Enter Password", color: ColorConstants.black)
+    var loginLabel = CustomLabel(text: "Already have an account?", color: ColorConstants.tealGreen, font: FontConstants.senderTextfont)
     
     lazy var firstNameContainer: InputContainerView = {
         firstNameTextField.keyboardType = .default
-        return InputContainerView(image: UIImage(systemName: "person.fill")!, textField: firstNameTextField)
+        return InputContainerView(image: ImageConstants.personFill!, textField: firstNameTextField)
     }()
     
     lazy var lastNameContainer: InputContainerView = {
         lastNameTextField.keyboardType = .default
-        return InputContainerView(image: UIImage(systemName: "person.fill")!, textField: lastNameTextField)
+        return InputContainerView(image: ImageConstants.personFill!, textField: lastNameTextField)
     }()
     
     lazy var emailContainer: InputContainerView = {
         emailTextField.keyboardType = .emailAddress
-        return InputContainerView(image: UIImage(systemName: "envelope.fill")!, textField: emailTextField)
+        return InputContainerView(image: ImageConstants.envelope!, textField: emailTextField)
     }()
     
     lazy var passwordContainer: InputContainerView = {
         passwordTextField.isSecureTextEntry = true
-        return InputContainerView(image: UIImage(systemName: "lock.fill")!, textField: passwordTextField)
+        return InputContainerView(image: ImageConstants.lockFill!, textField: passwordTextField)
     }()
     
     lazy var loginPageTransistionContainer: UIView = {
         let view = UIView()
-        view.backgroundColor = .darkGray
         view.heightAnchor.constraint(equalToConstant: 50).isActive = true
         view.translatesAutoresizingMaskIntoConstraints = false
         
@@ -80,10 +79,9 @@ class RegistrationViewController: UIViewController {
     let signUpButton: UIButton = {
         let button = UIButton()
         button.setTitle("Sign Up", for: .normal)
-        button.tintColor = .white
         button.addTarget(self, action: #selector(handleRegisterButtonTapped), for: .touchUpInside)
         button.translatesAutoresizingMaskIntoConstraints = false
-        button.backgroundColor = .red
+        button.backgroundColor = ColorConstants.tealGreenDark
         button.heightAnchor.constraint(equalToConstant: 50).isActive = true
         return button
     }()
@@ -91,7 +89,7 @@ class RegistrationViewController: UIViewController {
     let loginPageButton: UIButton = {
         let button = UIButton()
         button.setTitle("Login", for: .normal)
-        button.setTitleColor(.red, for: .normal)
+        button.setTitleColor(ColorConstants.teaGreen, for: .normal)
         button.addTarget(self, action: #selector(transistionToLogin), for: .touchUpInside)
         button.translatesAutoresizingMaskIntoConstraints = false
         button.heightAnchor.constraint(equalToConstant: 50).isActive = true
@@ -120,7 +118,7 @@ class RegistrationViewController: UIViewController {
     
     func configureUI(){
         navigationController?.isNavigationBarHidden = true
-        view.backgroundColor = .darkGray
+        view.backgroundColor = ColorConstants.background
         view.addSubview(scrollView)
         scrollView.translatesAutoresizingMaskIntoConstraints = false
         scrollView.addSubview(profilePicImage)

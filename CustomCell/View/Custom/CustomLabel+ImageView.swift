@@ -10,14 +10,14 @@ import UIKit
 
 class CustomLabel: UILabel {
     
-    init(text: String){
+    init(text: String,color: UIColor, font: UIFont){
         super.init(frame: .zero)
-        font = UIFont.systemFont(ofSize: 18, weight: .semibold)
-        textColor = .black
+        textColor = color
         textAlignment = .center
         translatesAutoresizingMaskIntoConstraints = false
         heightAnchor.constraint(equalToConstant: 45).isActive = true
         self.text = text
+        self.font = font
     }
     
     required init?(coder: NSCoder) {

@@ -28,7 +28,7 @@ class NewConversationViewController: UIViewController {
     let groupChatButton: UIButton = {
         let button = UIButton()
         button.setTitle("Create Group Chat", for: .normal)
-        button.backgroundColor = .systemRed
+        button.backgroundColor = ColorConstants.tealGreen
         button.tintColor = .white
         button.translatesAutoresizingMaskIntoConstraints = false
         button.layer.cornerRadius = 25
@@ -64,13 +64,12 @@ class NewConversationViewController: UIViewController {
         let appearance = UINavigationBarAppearance()
         appearance.configureWithOpaqueBackground()
         appearance.largeTitleTextAttributes = [.foregroundColor: UIColor.white]
-        appearance.backgroundColor = .darkGray
+        appearance.backgroundColor = ColorConstants.navigationBackground
         
         navigationController?.navigationBar.standardAppearance = appearance
         navigationController?.navigationBar.compactAppearance = appearance
         navigationController?.navigationBar.scrollEdgeAppearance = appearance
-        navigationController?.navigationBar.tintColor = .systemRed
-        
+        navigationController?.navigationBar.tintColor = ColorConstants.teaGreen
         
         navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Close", style: .done, target: self, action: #selector(dissmissScreen))
         navigationItem.searchController = searchController
@@ -83,6 +82,7 @@ class NewConversationViewController: UIViewController {
         view.addSubview(noResultsLabel)
         collectionView.dataSource = self
         collectionView.delegate = self
+        collectionView.backgroundColor = ColorConstants.background
         collectionView.register(ConversationCell.self, forCellWithReuseIdentifier: reuseIdentifier)
     }
     
@@ -162,7 +162,7 @@ extension NewConversationViewController: UICollectionViewDelegate, UICollectionV
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: reuseIdentifier, for: indexPath) as! ConversationCell
         
-        cell.backgroundColor = .white
+        cell.backgroundColor = ColorConstants.background
         collectionView.isHidden = false
         noResultsLabel.isHidden = true
         
@@ -192,7 +192,6 @@ extension NewConversationViewController: UICollectionViewDelegate, UICollectionV
             let uidF = chat.users[0].userId
             let uidS = chat.users[1].userId
             if uidF == currentUser!.userId && uidS == selectedUser.userId || uidF == selectedUser.userId && uidS == currentUser!.userId {
-                print("Chat already there")
                 chat.otherUser =  uidF == currentUser!.userId ? 1 : 0
                 messageVC.chat = chat
                 vcArray?.append(messageVC)
@@ -201,7 +200,6 @@ extension NewConversationViewController: UICollectionViewDelegate, UICollectionV
                 return
             }
         }
-        print("New Chat")
         NetworkManager.shared.addChat(users: [currentUser!,selectedUser], id: id, isGroupChat: false, groupName: "", groupIconPath: "")
         messageVC.chat = Chats(chatId: id, users: users, lastMessage: nil, messages: [], otherUser: 1, isGroupChat: false)
         vcArray?.append(messageVC)

@@ -10,16 +10,17 @@ import UIKit
 
 class CustomTextField: UITextField {
     
-    init(placeholder: String){
+    init(placeholder: String, color: UIColor){
         super.init(frame: .zero)
         
         font = UIFont.systemFont(ofSize: 18)
-        textColor = .black
+        textColor = color
         self.placeholder = placeholder
         layer.shadowColor = UIColor.darkGray.cgColor
         layer.shadowRadius = 5
         layer.shadowOpacity = 0.5
         layer.shadowOffset.height = -3
+        autocorrectionType = .no
     }
     
     required init?(coder: NSCoder) {

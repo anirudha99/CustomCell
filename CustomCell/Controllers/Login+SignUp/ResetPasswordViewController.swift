@@ -11,11 +11,11 @@ import FirebaseAuth
 class ResetPasswordViewerViewController: UIViewController {
     let scrollView = UIScrollView()
     
-    var emailTextField = CustomTextField(placeholder: "Enter Email")
-    var emailLabel = CustomLabel(text: "Enter your email address to reset password!")
+    var emailTextField = CustomTextField(placeholder: "Enter Email", color: ColorConstants.tealGreen)
+    var emailLabel = CustomLabel(text: "Enter your email address to reset password!", color: ColorConstants.teaGreen, font: FontConstants.senderTextfont)
     
     lazy var emailContainer: InputContainerView = {
-        return InputContainerView(image: UIImage(systemName: "person.fill")!, textField: emailTextField)
+        return InputContainerView(image: ImageConstants.personFill!, textField: emailTextField)
     }()
     
     let forgotPasswordButton: UIButton = {
@@ -46,7 +46,8 @@ class ResetPasswordViewerViewController: UIViewController {
     }
     
     func configureUI(){
-        view.backgroundColor = UIColor(white: 0.40, alpha: 1)
+        navigationItem.backButtonDisplayMode = .minimal
+        view.backgroundColor = ColorConstants.background
         view.addSubview(scrollView)
         emailLabel.lineBreakMode = .byWordWrapping
         emailLabel.numberOfLines = 2
@@ -63,7 +64,6 @@ class ResetPasswordViewerViewController: UIViewController {
         scrollView.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
         scrollView.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
         
-    
         stackView.topAnchor.constraint(equalTo: scrollView.topAnchor, constant: 50).isActive = true
         stackView.rightAnchor.constraint(equalTo: view.rightAnchor,constant: -20).isActive = true
         stackView.leftAnchor.constraint(equalTo: scrollView.leftAnchor, constant: 20).isActive = true

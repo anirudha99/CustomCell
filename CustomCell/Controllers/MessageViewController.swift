@@ -25,22 +25,23 @@ class MessageViewController: UIViewController {
     var MessageTableView: UITableView!
     var messageCollectionView: UICollectionView!
     
-    var messageTextField = CustomTextField(placeholder: "Type Message here")
+    var messageTextField = CustomTextField(placeholder: "Type Message here", color: ColorConstants.black)
     
     lazy var inputContainerView: UIView = {
         let containerView = UIView()
+        containerView.layer.backgroundColor = ColorConstants.navigationBackground.cgColor
         containerView.frame = CGRect(x: 0, y: 0, width: self.view.frame.width, height: 65)
-        containerView.backgroundColor = .white
         
         let sendButton: UIButton = {
             let button = UIButton()
             button.setImage(ImageConstants.sendButton, for: .normal)
             button.addTarget(self, action: #selector(sendButtonTapped), for: .touchUpInside)
-            button.tintColor = .systemRed
+            button.tintColor = ColorConstants.tealGreen
             button.translatesAutoresizingMaskIntoConstraints = false
-            button.backgroundColor = .white
+            button.backgroundColor = ColorConstants.navigationBackground
             button.layer.borderWidth = 1
-            button.layer.cornerRadius = 10
+            button.layer.borderColor = ColorConstants.whiteChocolate.cgColor
+            button.layer.cornerRadius = 20
             button.heightAnchor.constraint(equalToConstant: 50).isActive = true
             button.widthAnchor.constraint(equalToConstant: 50).isActive = true
             return button
@@ -50,17 +51,19 @@ class MessageViewController: UIViewController {
             let button = UIButton()
             button.setImage(ImageConstants.picture, for: .normal)
             button.addTarget(self, action: #selector(picButtonTapped), for: .touchUpInside)
-            button.tintColor = .systemRed
+            button.tintColor = ColorConstants.tealGreen
             button.layer.borderWidth = 1
-            button.layer.cornerRadius = 10
+            button.layer.borderColor = ColorConstants.whiteChocolate.cgColor
+            button.layer.cornerRadius = 20
             button.translatesAutoresizingMaskIntoConstraints = false
-            button.backgroundColor = .white
+            button.backgroundColor = ColorConstants.navigationBackground
             return button
         }()
         
-        self.messageTextField.layer.cornerRadius = 12
-        self.messageTextField.layer.borderColor = UIColor.systemGray.cgColor
+        self.messageTextField.layer.cornerRadius = 20
+        self.messageTextField.layer.borderColor = ColorConstants.tealGreenDark.cgColor
         self.messageTextField.layer.borderWidth = 1
+        self.messageTextField.backgroundColor = ColorConstants.white
         self.messageTextField.translatesAutoresizingMaskIntoConstraints = false
         
         containerView.addSubview(self.messageTextField)
@@ -87,7 +90,7 @@ class MessageViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .white
+        view.backgroundColor = ColorConstants.background
         tabBarController?.tabBar.isHidden = true
         configureNavigationBar()
         configureCollectionView()
@@ -108,7 +111,7 @@ class MessageViewController: UIViewController {
     func configureCollectionView(){
         messageCollectionView = UICollectionView(frame: view.bounds, collectionViewLayout: UICollectionViewFlowLayout())
         view.addSubview(messageCollectionView)
-        messageCollectionView.backgroundColor = UIColor(white: 0.95, alpha: 1)
+        messageCollectionView.backgroundColor = ColorConstants.background
         messageCollectionView.dataSource = self
         messageCollectionView.delegate = self
         messageCollectionView.alwaysBounceVertical = true
@@ -181,8 +184,6 @@ class MessageViewController: UIViewController {
         NetworkManager.shared.addMessages(messages: messagesArray, lastMessage: newMessage, id: chat.chatId!)
         self.messageCollectionView.reloadData()
     }
-    
-    
 }
 
 extension MessageViewController: UICollectionViewDelegate, UICollectionViewDataSource {
@@ -230,7 +231,7 @@ extension MessageViewController: UICollectionViewDelegateFlowLayout {
         let messageobj = messages[indexPath.row]
         var height: CGFloat = CGFloat()
         
-        let frame = CGRect(x: 0, y: 0, width: view.frame.width, height: 60)
+        let frame = CGRect(x: 0, y: 0, width: view.frame.width, height: 50)
         let imageFrame = CGRect(x: 0, y: 0, width: view.frame.width, height: 200)
         let estimateSizeCell = MessageViewCell(frame: frame)
         let estimateImageSizeCell = ImageMessageViewCell(frame: imageFrame)
@@ -238,16 +239,17 @@ extension MessageViewController: UICollectionViewDelegateFlowLayout {
         if messageobj.imagePath == "" {
             estimateSizeCell.messageItem = messages[indexPath.row]
             estimateSizeCell.layoutIfNeeded()
-            let targetSize = CGSize(width: view.frame.width, height: 1000)
+            let targetSize = CGSize(width: view.frame.width, height: 250)
             let estimatedSize = estimateSizeCell.systemLayoutSizeFitting(targetSize)
-            height = estimatedSize.height + 25
+            height = estimatedSize.height + 15
         }
         else{
             estimateImageSizeCell.messageItem = messages[indexPath.row]
             estimateImageSizeCell.layoutIfNeeded()
-            let targetSize = CGSize(width: view.frame.width, height: 1000)
+            let targetSize = CGSize(width: view.frame.width, height: 220)
             let estimatedSize = estimateImageSizeCell.systemLayoutSizeFitting(targetSize)
-            height = estimatedSize.height + 30
+            height = estimatedSize.height + 25
+
         }
         let width = UIScreen.main.bounds.width
         return CGSize(width: width, height: height)

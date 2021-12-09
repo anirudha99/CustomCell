@@ -27,7 +27,7 @@ class LoginViewController: UIViewController {
         let iv = UIImageView()
         iv.image = UIImage(named: ImageConstants.appIcon)
         iv.translatesAutoresizingMaskIntoConstraints = false
-        iv.backgroundColor = .white
+        iv.backgroundColor = ColorConstants.tealGreen
         iv.clipsToBounds = true
         iv.layer.cornerRadius = 50
         return iv
@@ -48,36 +48,36 @@ class LoginViewController: UIViewController {
         return container
     }()
     
-    var emailTextField = CustomTextField(placeholder: "Enter Email")
-    var passwordTextField = CustomTextField(placeholder: "Enter Password")
+    var emailTextField = CustomTextField(placeholder: "Enter Email", color: ColorConstants.black)
+    var passwordTextField = CustomTextField(placeholder: "Enter Password", color: ColorConstants.black)
     
     lazy var emailContainer: InputContainerView = {
-        return InputContainerView(image: UIImage(systemName: "person.fill")!, textField: emailTextField)
+        return InputContainerView(image: ImageConstants.personFill!, textField: emailTextField)
     }()
     
     lazy var passwordContainer: InputContainerView = {
         passwordTextField.isSecureTextEntry = true
-        return InputContainerView(image: UIImage(systemName: "lock.fill")!, textField: passwordTextField)
+        return InputContainerView(image: ImageConstants.lockFill!, textField: passwordTextField)
     }()
     
     let loginButton: UIButton = {
         let button = UIButton()
         button.setTitle("Login", for: .normal)
-        button.tintColor = .white
+        button.tintColor = ColorConstants.tealGreenDark
         button.addTarget(self, action: #selector(handleLoginButtonTapped), for: .touchUpInside)
         button.translatesAutoresizingMaskIntoConstraints = false
-        button.backgroundColor = .red
+        button.backgroundColor = ColorConstants.tealGreenDark
         button.layer.cornerRadius = 10
         button.heightAnchor.constraint(equalToConstant: 50).isActive = true
         return button
     }()
     
-    var signUpLabel = CustomLabel(text: "Don't have an account?")
+    var signUpLabel = CustomLabel(text: "Don't have an account?", color: ColorConstants.tealGreen, font: FontConstants.senderTextfont)
     
     let signupPageButton: UIButton = {
         let button = UIButton()
         button.setTitle("Sign Up", for: .normal)
-        button.setTitleColor(.red, for: .normal)
+        button.setTitleColor(ColorConstants.teaGreen, for: .normal)
         button.translatesAutoresizingMaskIntoConstraints = false
         button.addTarget(self, action: #selector(transistionToSignUp), for: .touchUpInside)
         return button
@@ -86,7 +86,7 @@ class LoginViewController: UIViewController {
     let forgotPasswordButton: UIButton = {
         let button = UIButton()
         button.setTitle("Forgot Password?", for: .normal)
-        button.tintColor = .white
+        button.setTitleColor( ColorConstants.teaGreen, for: .normal)
         button.addTarget(self, action: #selector(handleForgotPasswordButtonTapped), for: .touchUpInside)
         button.translatesAutoresizingMaskIntoConstraints = false
         button.layer.cornerRadius = 10
@@ -137,7 +137,7 @@ class LoginViewController: UIViewController {
     
     func configureUI(){
         
-        view.backgroundColor = UIColor(white: 0.40, alpha: 1)
+        view.backgroundColor = ColorConstants.background
         view.addSubview(scrollView)
         scrollView.addSubview(logoContainer)
         
@@ -169,7 +169,7 @@ class LoginViewController: UIViewController {
     func configureSpinner(){
         spinnerT.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(spinnerT)
-        spinnerT.color = .white
+        spinnerT.color = ColorConstants.whiteChocolate
         spinnerT.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
         spinnerT.centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive = true
     }

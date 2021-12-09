@@ -40,8 +40,9 @@ class ConversationCell: UICollectionViewCell {
     let titleLabel : UILabel = {
         let label = UILabel()
         label.font = UIFont.boldSystemFont(ofSize: 20)
-        label.text = "Sample title text ererrereeeereerereerer"
+        label.text = ""
         label.lineBreakMode = .byTruncatingTail
+        label.textColor = ColorConstants.whiteChocolate
         return label
     }()
     
@@ -49,7 +50,8 @@ class ConversationCell: UICollectionViewCell {
         let label = UILabel()
         label.font = UIFont.boldSystemFont(ofSize: 16)
         label.textAlignment = .left
-        label.text = "Sample text"
+        label.text = ""
+        label.textColor = ColorConstants.customWhite
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
@@ -59,7 +61,7 @@ class ConversationCell: UICollectionViewCell {
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "hh:mm:a"
         label.text = dateFormatter.string(from: Date())
-
+        label.textColor = ColorConstants.whiteChocolate
         label.font = UIFont.boldSystemFont(ofSize: 14)
         label.backgroundColor = .clear
         return label
@@ -68,10 +70,10 @@ class ConversationCell: UICollectionViewCell {
     let iconImageView : UIImageView = {
         let imageV = UIImageView()
         imageV.contentMode = .scaleAspectFit
-        imageV.image = UIImage(systemName: "person.fill")
-        imageV.tintColor = .systemRed
+        imageV.image = ImageConstants.personFill
+        imageV.tintColor = ColorConstants.tealGreen
         imageV.layer.cornerRadius = 20
-        imageV.layer.borderColor = UIColor.black.cgColor
+        imageV.layer.borderColor = ColorConstants.tealGreenDark.cgColor
         imageV.layer.borderWidth = 2
         imageV.layer.masksToBounds = false
         imageV.clipsToBounds = true
@@ -81,7 +83,6 @@ class ConversationCell: UICollectionViewCell {
     lazy var stack: UIStackView = {
         let stack = UIStackView(arrangedSubviews: [titleLabel,messageView])
         stack.axis = .vertical
-//        stack.backgroundColor = .white
         stack.spacing = 5
         stack.alignment = .leading
         return stack
@@ -100,35 +101,29 @@ class ConversationCell: UICollectionViewCell {
     
     //MARK: -HANDLERS
     
-     private func configureChat() {
+    private func configureChat() {
         guard let chat = chat else { return }
-
+        
         lastMessageItem = chat.lastMessage
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "hh:mm:a"
-         var path: String
-         if chat.isGroupChat{
-             titleLabel.text = chat.groupName
-             path = chat.groupIconPath!
-         }
-         else{
-             let otherUser = chat.users[chat.otherUser!]
-             titleLabel.text = "\(otherUser.firstName) \(otherUser.lastName)"
-             path = "Profile/\(otherUser.userId)"
-         }
-         
+        var path: String
+        if chat.isGroupChat{
+            titleLabel.text = chat.groupName
+            path = chat.groupIconPath!
+        }
+        else{
+            let otherUser = chat.users[chat.otherUser!]
+            titleLabel.text = "\(otherUser.firstName) \(otherUser.lastName)"
+            path = "Profile/\(otherUser.userId)"
+        }
+        
         if chat.lastMessage == nil {
             timeLabel.text = ""
         }
         else {
             timeLabel.text = dateFormatter.string(from: chat.lastMessage!.time)
         }
-//        var fetchUser: ChatAppUser
-//        if chat.otherUser == 0 {
-//            fetchUser = chat.users[0]
-//        } else {
-//            fetchUser = chat.users[1]
-//        }
         NetworkManager.shared.downloadImageWithPath(path: path) { image in
             DispatchQueue.main.async {
                 self.iconImageView.image = image
@@ -137,13 +132,11 @@ class ConversationCell: UICollectionViewCell {
     }
     
     @objc func checkBoxButtonTapped(){
-        print("Button tapped")
-        
         isChecked = !isChecked
         if isChecked {
-            checkBox.setImage(UIImage(systemName: "checkmark.square"), for: .normal)
+            checkBox.setImage(ImageConstants.checkmarkSquare, for: .normal)
         } else {
-            checkBox.setImage(UIImage(systemName: "square"), for: .normal)
+            checkBox.setImage(ImageConstants.square, for: .normal)
         }
     }
     
@@ -163,11 +156,8 @@ class ConversationCell: UICollectionViewCell {
     }
     
     private func configure(){
-        //        layer.cornerRadius = 5
-        //        layer.borderWidth = 2
-        
         checkBox.addTarget(self, action: #selector(checkBoxButtonTapped), for: .touchUpInside)
-
+        
         titleLabel.translatesAutoresizingMaskIntoConstraints = false
         
         addSubview(timeLabel)
@@ -191,23 +181,27 @@ class ConversationCell: UICollectionViewCell {
             checkBox.bottomAnchor.constraint(equalTo: bottomAnchor),
             checkBox.leftAnchor.constraint(equalTo: self.leftAnchor, constant: -10),
             checkBox.widthAnchor.constraint(equalToConstant: 30),
-
+            
             iconImageView.centerYAnchor.constraint(equalTo: self.centerYAnchor),
             iconImageView.leftAnchor.constraint(equalTo: checkBox.rightAnchor, constant: 10),
             iconImageView.heightAnchor.constraint(equalToConstant: 50),
             iconImageView.widthAnchor.constraint(equalToConstant: 50),
-
+            
             stack.topAnchor.constraint(equalTo: topAnchor, constant: 25),
             stack.leadingAnchor.constraint(equalTo: iconImageView.trailingAnchor, constant: 20),
             stack.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -75),
             
             timeLabel.rightAnchor.constraint(equalTo: self.rightAnchor, constant: -5),
             timeLabel.topAnchor.constraint(equalTo: topAnchor, constant: 30)
-//            timeLabel.centerYAnchor.constraint(equalTo: centerYAnchor)
         ])
     }
     
     private func checkLastMessage(){
-        messageLabel.text = lastMessageItem?.content
+        if lastMessageItem?.content == "" {
+            messageLabel.text = "Photo"
+            messageLabel.textColor = ColorConstants.customWhite
+        } else {
+            messageLabel.text = lastMessageItem?.content
+        }
     }
 }

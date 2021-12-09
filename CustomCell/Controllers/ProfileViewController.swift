@@ -7,7 +7,6 @@
 
 import UIKit
 import FirebaseAuth
-import CloudKit
 
 let cellIdentifier = "cell"
 
@@ -15,8 +14,8 @@ class ProfileViewController: UIViewController {
     
     //MARK: -Properties
     
-    let username = CustomLabel(text: "")
-    let emailLabel = CustomLabel(text: "")
+    let username = CustomLabel(text: "", color: ColorConstants.whiteChocolate, font: FontConstants.senderTextfont)
+    let emailLabel = CustomLabel(text: "", color: ColorConstants.whiteChocolate, font: FontConstants.senderTextfont)
     let imageView = UIImageView()
   
     var currentUser: ChatAppUser?
@@ -35,18 +34,16 @@ class ProfileViewController: UIViewController {
     }
     
     private func configureNavigationBarT() {
-        view.backgroundColor = UIColor(white: 0.85, alpha: 1)
-
+        view.backgroundColor = ColorConstants.background
         let appearance = UINavigationBarAppearance()
         appearance.configureWithOpaqueBackground()
         appearance.largeTitleTextAttributes = [.foregroundColor: UIColor.white]
-        appearance.backgroundColor = .darkGray
+        appearance.backgroundColor = ColorConstants.navigationBackground
         
         navigationController?.navigationBar.prefersLargeTitles = true
         navigationController?.navigationBar.standardAppearance = appearance
         navigationController?.navigationBar.compactAppearance = appearance
         navigationController?.navigationBar.scrollEdgeAppearance = appearance
-        
         navigationController?.navigationBar.tintColor = .systemRed
         navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Logout", style: .done, target: self, action: #selector(logoutButtonTapped))
     }
@@ -54,7 +51,7 @@ class ProfileViewController: UIViewController {
     //MARK: -Handlers
     private func configureProfileUI(){
         imageView.backgroundColor = .white
-        imageView.layer.borderColor = UIColor.systemRed.cgColor
+        imageView.layer.borderColor = ColorConstants.tealGreen.cgColor
         imageView.layer.borderWidth = 3
         imageView.layer.masksToBounds = true
         imageView.isUserInteractionEnabled = true
@@ -66,20 +63,16 @@ class ProfileViewController: UIViewController {
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(presentImagePicker))
         imageView.addGestureRecognizer(tapGesture)
         
-        username.backgroundColor = .darkGray
         username.layer.masksToBounds = true
         username.layer.cornerRadius = 10
-        username.layer.borderColor = UIColor.black.cgColor
+        username.layer.borderColor = ColorConstants.tealGreen.cgColor
         username.layer.borderWidth = 2
         username.font = UIFont.boldSystemFont(ofSize: 18)
-        username.textColor = .white
-        emailLabel.backgroundColor = .darkGray
         emailLabel.layer.masksToBounds = true
         emailLabel.layer.cornerRadius = 10
-        emailLabel.layer.borderColor = UIColor.black.cgColor
+        emailLabel.layer.borderColor = ColorConstants.tealGreen.cgColor
         emailLabel.font = UIFont.boldSystemFont(ofSize: 18)
         emailLabel.layer.borderWidth = 2
-        emailLabel.textColor = .white
         
         view.addSubview(username)
         view.addSubview(emailLabel)
@@ -108,9 +101,7 @@ class ProfileViewController: UIViewController {
         NetworkManager.shared.fetchCurrentUser() { user in
             self.username.text = "Username - \(user.firstName)" + " "+"\(user.lastName)"
             self.emailLabel.text = "Email - \(user.emailAddress)"
-
             self.currentUser = user
-            
             NetworkManager.shared.downloadImageWithPath(path: user.profileURL) { image in
                 DispatchQueue.main.async {
                     self.imageView.image = image

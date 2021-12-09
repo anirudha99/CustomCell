@@ -15,13 +15,13 @@ class InputContainerView : UIView {
         
         backgroundColor = .white
         heightAnchor.constraint(equalToConstant: 50).isActive = true
-        layer.borderColor = UIColor.red.cgColor
+        layer.borderColor = ColorConstants.white.cgColor
         layer.borderWidth = 1
         layer.cornerRadius = 10
         
         let iv = UIImageView()
         iv.image = image
-        iv.tintColor = .black
+        iv.tintColor = ColorConstants.tealGreenDark
         addSubview(iv)
         iv.translatesAutoresizingMaskIntoConstraints = false
         iv.heightAnchor.constraint(equalToConstant: 30).isActive = true

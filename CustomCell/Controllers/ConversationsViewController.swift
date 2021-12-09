@@ -28,6 +28,7 @@ class ConversationsViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         validateAuth()
+        configureNavigationBar()
         configureNavigationBarT()
         configureUICollectionView()
         fetchUserConvo()
@@ -39,19 +40,7 @@ class ConversationsViewController: UIViewController {
     }
     
     func configureNavigationBarT() {
-        view.backgroundColor = .white
-        
-        let appearance = UINavigationBarAppearance()
-        appearance.configureWithOpaqueBackground()
-        appearance.largeTitleTextAttributes = [.foregroundColor: UIColor.white]
-        appearance.backgroundColor = .darkGray
-        
-        navigationController?.navigationBar.prefersLargeTitles = true
-        navigationController?.navigationBar.standardAppearance = appearance
-        navigationController?.navigationBar.compactAppearance = appearance
-        navigationController?.navigationBar.scrollEdgeAppearance = appearance
-        navigationController?.navigationBar.tintColor = .systemRed
-        
+        navigationController?.navigationBar.tintColor = ColorConstants.teaGreen
         
         navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .compose, target: self, action: #selector(didTapNewMessageButton))
         navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .edit, target: self, action: #selector(didTapEditButton))
@@ -60,7 +49,7 @@ class ConversationsViewController: UIViewController {
     func configureUICollectionView(){
         collectionView = UICollectionView(frame: view.bounds, collectionViewLayout: UICollectionViewFlowLayout())
         view.addSubview(collectionView)
-        collectionView.backgroundColor = UIColor(white: 0.95, alpha: 1)
+        collectionView.backgroundColor = ColorConstants.background
         collectionView.dataSource = self
         collectionView.delegate = self
         collectionView.register(ConversationCell.self, forCellWithReuseIdentifier: reuseIdentifier)
@@ -121,7 +110,7 @@ extension ConversationsViewController: UICollectionViewDataSource, UICollectionV
         let chat = chats[indexPath.row]
         cell.chat = chat
         cell.hideCheckBoxButton(isHide: isEdit)
-        
+        cell.layer.backgroundColor = ColorConstants.background.cgColor
         return cell
     }
     
