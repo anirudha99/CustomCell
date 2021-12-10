@@ -43,7 +43,8 @@ class ImageMessageViewCell: UICollectionViewCell {
         label.lineBreakMode = .byWordWrapping
         label.numberOfLines = 0
         label.textAlignment = .left
-        label.font = FontConstants.senderTextfont
+        label.font = FontConstants.textfontName
+        label.textColor = ColorConstants.lightGreen
         return label
     }()
     
@@ -68,7 +69,7 @@ class ImageMessageViewCell: UICollectionViewCell {
         return image
     }()
     
-    var time = CustomLabel(text: "", color: ColorConstants.black, font: UIFont.systemFont(ofSize: 14))
+    var time = CustomLabel(text: "", color: ColorConstants.lightGrayTime, font: UIFont.systemFont(ofSize: 14))
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -97,11 +98,8 @@ class ImageMessageViewCell: UICollectionViewCell {
             
             imageChat.leftAnchor.constraint(equalTo: messageView.leftAnchor),
             imageChat.rightAnchor.constraint(equalTo: messageView.rightAnchor),
-//            imageChat.bottomAnchor.constraint(equalTo: messageView.bottomAnchor),
-//            imageChat.centerXAnchor.constraint(equalTo: messageView.centerXAnchor),
             
             time.topAnchor.constraint(equalTo: imageChat.bottomAnchor, constant: -15),
-//            time.bottomAnchor.constraint(equalTo: messageView.bottomAnchor),
             time.rightAnchor.constraint(equalTo: messageView.rightAnchor,constant: -5)
         ])
         recieverMessageConstraint = imageChat.topAnchor.constraint(equalTo: senderLabel.bottomAnchor,constant: 5)

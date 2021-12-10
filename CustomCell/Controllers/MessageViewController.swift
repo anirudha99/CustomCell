@@ -124,7 +124,11 @@ class MessageViewController: UIViewController {
     }
     
     func configureUI(){
+        let info = UIBarButtonItem(image: ImageConstants.info, style: .plain, target: self, action: #selector(handleInfo))
         var name: String
+        if chat.isGroupChat {
+                   navigationItem.rightBarButtonItems = [info]
+               }
         NetworkManager.shared.fetchCurrentUser { user in
             self.currentUser = user
         }
@@ -157,6 +161,14 @@ class MessageViewController: UIViewController {
             messageTextField.text = ""
         }
     }
+    
+    @objc func handleInfo() {
+           var usersNames = ""
+           for user in chat.users {
+               usersNames = "\(usersNames) | \(user.firstName) \(user.lastName)"
+           }
+           showAlert(title: "Number of Group Members: \(chat.users.count)", message: usersNames)
+       }
     
     @objc func picButtonTapped(){
         let picker = UIImagePickerController()

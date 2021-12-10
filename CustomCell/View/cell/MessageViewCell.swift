@@ -60,11 +60,12 @@ class MessageViewCell: UICollectionViewCell {
         label.lineBreakMode = .byWordWrapping
         label.numberOfLines = 0
         label.textAlignment = .left
-        label.font = FontConstants.senderTextfont
+        label.font = FontConstants.textfontName
+        label.textColor = ColorConstants.lightGreen
         return label
     }()
     
-    var time = CustomLabel(text: "", color: ColorConstants.black, font: UIFont.systemFont(ofSize: 12))
+    var time = CustomLabel(text: "", color: ColorConstants.lightGrayTime, font: UIFont.systemFont(ofSize: 12))
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -132,8 +133,8 @@ class MessageViewCell: UICollectionViewCell {
         else {
             trailingConstraint.isActive = false
             leadingConstraint.isActive = true
-            messageView.backgroundColor = UIColor(white: 0.75, alpha: 1)
-            messageLabel.textColor = .black
+            messageView.backgroundColor = ColorConstants.grayLight
+            messageLabel.textColor = ColorConstants.white
             senderLabel.isHidden = false
             userConstraint.isActive = false
             recieverMessageConstraint.isActive = true
