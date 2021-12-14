@@ -13,7 +13,6 @@ struct ImageUploader {
     
     static func uploadImage(image: UIImage, name: String, completion: @escaping(String) -> Void) {
         let storage = Storage.storage().reference()
-//        guard let uid = Auth.auth().currentUser?.uid else { return }
         guard let imageData = image.jpegData(compressionQuality: 0.4) else { return }
         
         storage.child(name).putData(imageData, metadata: nil) { _, error in

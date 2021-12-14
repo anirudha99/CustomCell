@@ -153,9 +153,7 @@ struct NetworkManager {
                     if isGroupChat {
                         let groupName = value["groupName"] as! String
                         let groupIconPath = value["groupIconPath"] as! String
-                        
                         chat = Chats(chatId: id, users: usersArray, lastMessage: lastMessage, messages: [], isGroupChat: isGroupChat, groupName: groupName, groupIconPath: groupIconPath)
-                        
                     }
                     else {
                         var otherUser: Int
@@ -183,7 +181,6 @@ struct NetworkManager {
         lastMessageObj.dateString = dateString
         
         let lastMessageDictionary = lastMessageObj.dictionary
-//        var messageDictionary: [[String:Any]] = []
         let finalDictionary = ["lastMessage": lastMessageDictionary]
         
         database.child("Chats").child(id).updateChildValues(finalDictionary)

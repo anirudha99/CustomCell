@@ -209,7 +209,7 @@ class LoginViewController: UIViewController {
     }
     
     @objc func handleLoginButtonTapped(_ sender: UIButton){
-        sender.pulse()
+        sender.shake()
         guard let email = emailTextField.text,
               let password = passwordTextField.text,
               isUserEntered
