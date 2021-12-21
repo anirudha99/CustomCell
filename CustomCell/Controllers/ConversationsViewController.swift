@@ -31,6 +31,7 @@ class ConversationsViewController: UIViewController {
         configureNavigationBar()
         configureNavigationBarT()
         configureUICollectionView()
+        configureSpinner()
         fetchUserConvo()
     }
     
@@ -39,14 +40,14 @@ class ConversationsViewController: UIViewController {
         tabBarController?.tabBar.isHidden = false
     }
     
-    func configureNavigationBarT() {
+    private func configureNavigationBarT() {
         navigationController?.navigationBar.tintColor = ColorConstants.teaGreen
         
         navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .compose, target: self, action: #selector(didTapNewMessageButton))
         navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .edit, target: self, action: #selector(didTapEditButton))
     }
     
-    func configureUICollectionView(){
+    private func configureUICollectionView(){
         collectionView = UICollectionView(frame: view.bounds, collectionViewLayout: UICollectionViewFlowLayout())
         view.addSubview(collectionView)
         collectionView.backgroundColor = ColorConstants.background
@@ -55,9 +56,25 @@ class ConversationsViewController: UIViewController {
         collectionView.register(ConversationCell.self, forCellWithReuseIdentifier: reuseIdentifier)
     }
     
+    private func configureSpinner(){
+        spinnerT.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(spinnerT)
+        spinnerT.color = .white
+        spinnerT.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
+        spinnerT.centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive = true
+    }
+    
+    private func startSpinning(){
+        spinnerT.startAnimating()
+    }
+    
+    private func stopSpinning(){
+        spinnerT.stopAnimating()
+    }
+    
     //MARK: -Handlers
     
-    func validateAuth(){
+    private func validateAuth(){
         if FirebaseAuth.Auth.auth().currentUser == nil {
             let vc = LoginViewController()
             let navigation = UINavigationController(rootViewController: vc)
@@ -74,22 +91,23 @@ class ConversationsViewController: UIViewController {
         present(navVc,animated: true)
     }
     
-    func fetchUserConvo(){
+    private func fetchUserConvo(){
         chats = []
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "hh:mm:a"
+        DispatchQueue.main.async {
+            self.startSpinning()
+        }
         NetworkManager.shared.fetchCurrentUser(completion: { currentUser in
             self.currentUser = currentUser
         })
         NetworkManager.shared.fetchChats(completion: { chats in
             self.chats = chats
             DispatchQueue.main.async {
+                self.stopSpinning()
                 self.collectionView.reloadData()
             }
         })
-        DispatchQueue.main.async {
-            self.collectionView.reloadData()
-        }
     }
     
     @objc func didTapEditButton(){
@@ -99,13 +117,15 @@ class ConversationsViewController: UIViewController {
     }
 }
 
-extension ConversationsViewController: UICollectionViewDataSource, UICollectionViewDelegate{
+// MARK: - Extension : CollectionView
+
+extension ConversationsViewController: UICollectionViewDataSource, UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return chats.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "ConversationCell", for: indexPath) as! ConversationCell
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: reuseIdentifier, for: indexPath) as! ConversationCell
         
         let chat = chats[indexPath.row]
         cell.chat = chat
@@ -126,6 +146,8 @@ extension ConversationsViewController: UICollectionViewDataSource, UICollectionV
     }
 }
 
+// MARK: - Extension : CollectionViewFlowLayout
+
 extension ConversationsViewController: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         return CGSize(width: view.frame.width, height: 100)
@@ -135,6 +157,8 @@ extension ConversationsViewController: UICollectionViewDelegateFlowLayout {
         return 1
     }
 }
+
+// MARK: - Extension
 
 extension ConversationsViewController: UserAuthenticatedDelegate {
     func userAuthenticated() {
